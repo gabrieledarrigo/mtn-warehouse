@@ -3,7 +3,7 @@
  */
 
 import { MONTANA_COLORS } from './colors.js';
-import { loadInventory, saveInventory, clearInventory, isStorageAvailable } from './inventory.js';
+import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { html, render } from 'lit-html';
 import { ColorGrid } from './components/ColorGrid.js';
 import { QuantityModal } from './components/QuantityModal.js';
@@ -12,28 +12,9 @@ import type { Color } from './types.js';
 console.log('Montana Hardcore Inventory - Starting...');
 console.log(`Loaded ${MONTANA_COLORS.length} colors`);
 
-// Test storage
-const storageAvailable = isStorageAvailable();
-console.log('Storage available:', storageAvailable);
-
 // Load existing inventory or create empty
 let inventory = loadInventory();
 console.log('Loaded inventory:', inventory);
-
-// Test: add some sample quantities
-if (Object.keys(inventory).length === 0) {
-    console.log('Adding sample inventory...');
-    inventory = {
-        'RV-1000': 3,
-        'RV-1010': 1,
-        'RV-1020': 2,
-        'RV-2000': 5,
-        'RV-1050': 0,
-        'RV-2010': 1
-    };
-    saveInventory(inventory);
-    console.log('Sample inventory saved:', inventory);
-}
 
 // Modal state
 let modalOpen = false;

@@ -45,13 +45,3 @@ export function loadInventory(): Record<string, number> {
 export function clearInventory(): void {
   localStorage.removeItem(STORAGE_KEY);
 }
-
-/**
- * Check if localStorage is available
- */
-export function isStorageAvailable(): boolean {
-  const test = '__storage_test__';
-  localStorage.setItem(test, 'test');
-  localStorage.removeItem(test);
-  return true;
-}
