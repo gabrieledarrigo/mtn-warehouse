@@ -67,30 +67,30 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
 
   return html`
     <div 
-      class="modal-overlay" 
+      class="modal overlay" 
       @click=${handleOverlayClick}
       @keydown=${handleKeydown}
       tabindex="-1"
     >
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="color-preview-large" style="background-color: ${color.hex}"></div>
-          <div class="color-details">
-            <h3 class="color-title">${color.name}</h3>
-            <p class="color-code">${color.code}</p>
+      <div class="content">
+        <div class="header">
+          <div class="preview" style="background-color: ${color.hex}"></div>
+          <div class="details">
+            <h3 class="title">${color.name}</h3>
+            <p class="code">${color.code}</p>
           </div>
-          <button class="close-button" @click=${handleCancel} aria-label="Close">
+          <button class="close" @click=${handleCancel} aria-label="Close">
             ×
           </button>
         </div>
 
-        <div class="modal-body">
+        <div class="body">
           <div class="quantity-section">
-            <label for="quantity-input" class="quantity-label">Quantity</label>
+            <label for="quantity-input" class="label">Quantity</label>
             
-            <div class="quantity-controls">
+            <div class="controls">
               <button 
-                class="quantity-button decrease"
+                class="button decrease"
                 @click=${handleDecrement}
                 ?disabled=${currentQuantity <= 0}
                 aria-label="Decrease quantity"
@@ -101,7 +101,7 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
               <input 
                 id="quantity-input"
                 type="number"
-                class="quantity-input"
+                class="input"
                 .value=${currentQuantity.toString()}
                 min="0"
                 max="999"
@@ -110,7 +110,7 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
               />
               
               <button 
-                class="quantity-button increase"
+                class="button increase"
                 @click=${handleIncrement}
                 ?disabled=${currentQuantity >= 999}
                 aria-label="Increase quantity"
@@ -121,11 +121,11 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
           </div>
         </div>
 
-        <div class="modal-footer">
-          <button class="modal-button cancel" @click=${handleCancel}>
+        <div class="footer">
+          <button class="button cancel" @click=${handleCancel}>
             Cancel
           </button>
-          <button class="modal-button save" @click=${handleSave}>
+          <button class="button save" @click=${handleSave}>
             Save
           </button>
         </div>

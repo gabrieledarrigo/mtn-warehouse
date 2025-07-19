@@ -13,11 +13,14 @@ export interface InventoryItem {
   quantity: number;
 }
 
+// colorCode -> quantity
+export type InventoryItems = Record<string, number>;
+
 /**
  * Storage types
  */
 export interface InventoryData {
-  items: Record<string, number>; // colorCode -> quantity
+  items: InventoryItems;
   version: string;
   lastUpdated: string;
 }

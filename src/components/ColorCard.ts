@@ -43,7 +43,7 @@ export function ColorCard({ color, quantity, onClick }: ColorCardProps): Templat
     if (quantity === 0) {
       return '0';
     }
-    
+
     if (quantity > 99) {
       return '99+';
     }
@@ -57,14 +57,14 @@ export function ColorCard({ color, quantity, onClick }: ColorCardProps): Templat
       @click=${handleClick}
       title="${color.name} (${color.code})"
     >
-      <div class="color-preview" style="background-color: ${color.hex}"></div>
+      <div class="preview" style="background-color: ${color.hex}"></div>
       
-      <div class="color-info">
-        <div class="color-code">${color.code}</div>
-        <div class="color-name">${color.name}</div>
+      <div class="info">
+        <div class="code">${color.code}</div>
+        <div class="name">${color.name}</div>
       </div>
       
-      <div class="quantity-badge">
+      <div class="quantity">
         ${getQuantityDisplay()}
       </div>
     </div>

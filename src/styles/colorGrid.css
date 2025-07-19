@@ -1,3 +1,5 @@
+@import './variables.css';
+
 .color-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -32,7 +34,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    border-color: #007bff;
+    border-color: var(--color-primary);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
@@ -42,11 +44,11 @@
   }
 
   &:focus {
-    outline: 2px solid #007bff;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
   }
 
-  .color-preview {
+  .preview {
     width: 100%;
     height: 80px;
     border-radius: 8px;
@@ -55,18 +57,18 @@
     position: relative;
   }
 
-  .color-info {
+  .info {
     text-align: center;
     margin-bottom: 8px;
 
-    .color-code {
+    .code {
       font-weight: bold;
       font-size: 14px;
       color: #333;
       margin-bottom: 4px;
     }
 
-    .color-name {
+    .name {
       font-size: 12px;
       color: #666;
       line-height: 1.3;
@@ -76,7 +78,7 @@
     }
   }
 
-  .quantity-badge {
+  .quantity {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -91,20 +93,20 @@
   }
 
   &.out-of-stock {
-    border-color: #dc3545;
+    border-color: var(--color-danger);
     background: #fff5f5;
 
-    .quantity-badge {
-      background: #dc3545;
+    .quantity {
+      background: var(--color-danger);
     }
   }
 
   &.low-stock {
-    border-color: #ffc107;
+    border-color: var(--color-warning);
     background: #fffef5;
 
-    .quantity-badge {
-      background: #ffc107;
+    .quantity {
+      background: var(--color-warning);
       color: #000;
     }
   }
@@ -112,13 +114,13 @@
   &.in-stock {
     border-color: #e0e0e0;
 
-    .quantity-badge {
-      background: #28a745;
+    .quantity {
+      background: var(--color-success);
     }
   }
 }
 
-.color-grid-empty {
+.empty-state {
   text-align: center;
   padding: 40px;
   color: #666;

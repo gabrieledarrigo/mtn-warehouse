@@ -2,11 +2,14 @@
  * Main entry point for Montana Hardcore Inventory
  */
 
+import './styles/variables.css';
+import './styles/layout.css';
+import './styles/colorGrid.css';
+import './styles/quantityModal.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { html, render } from 'lit-html';
-import { ColorGrid } from './components/ColorGrid.js';
-import { QuantityModal } from './components/QuantityModal.js';
+import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './types.js';
 
 console.log('Montana Hardcore Inventory - Starting...');
@@ -54,60 +57,20 @@ const handleQuantitySave = (newQuantity: number) => {
 
 const renderApp = () => {
     const appTemplate = html`
-        <div style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: -apple-system, sans-serif;">
-            <h1 style="text-align: center; color: #333; margin-bottom: 8px;">🎨 Montana Hardcore Inventory</h1>
-            <p style="text-align: center; color: #666; margin-bottom: 32px;">
-                Click on any color to update its quantity
-            </p>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 8px;">
-                <div style="text-align: center;">
-                    <strong>Total Colors</strong><br>
-                    <span style="font-size: 1.5em; color: #28a745;">${MONTANA_COLORS.length}</span>
-                </div>
-                <div style="text-align: center;">
-                    <strong>In Stock</strong><br>
-                    <span style="font-size: 1.5em; color: #28a745;">
-                        ${Object.values(inventory).filter(qty => qty > 0).length}
-                    </span>
-                </div>
-                <div style="text-align: center;">
-                    <strong>Low Stock</strong><br>
-                    <span style="font-size: 1.5em; color: #ffc107;">
-                        ${Object.values(inventory).filter(qty => qty === 1).length}
-                    </span>
-                </div>
-                <div style="text-align: center;">
-                    <strong>Out of Stock</strong><br>
-                    <span style="font-size: 1.5em; color: #dc3545;">
-                        ${Object.values(inventory).filter(qty => qty === 0).length}
-                    </span>
-                </div>
-            </div>
-
-            <div style="margin: 20px 0; text-align: center;">
-                <button @click=${handleClearInventory} style="margin: 0 8px; padding: 8px 16px; border: 1px solid #dc3545; background: white; color: #dc3545; border-radius: 4px; cursor: pointer;">
-                    Clear Inventory
-                </button>
-                <button @click=${handleReload} style="margin: 0 8px; padding: 8px 16px; border: 1px solid #007bff; background: white; color: #007bff; border-radius: 4px; cursor: pointer;">
-                    Reload
-                </button>
-            </div>
-
-            ${ColorGrid({ 
-                colors: MONTANA_COLORS, 
-                inventory, 
-                onColorClick: handleColorClick 
-            })}
-
-            ${selectedColor ? QuantityModal({
-                color: selectedColor,
-                quantity: inventory[selectedColor.code] || 0,
-                isOpen: modalOpen,
-                onClose: handleModalClose,
-                onSave: handleQuantitySave
-            }) : ''}
-        </div>
+        ${AppLayout({
+            title: 'Montana Hardcore Inventory',
+            subtitle: 'Click on any color to update its quantity',
+            totalColors: MONTANA_COLORS.length,
+            inventory,
+            onClearInventory: handleClearInventory,
+            onReload: handleReload,
+            colors: MONTANA_COLORS,
+            onColorClick: handleColorClick,
+            selectedColor,
+            modalOpen,
+            onModalClose: handleModalClose,
+            onQuantitySave: handleQuantitySave
+        })}
     `;
 
     const app = document.getElementById('app');
