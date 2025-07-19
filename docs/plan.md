@@ -29,7 +29,22 @@ Development of a web-based inventory management application for Montana Hardcore
    - Create TypeScript data models for inventory management
    - Define type-safe error handling for storage operations
 
-### Phase 2: Core Features (US-001, US-002, US-006)
+### Phase 2: Code Refactoring and UI Components (Maintenance & Modularity)
+1. **Component Architecture Refactoring**
+   - Extract inline HTML and styles from main.ts into dedicated components
+   - Create AppHeader.ts component for title and description
+   - Create InventoryStats.ts component for dashboard statistics
+   - Create ActionButtons.ts component for Clear/Reload functionality
+   - Implement AppLayout.ts as main composition component
+   - Move all inline styles to dedicated CSS files with proper class structure
+
+2. **CSS Architecture**
+   - Create CSS custom properties (variables) for colors, spacing, and typography
+   - Implement proper CSS class system replacing inline styles
+   - Add responsive design utilities and consistent spacing system
+   - Create modular CSS files per component for better maintainability
+
+### Phase 3: Core Features (US-001, US-002, US-006)
 1. **Color Grid Component**
    - Implement responsive grid layout
    - Create color card components
@@ -42,20 +57,58 @@ Development of a web-based inventory management application for Montana Hardcore
    - Implement save/cancel functionality
    - Add data validation and error handling
 
-### Phase 3: Navigation and Search (US-003, US-004)
+### Phase 4: Navigation and Search (US-003, US-004)
 1. **Search Functionality**
+   - Create SearchBar.ts component with debounced input handling
    - Implement text-based search
    - Add real-time filtering
    - Support both code and name search
    - Add search result highlighting
 
 2. **Filter System**
+   - Create FilterBar.ts component for status-based filtering
    - Implement status-based filters
    - Add filter controls to UI
    - Integrate with search functionality
    - Add filter state persistence
 
-### Phase 4: Advanced Features (US-005, US-007, US-008)
+---
+
+## Current Status & Immediate Refactoring Plan
+
+### Problem Analysis
+The current `main.ts` implementation has maintainability issues:
+- Extensive inline HTML with hardcoded styles
+- Mixed rendering logic with structure definition
+- Dashboard statistics embedded in main template
+- Action buttons defined inline
+- Difficult to maintain, test, and extend
+
+### Immediate Refactoring Objectives (Phase 2)
+
+**Component Extraction Strategy:**
+1. **AppHeader.ts** - Header with emoji, title and subtitle
+2. **InventoryStats.ts** - Statistics dashboard (Total, In Stock, Low Stock, Out of Stock)
+3. **ActionButtons.ts** - Clear Inventory and Reload buttons with proper event handling
+4. **AppLayout.ts** - Main composition component that orchestrates all UI pieces
+5. **SearchBar.ts** - Search input component (prepared for Phase 4)
+6. **FilterBar.ts** - Filter selection component (prepared for Phase 4)
+
+**CSS Architecture Improvements:**
+- Create `src/styles/variables.css` for design tokens (colors, spacing, typography)
+- Create `src/styles/layout.css` for main application layout
+- Create `src/styles/components.css` for reusable component styles
+- Replace all inline styles with proper CSS classes
+- Implement CSS custom properties for consistency
+
+**Benefits:**
+- Cleaner, more readable main.ts
+- Reusable components for future features
+- Easier testing and maintenance
+- Better separation of concerns
+- Prepared architecture for search and filter functionality
+
+### Phase 5: Advanced Features (US-005, US-007, US-008)
 1. **Shopping List**
    - Generate automatic lists based on inventory status
    - Implement export functionality
