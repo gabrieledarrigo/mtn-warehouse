@@ -5,6 +5,8 @@
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory, isStorageAvailable } from './inventory.js';
 import { html, render } from 'lit-html';
+import { ColorGrid } from './components/ColorGrid.js';
+import type { Color } from './types.js';
 
 console.log('Montana Hardcore Inventory - Starting...');
 console.log(`Loaded ${MONTANA_COLORS.length} colors`);
@@ -24,7 +26,9 @@ if (Object.keys(inventory).length === 0) {
         'RV-1000': 3,
         'RV-1010': 1,
         'RV-1020': 2,
-        'RV-2000': 5
+        'RV-2000': 5,
+        'RV-1050': 0,  // Out of stock example
+        'RV-2010': 1   // Low stock example
     };
     saveInventory(inventory);
     console.log('Sample inventory saved:', inventory);
@@ -41,23 +45,42 @@ const handleReload = () => {
     window.location.reload();
 };
 
-// Main app template using lit-html
+const handleColorClick = (color: Color) => {
+    console.log('Color clicked:', color);
+    // TODO: Open quantity modal
+    alert(`Clicked: ${color.code} - ${color.name}\nCurrent quantity: ${inventory[color.code] || 0}`);
+};
+
+// Main app template using ColorGrid component
 const appTemplate = html`
-    <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: -apple-system, sans-serif;">
-        <h1 style="text-align: center; color: #333;">🎨 Montana Hardcore Inventory</h1>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 20px; font-family: -apple-system, sans-serif;">
+        <h1 style="text-align: center; color: #333; margin-bottom: 8px;">🎨 Montana Hardcore Inventory</h1>
+        <p style="text-align: center; color: #666; margin-bottom: 32px;">
+            Click on any color to update its quantity
+        </p>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0; padding: 16px; background: #f8f9fa; border-radius: 8px;">
             <div style="text-align: center;">
-                <strong>Colors loaded</strong><br>
+                <strong>Total Colors</strong><br>
                 <span style="font-size: 1.5em; color: #28a745;">${MONTANA_COLORS.length}</span>
             </div>
             <div style="text-align: center;">
-                <strong>Storage</strong><br>
-                <span style="font-size: 1.5em;">${storageAvailable ? '✅' : '❌'}</span>
+                <strong>In Stock</strong><br>
+                <span style="font-size: 1.5em; color: #28a745;">
+                    ${Object.values(inventory).filter(qty => qty > 0).length}
+                </span>
             </div>
             <div style="text-align: center;">
-                <strong>Items in inventory</strong><br>
-                <span style="font-size: 1.5em; color: #007bff;">${Object.keys(inventory).length}</span>
+                <strong>Low Stock</strong><br>
+                <span style="font-size: 1.5em; color: #ffc107;">
+                    ${Object.values(inventory).filter(qty => qty === 1).length}
+                </span>
+            </div>
+            <div style="text-align: center;">
+                <strong>Out of Stock</strong><br>
+                <span style="font-size: 1.5em; color: #dc3545;">
+                    ${Object.values(inventory).filter(qty => qty === 0).length}
+                </span>
             </div>
         </div>
 
@@ -70,31 +93,11 @@ const appTemplate = html`
             </button>
         </div>
 
-        <div style="margin: 20px 0;">
-            <h3 style="margin-bottom: 16px;">Sample Colors (showing first 10)</h3>
-            <ul style="list-style: none; padding: 0;">
-                ${MONTANA_COLORS.slice(0, 10).map(color => html`
-                    <li style="margin: 8px 0; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div 
-                                style="width: 24px; height: 24px; border-radius: 50%; background: ${color.hex}; border: 1px solid #ccc;"
-                                title="${color.name}"
-                            ></div>
-                            <span style="font-weight: bold; min-width: 80px;">${color.code}</span>
-                            <span style="flex: 1;">${color.name}</span>
-                            <span style="background: #f0f0f0; padding: 4px 8px; border-radius: 12px;">
-                                qty: ${inventory[color.code] || 0}
-                            </span>
-                        </div>
-                    </li>
-                `)}
-                ${MONTANA_COLORS.length > 10 ? html`
-                    <li style="text-align: center; margin: 16px 0; color: #666; font-style: italic;">
-                        ... and ${MONTANA_COLORS.length - 10} more colors
-                    </li>
-                ` : ''}
-            </ul>
-        </div>
+        ${ColorGrid({ 
+            colors: MONTANA_COLORS, 
+            inventory, 
+            onColorClick: handleColorClick 
+        })}
     </div>
 `;
 
