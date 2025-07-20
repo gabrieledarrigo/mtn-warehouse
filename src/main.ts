@@ -25,58 +25,58 @@ let selectedColor: Color | null = null;
 
 // Event handlers
 const handleClearInventory = () => {
-    clearInventory();
-    console.log('Inventory cleared');
-    window.location.reload();
+  clearInventory();
+  console.log('Inventory cleared');
+  window.location.reload();
 };
 
 const handleReload = () => {
-    window.location.reload();
+  window.location.reload();
 };
 
 const handleColorClick = (color: Color) => {
-    console.log('Color clicked:', color);
-    selectedColor = color;
-    modalOpen = true;
-    renderApp();
+  console.log('Color clicked:', color);
+  selectedColor = color;
+  modalOpen = true;
+  renderApp();
 };
 
 const handleModalClose = () => {
-    modalOpen = false;
-    selectedColor = null;
-    renderApp();
+  modalOpen = false;
+  selectedColor = null;
+  renderApp();
 };
 
 const handleQuantitySave = (newQuantity: number) => {
-    if (selectedColor) {
-        inventory[selectedColor.code] = newQuantity;
-        saveInventory(inventory);
-        console.log(`Updated ${selectedColor.code} to quantity ${newQuantity}`);
-    }
+  if (selectedColor) {
+    inventory[selectedColor.code] = newQuantity;
+    saveInventory(inventory);
+    console.log(`Updated ${selectedColor.code} to quantity ${newQuantity}`);
+  }
 };
 
 const renderApp = () => {
-    const appTemplate = html`
-        ${AppLayout({
-            title: 'Montana Hardcore Inventory',
-            subtitle: 'Click on any color to update its quantity',
-            totalColors: MONTANA_COLORS.length,
-            inventory,
-            onClearInventory: handleClearInventory,
-            onReload: handleReload,
-            colors: MONTANA_COLORS,
-            onColorClick: handleColorClick,
-            selectedColor,
-            modalOpen,
-            onModalClose: handleModalClose,
-            onQuantitySave: handleQuantitySave
-        })}
-    `;
+  const appTemplate = html`
+    ${AppLayout({
+      title: 'Montana Hardcore Inventory',
+      subtitle: 'Click on any color to update its quantity',
+      totalColors: MONTANA_COLORS.length,
+      inventory,
+      onClearInventory: handleClearInventory,
+      onReload: handleReload,
+      colors: MONTANA_COLORS,
+      onColorClick: handleColorClick,
+      selectedColor,
+      modalOpen,
+      onModalClose: handleModalClose,
+      onQuantitySave: handleQuantitySave,
+    })}
+  `;
 
-    const app = document.getElementById('app');
-    if (app) {
-        render(appTemplate, app);
-    }
+  const app = document.getElementById('app');
+  if (app) {
+    render(appTemplate, app);
+  }
 };
 
 // Initial render

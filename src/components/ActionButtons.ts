@@ -10,21 +10,16 @@ export interface ActionButtonsProps {
   onReload: () => void;
 }
 
-export const ActionButtons = ({ onClearInventory, onReload }: ActionButtonsProps) => {
+export const ActionButtons = ({
+  onClearInventory,
+  onReload,
+}: ActionButtonsProps) => {
   return html`
     <div class="action-buttons">
-      <button 
-        @click=${onClearInventory} 
-        class="btn danger"
-        type="button"
-      >
+      <button @click=${onClearInventory} class="btn danger" type="button">
         Clear Inventory
       </button>
-      <button 
-        @click=${onReload} 
-        class="btn primary"
-        type="button"
-      >
+      <button @click=${onReload} class="btn primary" type="button">
         Reload
       </button>
     </div>

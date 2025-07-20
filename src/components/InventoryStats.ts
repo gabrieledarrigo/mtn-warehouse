@@ -17,46 +17,52 @@ export interface StatItem {
   variant: 'success' | 'warning' | 'danger';
 }
 
-const calculateStats = (totalColors: number, inventory: InventoryItems): StatItem[] => {
+const calculateStats = (
+  totalColors: number,
+  inventory: InventoryItems
+): StatItem[] => {
   const inventoryValues = Object.values(inventory);
-  
+
   return [
     {
       label: 'Total Colors',
       value: totalColors,
-      variant: 'success'
+      variant: 'success',
     },
     {
       label: 'In Stock',
       value: inventoryValues.filter(qty => qty > 0).length,
-      variant: 'success'
+      variant: 'success',
     },
     {
       label: 'Low Stock',
       value: inventoryValues.filter(qty => qty === 1).length,
-      variant: 'warning'
+      variant: 'warning',
     },
     {
       label: 'Out of Stock',
       value: inventoryValues.filter(qty => qty === 0).length,
-      variant: 'danger'
-    }
+      variant: 'danger',
+    },
   ];
 };
 
-export const InventoryStats = ({ totalColors, inventory }: InventoryStatsProps) => {
+export const InventoryStats = ({
+  totalColors,
+  inventory,
+}: InventoryStatsProps) => {
   const stats = calculateStats(totalColors, inventory);
-  
+
   return html`
     <div class="inventory-stats">
-      ${stats.map(stat => html`
-        <div class="item">
-          <strong class="label">${stat.label}</strong>
-          <span class="value ${stat.variant}">
-            ${stat.value}
-          </span>
-        </div>
-      `)}
+      ${stats.map(
+        stat => html`
+          <div class="item">
+            <strong class="label">${stat.label}</strong>
+            <span class="value ${stat.variant}"> ${stat.value} </span>
+          </div>
+        `
+      )}
     </div>
   `;
 };

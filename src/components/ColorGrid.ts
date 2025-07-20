@@ -14,14 +14,18 @@ export interface ColorGridProps {
 /**
  * Color Grid component - displays all colors in a responsive grid
  */
-export function ColorGrid({ colors, inventory, onColorClick }: ColorGridProps): TemplateResult {
+export function ColorGrid({
+  colors,
+  inventory,
+  onColorClick,
+}: ColorGridProps): TemplateResult {
   return html`
     <div class="color-grid">
-      ${colors.map(color => 
+      ${colors.map(color =>
         ColorCard({
           color,
           quantity: inventory[color.code] || 0,
-          onClick: onColorClick
+          onClick: onColorClick,
         })
       )}
     </div>

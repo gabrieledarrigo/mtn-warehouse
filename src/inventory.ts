@@ -13,9 +13,9 @@ export function saveInventory(data: Record<string, number>): void {
   const inventoryData: InventoryData = {
     items: data,
     version: VERSION,
-    lastUpdated: new Date().toISOString()
+    lastUpdated: new Date().toISOString(),
   };
-  
+
   localStorage.setItem(STORAGE_KEY, JSON.stringify(inventoryData));
 }
 
@@ -29,7 +29,7 @@ export function loadInventory(): Record<string, number> {
   }
 
   const data: InventoryData = JSON.parse(stored);
-  
+
   // Version check
   if (data.version !== VERSION) {
     console.warn('Storage version mismatch, resetting data');

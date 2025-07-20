@@ -117,11 +117,11 @@
   .app-container {
     padding: var(--space-md);
   }
-  
+
   .app-header .title {
     font-size: var(--font-size-2xl);
   }
-  
+
   .inventory-stats {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-sm);
@@ -130,7 +130,7 @@
       font-size: var(--font-size-xl);
     }
   }
-  
+
   .action-buttons {
     flex-direction: column;
     align-items: center;

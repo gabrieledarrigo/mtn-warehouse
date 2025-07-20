@@ -1,6 +1,6 @@
 ---
 applyTo: '**'
-description: "Instructions for commit messages in the project."
+description: 'Instructions for commit messages in the project.'
 ---
 
 # Commit Messages Instructions

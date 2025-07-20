@@ -15,19 +15,19 @@ export interface AppLayoutProps {
   // Header props
   title: string;
   subtitle: string;
-  
+
   // Stats props
   totalColors: number;
   inventory: InventoryItems;
-  
+
   // Action handlers
   onClearInventory: () => void;
   onReload: () => void;
-  
+
   // Grid props
   colors: Color[];
   onColorClick: (color: Color) => void;
-  
+
   // Modal props
   selectedColor: Color | null;
   modalOpen: boolean;
@@ -47,38 +47,36 @@ export const AppLayout = ({
   selectedColor,
   modalOpen,
   onModalClose,
-  onQuantitySave
+  onQuantitySave,
 }: AppLayoutProps) => {
   return html`
     <div class="app-container">
-      ${AppHeader({ 
-        title, 
-        subtitle 
+      ${AppHeader({
+        title,
+        subtitle,
       })}
-      
-      ${InventoryStats({ 
-        totalColors, 
-        inventory 
+      ${InventoryStats({
+        totalColors,
+        inventory,
       })}
-      
-      ${ActionButtons({ 
-        onClearInventory, 
-        onReload 
+      ${ActionButtons({
+        onClearInventory,
+        onReload,
       })}
-      
-      ${ColorGrid({ 
-        colors, 
-        inventory, 
-        onColorClick 
+      ${ColorGrid({
+        colors,
+        inventory,
+        onColorClick,
       })}
-      
-      ${selectedColor ? QuantityModal({
-        color: selectedColor,
-        quantity: inventory[selectedColor.code] || 0,
-        isOpen: modalOpen,
-        onClose: onModalClose,
-        onSave: onQuantitySave
-      }) : ''}
+      ${selectedColor
+        ? QuantityModal({
+            color: selectedColor,
+            quantity: inventory[selectedColor.code] || 0,
+            isOpen: modalOpen,
+            onClose: onModalClose,
+            onSave: onQuantitySave,
+          })
+        : ''}
     </div>
   `;
 };

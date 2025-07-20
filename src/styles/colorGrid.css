@@ -127,7 +127,7 @@
   font-style: italic;
 
   &::before {
-    content: "🎨";
+    content: '🎨';
     display: block;
     font-size: 48px;
     margin-bottom: 16px;

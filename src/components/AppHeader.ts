@@ -11,7 +11,11 @@ export interface AppHeaderProps {
   emoji?: string;
 }
 
-export const AppHeader = ({ title, subtitle, emoji = '🎨' }: AppHeaderProps) => {
+export const AppHeader = ({
+  title,
+  subtitle,
+  emoji = '🎨',
+}: AppHeaderProps) => {
   return html`
     <header class="app-header">
       <h1 class="title">${emoji} ${title}</h1>

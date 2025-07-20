@@ -9,7 +9,13 @@ export interface QuantityModalProps {
   onSave: (newQuantity: number) => void;
 }
 
-export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: QuantityModalProps): TemplateResult {
+export function QuantityModal({
+  color,
+  quantity,
+  isOpen,
+  onClose,
+  onSave,
+}: QuantityModalProps): TemplateResult {
   if (!isOpen) {
     return html``;
   }
@@ -66,8 +72,8 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
   };
 
   return html`
-    <div 
-      class="modal overlay" 
+    <div
+      class="modal overlay"
       @click=${handleOverlayClick}
       @keydown=${handleKeydown}
       tabindex="-1"
@@ -87,9 +93,9 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
         <div class="body">
           <div class="quantity-section">
             <label for="quantity-input" class="label">Quantity</label>
-            
+
             <div class="controls">
-              <button 
+              <button
                 class="button decrease"
                 @click=${handleDecrement}
                 ?disabled=${currentQuantity <= 0}
@@ -97,8 +103,8 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
               >
                 −
               </button>
-              
-              <input 
+
+              <input
                 id="quantity-input"
                 type="number"
                 class="input"
@@ -108,8 +114,8 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
                 @input=${handleInputChange}
                 @focus=${(e: Event) => (e.target as HTMLInputElement).select()}
               />
-              
-              <button 
+
+              <button
                 class="button increase"
                 @click=${handleIncrement}
                 ?disabled=${currentQuantity >= 999}
@@ -122,12 +128,8 @@ export function QuantityModal({ color, quantity, isOpen, onClose, onSave }: Quan
         </div>
 
         <div class="footer">
-          <button class="button cancel" @click=${handleCancel}>
-            Cancel
-          </button>
-          <button class="button save" @click=${handleSave}>
-            Save
-          </button>
+          <button class="button cancel" @click=${handleCancel}>Cancel</button>
+          <button class="button save" @click=${handleSave}>Save</button>
         </div>
       </div>
     </div>

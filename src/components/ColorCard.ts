@@ -7,7 +7,7 @@ import type { Color } from '../types.js';
 export enum StockStatus {
   OUT_OF_STOCK = 'out-of-stock',
   LOW_STOCK = 'low-stock',
-  IN_STOCK = 'in-stock'
+  IN_STOCK = 'in-stock',
 }
 
 /**
@@ -22,7 +22,11 @@ export interface ColorCardProps {
 /**
  * Color Card component - displays a single color with quantity
  */
-export function ColorCard({ color, quantity, onClick }: ColorCardProps): TemplateResult {
+export function ColorCard({
+  color,
+  quantity,
+  onClick,
+}: ColorCardProps): TemplateResult {
   const handleClick = () => {
     onClick?.(color);
   };
@@ -31,7 +35,7 @@ export function ColorCard({ color, quantity, onClick }: ColorCardProps): Templat
     if (quantity === 0) {
       return StockStatus.OUT_OF_STOCK;
     }
-    
+
     if (quantity === 1) {
       return StockStatus.LOW_STOCK;
     }
@@ -52,21 +56,19 @@ export function ColorCard({ color, quantity, onClick }: ColorCardProps): Templat
   };
 
   return html`
-    <div 
-      class="color-card ${getStatusClass()}" 
+    <div
+      class="color-card ${getStatusClass()}"
       @click=${handleClick}
       title="${color.name} (${color.code})"
     >
       <div class="preview" style="background-color: ${color.hex}"></div>
-      
+
       <div class="info">
         <div class="code">${color.code}</div>
         <div class="name">${color.name}</div>
       </div>
-      
-      <div class="quantity">
-        ${getQuantityDisplay()}
-      </div>
+
+      <div class="quantity">${getQuantityDisplay()}</div>
     </div>
   `;
 }

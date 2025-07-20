@@ -1,9 +1,11 @@
 # Montana Hardcore Inventory - Implementation Plan
 
 ## Overview
+
 Development of a web-based inventory management application for Montana Hardcore spray paint cans. The application will provide a visual interface for tracking paint quantities through a color grid system, search functionality, and automatic shopping list generation. The solution will be browser-based with local storage persistence and built using TypeScript for enhanced type safety and maintainability.
 
 ## Requirements Summary
+
 - Visual grid interface displaying all 142 Montana Hardcore colors
 - Quantity management per color (add/remove functionality)
 - Search and filter capabilities
@@ -16,6 +18,7 @@ Development of a web-based inventory management application for Montana Hardcore
 ## Implementation Steps
 
 ### Phase 1: Core Infrastructure
+
 1. **Project Setup**
    - Initialize HTML5/CSS/TypeScript project structure
    - Configure TypeScript compiler and build tools (Vite/Webpack)
@@ -30,6 +33,7 @@ Development of a web-based inventory management application for Montana Hardcore
    - Define type-safe error handling for storage operations
 
 ### Phase 2: Code Refactoring and UI Components (Maintenance & Modularity)
+
 1. **Component Architecture Refactoring**
    - Extract inline HTML and styles from main.ts into dedicated components
    - Create AppHeader.ts component for title and description
@@ -45,6 +49,7 @@ Development of a web-based inventory management application for Montana Hardcore
    - Create modular CSS files per component for better maintainability
 
 ### Phase 3: Core Features (US-001, US-002, US-006)
+
 1. **Color Grid Component**
    - Implement responsive grid layout
    - Create color card components
@@ -58,6 +63,7 @@ Development of a web-based inventory management application for Montana Hardcore
    - Add data validation and error handling
 
 ### Phase 4: Navigation and Search (US-003, US-004)
+
 1. **Search Functionality**
    - Create SearchBar.ts component with debounced input handling
    - Implement text-based search
@@ -77,7 +83,9 @@ Development of a web-based inventory management application for Montana Hardcore
 ## Current Status & Immediate Refactoring Plan
 
 ### Problem Analysis
+
 The current `main.ts` implementation has maintainability issues:
+
 - Extensive inline HTML with hardcoded styles
 - Mixed rendering logic with structure definition
 - Dashboard statistics embedded in main template
@@ -87,6 +95,7 @@ The current `main.ts` implementation has maintainability issues:
 ### Immediate Refactoring Objectives (Phase 2)
 
 **Component Extraction Strategy:**
+
 1. **AppHeader.ts** - Header with emoji, title and subtitle
 2. **InventoryStats.ts** - Statistics dashboard (Total, In Stock, Low Stock, Out of Stock)
 3. **ActionButtons.ts** - Clear Inventory and Reload buttons with proper event handling
@@ -95,6 +104,7 @@ The current `main.ts` implementation has maintainability issues:
 6. **FilterBar.ts** - Filter selection component (prepared for Phase 4)
 
 **CSS Architecture Improvements:**
+
 - Create `src/styles/variables.css` for design tokens (colors, spacing, typography)
 - Create `src/styles/layout.css` for main application layout
 - Create `src/styles/components.css` for reusable component styles
@@ -102,6 +112,7 @@ The current `main.ts` implementation has maintainability issues:
 - Implement CSS custom properties for consistency
 
 **Benefits:**
+
 - Cleaner, more readable main.ts
 - Reusable components for future features
 - Easier testing and maintenance
@@ -109,6 +120,7 @@ The current `main.ts` implementation has maintainability issues:
 - Prepared architecture for search and filter functionality
 
 ### Phase 5: Advanced Features (US-005, US-007, US-008)
+
 1. **Shopping List**
    - Generate automatic lists based on inventory status
    - Implement export functionality
@@ -128,6 +140,7 @@ The current `main.ts` implementation has maintainability issues:
    - Add browser compatibility checks
 
 ## Testing Strategy
+
 - Unit tests for data layer and business logic
 - Integration tests for component interactions
 - Cross-browser compatibility testing
@@ -143,10 +156,11 @@ The current `main.ts` implementation has maintainability issues:
 
 **Titolo**: Visualizzare tutti i colori Montana Hardcore disponibili
 
-**User Story**: 
+**User Story**:
 Come appassionato di graffiti, voglio visualizzare tutti i 142 colori Montana Hardcore in una griglia visiva, così da avere una panoramica completa del mio inventario.
 
 **Acceptance Criteria**:
+
 - Given che accedo all'applicazione
 - When la pagina si carica
 - Then vedo una griglia con tutti i 142 colori Montana Hardcore
@@ -155,6 +169,7 @@ Come appassionato di graffiti, voglio visualizzare tutti i 142 colori Montana Ha
 - And ogni colore ha un'anteprima visiva del colore effettivo
 
 **Technical Implementation**:
+
 - Create `ColorDatabase.ts` with all 142 Montana Hardcore colors data (RV codes, names, hex values)
 - Define TypeScript interfaces: `Color`, `ColorData`, `InventoryItem`
 - Implement `ColorGrid.ts` component using CSS Grid layout with strict typing
@@ -173,6 +188,7 @@ Come appassionato di graffiti, voglio visualizzare tutti i 142 colori Montana Ha
 Come appassionato di graffiti, voglio poter aumentare o diminuire la quantità di un colore specifico, così da tenere traccia accurata del mio inventario.
 
 **Acceptance Criteria**:
+
 - Given che vedo la griglia dei colori
 - When clicco su un colore specifico
 - Then si apre un modal con i dettagli del colore
@@ -184,6 +200,7 @@ Come appassionato di graffiti, voglio poter aumentare o diminuire la quantità d
 - And posso annullare le modifiche
 
 **Technical Implementation**:
+
 - Create `QuantityModal.ts` component with typed props for color details display
 - Define interfaces: `ModalProps`, `QuantityChangeEvent`, `ValidationResult`
 - Implement increment/decrement buttons with type-safe validation logic
@@ -204,6 +221,7 @@ Come appassionato di graffiti, voglio poter aumentare o diminuire la quantità d
 Como appassionato di graffiti, voglio poter cercare un colore specifico per codice RV o nome, così da trovarlo rapidamente tra i 142 colori disponibili.
 
 **Acceptance Criteria**:
+
 - Given che vedo la griglia dei colori
 - When inserisco un termine di ricerca (es. "RV-252" o "Yellow")
 - Then la griglia mostra solo i colori che corrispondono al termine di ricerca
@@ -212,6 +230,7 @@ Como appassionato di graffiti, voglio poter cercare un colore specifico per codi
 - And posso cancellare la ricerca per tornare alla vista completa
 
 **Technical Implementation**:
+
 - Create `SearchBar.ts` component with typed debounced input handling
 - Define interfaces: `SearchProps`, `SearchResult`, `SearchOptions`
 - Implement type-safe search algorithm that matches both RV codes and color names
@@ -232,6 +251,7 @@ Como appassionato di graffiti, voglio poter cercare un colore specifico per codi
 Come appassionato di graffiti, voglio poter filtrare i colori in base al loro stato di disponibilità, così da focalizzarmi sui colori che mi interessano.
 
 **Acceptance Criteria**:
+
 - Given che vedo la griglia dei colori
 - When seleziono un filtro specifico
 - Then la griglia mostra solo i colori corrispondenti al filtro
@@ -241,6 +261,7 @@ Come appassionato di graffiti, voglio poter filtrare i colori in base al loro st
 - And il filtro "Scarsi" mostra solo colori con quantità = 1
 
 **Technical Implementation**:
+
 - Create `FilterBar.ts` component with typed radio buttons or dropdown options
 - Define enums and interfaces: `FilterType`, `FilterOptions`, `FilterState`
 - Implement type-safe filter functions for each status type (All, In Stock, Out of Stock, Low Stock)
@@ -261,6 +282,7 @@ Come appassionato di graffiti, voglio poter filtrare i colori in base al loro st
 Come appassionato di graffiti, voglio poter generare automaticamente una lista di colori esauriti o scarsi, così da sapere cosa comprare al negozio.
 
 **Acceptance Criteria**:
+
 - Given che ho un inventario con quantità diverse per i colori
 - When accedo alla funzione "Lista Acquisti"
 - Then vedo una lista dei colori esauriti (quantità = 0)
@@ -270,6 +292,7 @@ Come appassionato di graffiti, voglio poter generare automaticamente una lista d
 - And posso stampare la lista
 
 **Technical Implementation**:
+
 - Create `ShoppingList.ts` component with typed categorized lists
 - Define interfaces: `ShoppingListItem`, `ExportFormat`, `ListCategory`
 - Implement auto-generation logic based on inventory quantities with type-safe calculations
@@ -290,6 +313,7 @@ Come appassionato di graffiti, voglio poter generare automaticamente una lista d
 Come appassionato di graffiti, voglio che le mie modifiche all'inventario siano salvate automaticamente, così da non perdere i dati quando chiudo l'applicazione.
 
 **Acceptance Criteria**:
+
 - Given che modifico la quantità di un colore
 - When salvo le modifiche
 - Then i dati vengono salvati nel browser
@@ -298,6 +322,7 @@ Come appassionato di graffiti, voglio che le mie modifiche all'inventario siano 
 - And i dati funzionano offline
 
 **Technical Implementation**:
+
 - Create `StorageService.ts` using LocalStorage API with strict typing
 - Define interfaces: `StorageData`, `StorageOptions`, `MigrationSchema`
 - Implement automatic save on every quantity change with typed event handlers
@@ -318,6 +343,7 @@ Come appassionato di graffiti, voglio che le mie modifiche all'inventario siano 
 Come appassionato di graffiti, voglio poter usare l'applicazione sul mio smartphone mentre sono al negozio, così da consultare il mio inventario in mobilità.
 
 **Acceptance Criteria**:
+
 - Given che accedo all'applicazione da smartphone
 - When navigo nell'interfaccia
 - Then la griglia dei colori si adatta alla dimensione dello schermo
@@ -327,6 +353,7 @@ Come appassionato di graffiti, voglio poter usare l'applicazione sul mio smartph
 - And l'interfaccia è usabile sia in portrait che landscape
 
 **Technical Implementation**:
+
 - Implement mobile-first responsive design with CSS Grid and Flexbox using typed style objects
 - Define interfaces: `BreakpointConfig`, `TouchEvent`, `GestureOptions`
 - Create touch-optimized button sizes (minimum 44px touch targets) with typed size constants
@@ -347,6 +374,7 @@ Come appassionato di graffiti, voglio poter usare l'applicazione sul mio smartph
 Come appassionato di graffiti, voglio che l'applicazione gestisca eventuali errori in modo elegante, così da non perdere dati o funzionalità.
 
 **Acceptance Criteria**:
+
 - Given che si verifica un errore di salvataggio
 - When tento di salvare una modifica
 - Then vedo un messaggio di errore chiaro
@@ -358,6 +386,7 @@ Come appassionato di graffiti, voglio che l'applicazione gestisca eventuali erro
 - And l'applicazione funziona comunque per la sessione corrente
 
 **Technical Implementation**:
+
 - Create `ErrorHandler.ts` with centralized error management using typed error classes
 - Define interfaces: `AppError`, `ErrorContext`, `RecoveryAction`, `ErrorLevel`
 - Implement user-friendly error messages with typed recovery suggestions

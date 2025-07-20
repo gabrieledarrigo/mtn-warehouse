@@ -1,6 +1,30 @@
 ---
-description: "Research mode for gathering information and analyzing topics in depth."
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'readCellOutput', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI']
+description: 'Research mode for gathering information and analyzing topics in depth.'
+tools:
+  [
+    'changes',
+    'codebase',
+    'editFiles',
+    'extensions',
+    'fetch',
+    'findTestFiles',
+    'githubRepo',
+    'new',
+    'openSimpleBrowser',
+    'problems',
+    'readCellOutput',
+    'runCommands',
+    'runNotebooks',
+    'runTasks',
+    'runTests',
+    'search',
+    'searchResults',
+    'terminalLastCommand',
+    'terminalSelection',
+    'testFailure',
+    'usages',
+    'vscodeAPI',
+  ]
 ---
 
 Activate research mode.
@@ -9,7 +33,7 @@ Your task is to research and gather information about a specific topic or proble
 
 # Tools
 
-Use tools to gather information and do research. 
+Use tools to gather information and do research.
 
 # 1. Strategic Planning (FIRST STEP)
 
