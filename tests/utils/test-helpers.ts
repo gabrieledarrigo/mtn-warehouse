@@ -8,13 +8,8 @@ import { Page, expect } from '@playwright/test';
  * Wait for the application to be fully loaded
  */
 export async function waitForAppToLoad(page: Page): Promise<void> {
-  // Wait for the main app container to be visible
   await page.waitForSelector('#app', { state: 'visible' });
-  
-  // Wait for the color grid to be populated with colors
   await page.waitForSelector('.color-grid .color-card', { state: 'visible' });
-  
-  // Wait for any loading states to complete
   await page.waitForLoadState('networkidle');
 }
 
@@ -30,8 +25,11 @@ export async function clearInventoryData(page: Page): Promise<void> {
 /**
  * Set specific inventory data for testing
  */
-export async function setInventoryData(page: Page, inventory: Record<string, number>): Promise<void> {
-  await page.evaluate((inventoryData) => {
+export async function setInventoryData(
+  page: Page,
+  inventory: Record<string, number>
+): Promise<void> {
+  await page.evaluate(inventoryData => {
     const data = {
       items: inventoryData,
       version: '1.0.0',
@@ -44,23 +42,27 @@ export async function setInventoryData(page: Page, inventory: Record<string, num
 /**
  * Get current inventory data from localStorage
  */
-export async function getInventoryData(page: Page): Promise<Record<string, number>> {
+export async function getInventoryData(
+  page: Page
+): Promise<Record<string, number>> {
   return await page.evaluate(() => {
     const data = localStorage.getItem('montana-inventory');
-    if (!data) return {};
-    try {
-      const parsed = JSON.parse(data);
-      return parsed.items || {};
-    } catch {
+    if (!data) {
       return {};
     }
+
+    const parsed = JSON.parse(data);
+    return parsed.items || {};
   });
 }
 
 /**
  * Wait for modal to be visible and fully animated
  */
-export async function waitForModal(page: Page, isVisible: boolean = true): Promise<void> {
+export async function waitForModal(
+  page: Page,
+  isVisible: boolean = true
+): Promise<void> {
   const selector = '.quantity-modal';
   if (isVisible) {
     await page.waitForSelector(selector, { state: 'visible' });
@@ -88,7 +90,7 @@ export async function assertAllColorsDisplayed(page: Page): Promise<void> {
   // Montana Hardcore has 142 colors
   const colorCards = page.locator('.color-card');
   await expect(colorCards).toHaveCount(142);
-  
+
   // Verify that each card has the required elements
   const firstCard = colorCards.first();
   await expect(firstCard.locator('.color-preview')).toBeVisible();
@@ -110,16 +112,19 @@ export async function assertResponsiveDesign(page: Page): Promise<void> {
   // Desktop view
   await page.setViewportSize({ width: 1200, height: 800 });
   await waitForAppToLoad(page);
+
   await expect(page.locator('.color-grid')).toBeVisible();
-  
+
   // Tablet view
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.waitForTimeout(500); // Wait for responsive layout
+
   await expect(page.locator('.color-grid')).toBeVisible();
-  
+
   // Mobile view
   await page.setViewportSize({ width: 375, height: 667 });
   await page.waitForTimeout(500);
+
   await expect(page.locator('.color-grid')).toBeVisible();
 }
 

@@ -55,7 +55,7 @@ export class QuantityModalPage {
    */
   async assertModalOpen(expectedRvCode: string): Promise<void> {
     await this.waitForOpen();
-    
+
     // Check that all modal elements are visible
     await expect(this.colorPreview).toBeVisible();
     await expect(this.colorCode).toBeVisible();
@@ -65,7 +65,7 @@ export class QuantityModalPage {
     await expect(this.decrementButton).toBeVisible();
     await expect(this.saveButton).toBeVisible();
     await expect(this.cancelButton).toBeVisible();
-    
+
     // Verify the correct color is displayed
     await expect(this.colorCode).toHaveText(expectedRvCode);
   }
@@ -92,9 +92,11 @@ export class QuantityModalPage {
   async clickIncrement(): Promise<void> {
     const currentQuantity = await this.getCurrentQuantity();
     await this.incrementButton.click();
-    
+
     // Wait for the quantity to update
-    await expect(this.quantityInput).toHaveValue((currentQuantity + 1).toString());
+    await expect(this.quantityInput).toHaveValue(
+      (currentQuantity + 1).toString()
+    );
   }
 
   /**
@@ -103,9 +105,9 @@ export class QuantityModalPage {
   async clickDecrement(): Promise<void> {
     const currentQuantity = await this.getCurrentQuantity();
     const expectedQuantity = Math.max(0, currentQuantity - 1);
-    
+
     await this.decrementButton.click();
-    
+
     // Wait for the quantity to update
     await expect(this.quantityInput).toHaveValue(expectedQuantity.toString());
   }
@@ -183,14 +185,14 @@ export class QuantityModalPage {
     // Try to set a negative value
     await this.setQuantity(-5);
     await this.quantityInput.blur();
-    
+
     // Should be corrected to 0
     await expect(this.quantityInput).toHaveValue('0');
-    
+
     // Try to set a very large value
     await this.setQuantity(9999);
     await this.quantityInput.blur();
-    
+
     // Should be limited (implementation dependent)
     const value = await this.getCurrentQuantity();
     expect(value).toBeGreaterThanOrEqual(0);
@@ -203,10 +205,10 @@ export class QuantityModalPage {
   async testDecrementValidation(): Promise<void> {
     // Set quantity to 0
     await this.setQuantity(0);
-    
+
     // Try to decrement
     await this.clickDecrement();
-    
+
     // Should remain at 0
     await expect(this.quantityInput).toHaveValue('0');
   }
@@ -218,11 +220,11 @@ export class QuantityModalPage {
     // Check for proper ARIA attributes
     await expect(this.modal).toHaveAttribute('role', 'dialog');
     await expect(this.modal).toHaveAttribute('aria-modal', 'true');
-    
+
     // Check that buttons have proper accessibility labels
     await expect(this.incrementButton).toHaveAttribute('aria-label');
     await expect(this.decrementButton).toHaveAttribute('aria-label');
-    
+
     // Check that the input has proper labeling
     await expect(this.quantityInput).toHaveAttribute('aria-label');
   }

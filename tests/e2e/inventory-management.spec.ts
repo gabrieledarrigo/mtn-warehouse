@@ -1,16 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { ColorGridPage } from '../utils/page-objects/ColorGridPage.js';
-import { 
-  clearInventoryData, 
-  setInventoryData, 
+import {
+  clearInventoryData,
+  setInventoryData,
   waitForAppToLoad,
-  assertAllColorsDisplayed 
+  assertAllColorsDisplayed,
 } from '../utils/test-helpers.js';
-import { 
-  TEST_COLORS, 
-  SAMPLE_INVENTORY, 
+import {
+  TEST_COLORS,
+  SAMPLE_INVENTORY,
   EMPTY_INVENTORY,
-  VIEWPORT_SIZES 
+  VIEWPORT_SIZES,
 } from '../utils/fixtures/test-data.js';
 
 /**
@@ -22,7 +22,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
 
   test.beforeEach(async ({ page }) => {
     colorGridPage = new ColorGridPage(page);
-    
+
     // Start with clean state
     await clearInventoryData(page);
     await colorGridPage.goto();
@@ -39,17 +39,17 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
     });
 
     await test.step('Take screenshot of full color grid', async () => {
-      await page.screenshot({ 
-        path: 'test-results/screenshots/full-color-grid.png', 
-        fullPage: true 
+      await page.screenshot({
+        path: 'test-results/screenshots/full-color-grid.png',
+        fullPage: true,
       });
     });
   });
 
-  test('should display correct color card structure for each color', async ({ page }) => {
+  test('should display correct color card structure for each color', async () => {
     await test.step('Verify first few color cards have proper structure', async () => {
       const visibleCodes = await colorGridPage.getAllVisibleColorCodes();
-      
+
       expect(visibleCodes.length).toBeGreaterThan(0);
 
       // Test the structure of the first 3 visible color cards
@@ -69,9 +69,11 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
 
     await test.step('Verify quantities are displayed correctly', async () => {
       // Check specific colors with known quantities
-      for (const [colorCode, expectedQuantity] of Object.entries(SAMPLE_INVENTORY)) {
+      for (const [colorCode, expectedQuantity] of Object.entries(
+        SAMPLE_INVENTORY
+      )) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
-        
+
         expect(actualQuantity).toBe(expectedQuantity);
       }
     });
@@ -80,19 +82,19 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       // Test a color that's not in our sample inventory
       const unsetColor = TEST_COLORS.RV_6029;
       const quantity = await colorGridPage.getColorQuantity(unsetColor);
-      
+
       expect(quantity).toBe(0);
     });
   });
 
-  test('should display app header with correct information', async ({ page }) => {
+  test('should display app header with correct information', async () => {
     await test.step('Verify header structure and content', async () => {
       await colorGridPage.assertHeaderStructure();
     });
 
     await test.step('Verify inventory statistics', async () => {
       const stats = await colorGridPage.getInventoryStats();
-      
+
       expect(stats.total).toBe(142); // Total Montana Hardcore colors
     });
   });
@@ -108,13 +110,15 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       // Check a few sample colors
       for (const colorCode of Object.values(TEST_COLORS).slice(0, 3)) {
         const quantity = await colorGridPage.getColorQuantity(colorCode);
-        
+
         expect(quantity).toBe(0);
       }
     });
   });
 
-  test('should display action buttons and handle basic interactions', async ({ page }) => {
+  test('should display action buttons and handle basic interactions', async ({
+    page,
+  }) => {
     await test.step('Set initial inventory data', async () => {
       await setInventoryData(page, SAMPLE_INVENTORY);
       await page.reload();
@@ -124,10 +128,10 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
     await test.step('Test reload functionality', async () => {
       await colorGridPage.clickReload();
       await waitForAppToLoad(page);
-      
+
       // Verify data is still there after reload
       const quantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
-      
+
       expect(quantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252]);
     });
 
@@ -135,24 +139,26 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       await colorGridPage.clickClearInventory();
       await page.reload();
       await waitForAppToLoad(page);
-      
+
       // Verify inventory is cleared
       const quantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
-      
+
       expect(quantity).toBe(0);
     });
   });
 
-  test('should be responsive across different screen sizes', async ({ page }) => {
+  test('should be responsive across different screen sizes', async ({
+    page,
+  }) => {
     await test.step('Test desktop layout', async () => {
       await page.setViewportSize(VIEWPORT_SIZES.DESKTOP);
       await page.reload();
       await waitForAppToLoad(page);
       await colorGridPage.assertResponsiveLayout();
-      
-      await page.screenshot({ 
-        path: 'test-results/screenshots/desktop-layout.png', 
-        fullPage: true 
+
+      await page.screenshot({
+        path: 'test-results/screenshots/desktop-layout.png',
+        fullPage: true,
       });
     });
 
@@ -160,10 +166,10 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       await page.setViewportSize(VIEWPORT_SIZES.TABLET);
       await page.waitForTimeout(500); // Wait for responsive transition
       await colorGridPage.assertResponsiveLayout();
-      
-      await page.screenshot({ 
-        path: 'test-results/screenshots/tablet-layout.png', 
-        fullPage: true 
+
+      await page.screenshot({
+        path: 'test-results/screenshots/tablet-layout.png',
+        fullPage: true,
       });
     });
 
@@ -171,19 +177,19 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       await page.setViewportSize(VIEWPORT_SIZES.MOBILE);
       await page.waitForTimeout(500);
       await colorGridPage.assertResponsiveLayout();
-      
-      await page.screenshot({ 
-        path: 'test-results/screenshots/mobile-layout.png', 
-        fullPage: true 
+
+      await page.screenshot({
+        path: 'test-results/screenshots/mobile-layout.png',
+        fullPage: true,
       });
     });
   });
 
-  test('should handle color card interactions correctly', async ({ page }) => {
+  test('should handle color card interactions correctly', async () => {
     await test.step('Verify color cards are clickable', async () => {
       const testColor = TEST_COLORS.RV_252;
       const colorCard = colorGridPage.getColorCard(testColor);
-      
+
       await expect(colorCard).toBeVisible();
       await expect(colorCard).toBeEnabled();
     });
@@ -191,10 +197,10 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
     await test.step('Color card should have hover effects', async () => {
       const testColor = TEST_COLORS.RV_252;
       const colorCard = colorGridPage.getColorCard(testColor);
-      
+
       // Hover over the card
       await colorCard.hover();
-      
+
       // Verify the card responds to hover (this would depend on CSS implementation)
       await expect(colorCard).toBeVisible();
     });
@@ -204,24 +210,22 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
     await test.step('Verify consistent loading across multiple refreshes', async () => {
       const refreshCount = 3;
       let colorCounts: number[] = [];
-      
+
       for (let i = 0; i < refreshCount; i++) {
         await page.reload();
         await waitForAppToLoad(page);
-        
+
         const count = await colorGridPage.colorCards.count();
         colorCounts.push(count);
-        
+
         // Each refresh should show the same number of colors
-        
         expect(count).toBe(142);
       }
-      
+
       // All refreshes should have consistent color count
       const uniqueCounts = [...new Set(colorCounts)];
-      
+
       expect(uniqueCounts).toHaveLength(1);
-      
       expect(uniqueCounts[0]).toBe(142);
     });
   });

@@ -22,11 +22,11 @@ export const TEST_COLORS = {
  * Sample inventory data for testing
  */
 export const SAMPLE_INVENTORY = {
-  [TEST_COLORS.RV_252]: 5,   // Yellow - 5 cans
-  [TEST_COLORS.RV_100]: 0,   // Black - out of stock
-  [TEST_COLORS.RV_9010]: 1,  // White - low stock
+  [TEST_COLORS.RV_252]: 5, // Yellow - 5 cans
+  [TEST_COLORS.RV_100]: 0, // Black - out of stock
+  [TEST_COLORS.RV_9010]: 1, // White - low stock
   [TEST_COLORS.RV_3020]: 10, // Red - well stocked
-  [TEST_COLORS.RV_5015]: 3,  // Blue - medium stock
+  [TEST_COLORS.RV_5015]: 3, // Blue - medium stock
   // RV_6029 and RV_4006 not set (default to 0)
 } as const;
 
@@ -73,11 +73,11 @@ export const LOW_STOCK_INVENTORY = {
  * Test viewport sizes for responsive testing
  */
 export const VIEWPORT_SIZES = {
-  MOBILE: { width: 375, height: 667 },     // iPhone SE
+  MOBILE: { width: 375, height: 667 }, // iPhone SE
   MOBILE_LARGE: { width: 414, height: 896 }, // iPhone XR
-  TABLET: { width: 768, height: 1024 },    // iPad
+  TABLET: { width: 768, height: 1024 }, // iPad
   TABLET_LARGE: { width: 1024, height: 768 }, // iPad Landscape
-  DESKTOP: { width: 1200, height: 800 },   // Small Desktop
+  DESKTOP: { width: 1200, height: 800 }, // Small Desktop
   DESKTOP_LARGE: { width: 1920, height: 1080 }, // Large Desktop
 } as const;
 
@@ -86,7 +86,12 @@ export const VIEWPORT_SIZES = {
  */
 export const QUANTITY_SCENARIOS = [
   { initial: 0, change: 1, expected: 1, description: 'Add first can' },
-  { initial: 5, change: 3, expected: 8, description: 'Increase existing stock' },
+  {
+    initial: 5,
+    change: 3,
+    expected: 8,
+    description: 'Increase existing stock',
+  },
   { initial: 10, change: -5, expected: 5, description: 'Decrease stock' },
   { initial: 1, change: -1, expected: 0, description: 'Remove last can' },
   { initial: 0, change: -1, expected: 0, description: 'Cannot go below zero' },
@@ -168,7 +173,9 @@ export const EXPECTED_TEXT = {
 /**
  * Generate test inventory with specific patterns
  */
-export function generateTestInventory(pattern: 'empty' | 'full' | 'mixed' | 'low-stock' | 'out-of-stock'): Record<string, number> {
+export function generateTestInventory(
+  pattern: 'empty' | 'full' | 'mixed' | 'low-stock' | 'out-of-stock'
+): Record<string, number> {
   const colors = [
     TEST_COLORS.RV_252,
     TEST_COLORS.RV_100,
@@ -177,37 +184,50 @@ export function generateTestInventory(pattern: 'empty' | 'full' | 'mixed' | 'low
     TEST_COLORS.RV_5015,
     TEST_COLORS.RV_6029,
     TEST_COLORS.RV_4006,
-    TEST_COLORS.RV_1013
+    TEST_COLORS.RV_1013,
   ];
-  
+
   switch (pattern) {
     case 'empty':
       return {};
-    
+
     case 'full':
-      return colors.reduce((inventory, color) => {
-        inventory[color] = Math.floor(Math.random() * 15) + 5; // 5-19 cans
-        return inventory;
-      }, {} as Record<string, number>);
-    
+      return colors.reduce(
+        (inventory, color) => {
+          inventory[color] = Math.floor(Math.random() * 15) + 5; // 5-19 cans
+          return inventory;
+        },
+        {} as Record<string, number>
+      );
+
     case 'mixed':
-      return colors.reduce((inventory, color, index) => {
-        inventory[color] = index % 3 === 0 ? 0 : Math.floor(Math.random() * 10) + 1;
-        return inventory;
-      }, {} as Record<string, number>);
-    
+      return colors.reduce(
+        (inventory, color, index) => {
+          inventory[color] =
+            index % 3 === 0 ? 0 : Math.floor(Math.random() * 10) + 1;
+          return inventory;
+        },
+        {} as Record<string, number>
+      );
+
     case 'low-stock':
-      return colors.reduce((inventory, color) => {
-        inventory[color] = 1;
-        return inventory;
-      }, {} as Record<string, number>);
-    
+      return colors.reduce(
+        (inventory, color) => {
+          inventory[color] = 1;
+          return inventory;
+        },
+        {} as Record<string, number>
+      );
+
     case 'out-of-stock':
-      return colors.reduce((inventory, color) => {
-        inventory[color] = 0;
-        return inventory;
-      }, {} as Record<string, number>);
-    
+      return colors.reduce(
+        (inventory, color) => {
+          inventory[color] = 0;
+          return inventory;
+        },
+        {} as Record<string, number>
+      );
+
     default:
       return {};
   }

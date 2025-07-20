@@ -34,7 +34,9 @@ export class ColorGridPage {
    * Get a specific color card by RV code
    */
   getColorCard(rvCode: string): Locator {
-    return this.page.getByTestId('color-card').filter({ has: this.page.getByTestId('color-code').filter({ hasText: rvCode }) });
+    return this.page.getByTestId('color-card').filter({
+      has: this.page.getByTestId('color-code').filter({ hasText: rvCode }),
+    });
   }
 
   /**
@@ -53,6 +55,7 @@ export class ColorGridPage {
     const colorCard = this.getColorCard(rvCode);
     const quantityElement = colorCard.getByTestId('color-quantity');
     const quantityText = await quantityElement.textContent();
+
     return parseInt(quantityText || '0');
   }
 
@@ -68,18 +71,18 @@ export class ColorGridPage {
    */
   async assertColorCardStructure(rvCode: string): Promise<void> {
     const colorCard = this.getColorCard(rvCode);
-    
+
     // Check that the card is visible
     await expect(colorCard).toBeVisible();
-    
+
     // Check for color preview
     await expect(colorCard.locator('.preview')).toBeVisible();
-    
+
     // Check for RV code display
     const codeElement = colorCard.getByTestId('color-code');
     await expect(codeElement).toBeVisible();
     await expect(codeElement).toHaveText(rvCode);
-    
+
     // Check for quantity display
     await expect(colorCard.getByTestId('color-quantity')).toBeVisible();
   }
@@ -91,14 +94,14 @@ export class ColorGridPage {
     const codeElements = this.colorCards.getByTestId('color-code');
     const count = await codeElements.count();
     const codes: string[] = [];
-    
+
     for (let i = 0; i < count; i++) {
       const code = await codeElements.nth(i).textContent();
       if (code) {
         codes.push(code);
       }
     }
-    
+
     return codes;
   }
 
@@ -109,16 +112,16 @@ export class ColorGridPage {
     // The grid should be visible and contain cards
     await expect(this.colorGrid).toBeVisible();
     await expect(this.colorCards.first()).toBeVisible();
-    
+
     // Grid should have proper CSS grid layout
-    const gridComputedStyle = await this.colorGrid.evaluate((el) => {
+    const gridComputedStyle = await this.colorGrid.evaluate(el => {
       const styles = window.getComputedStyle(el);
       return {
         display: styles.display,
         gridTemplateColumns: styles.gridTemplateColumns,
       };
     });
-    
+
     expect(gridComputedStyle.display).toBe('grid');
     expect(gridComputedStyle.gridTemplateColumns).toBeTruthy();
   }
@@ -126,10 +129,13 @@ export class ColorGridPage {
   /**
    * Get inventory statistics from header
    */
-  async getInventoryStats(): Promise<{ total: number; inStock: number; outOfStock: number }> {
-    const statsText = await this.inventoryStats.textContent();
+  async getInventoryStats(): Promise<{
+    total: number;
+    inStock: number;
+    outOfStock: number;
+  }> {
     const total = 128; // Montana Hardcore total colors
-    
+
     // Parse the stats (this would depend on the actual implementation)
     // For now, return default values
     return {
@@ -160,7 +166,9 @@ export class ColorGridPage {
    */
   async assertHeaderStructure(): Promise<void> {
     await expect(this.appHeader).toBeVisible();
-    await expect(this.appHeader.getByTestId('app-title')).toContainText('Montana Hardcore');
+    await expect(this.appHeader.getByTestId('app-title')).toContainText(
+      'Montana Hardcore'
+    );
     await expect(this.inventoryStats).toBeVisible();
     await expect(this.actionButtons).toBeVisible();
   }
