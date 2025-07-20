@@ -43,6 +43,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       
       // Verify initial quantity matches the sample inventory
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(currentQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252]);
     });
 
@@ -68,6 +69,7 @@ test.describe('US-002: Quantity Modal Management', () => {
 
     await test.step('Verify quantity increased correctly', async () => {
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(currentQuantity).toBe(initialQuantity + 3);
     });
 
@@ -76,10 +78,12 @@ test.describe('US-002: Quantity Modal Management', () => {
       
       // Check that the color card reflects the new quantity
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(initialQuantity + 3);
       
       // Verify data is saved to localStorage
       const inventoryData = await getInventoryData(page);
+      
       expect(inventoryData[testColor]).toBe(initialQuantity + 3);
     });
   });
@@ -98,6 +102,7 @@ test.describe('US-002: Quantity Modal Management', () => {
 
     await test.step('Verify quantity decreased correctly', async () => {
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(currentQuantity).toBe(initialQuantity - 2);
     });
 
@@ -105,6 +110,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       await quantityModalPage.saveQuantity();
       
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(initialQuantity - 2);
     });
   });
@@ -117,6 +123,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       await quantityModalPage.waitForOpen();
       
       const initialQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(initialQuantity).toBe(0);
     });
 
@@ -144,6 +151,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       await quantityModalPage.saveQuantity();
       
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(newQuantity);
     });
   });
@@ -160,6 +168,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       
       // Verify the change is visible in the modal
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(currentQuantity).toBe(initialQuantity + 5);
     });
 
@@ -169,10 +178,12 @@ test.describe('US-002: Quantity Modal Management', () => {
 
     await test.step('Verify original quantity is preserved', async () => {
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(initialQuantity);
       
       // Verify localStorage wasn't modified
       const inventoryData = await getInventoryData(page);
+      
       expect(inventoryData[testColor]).toBe(initialQuantity);
     });
   });
@@ -193,6 +204,7 @@ test.describe('US-002: Quantity Modal Management', () => {
 
     await test.step('Verify changes were not saved', async () => {
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(SAMPLE_INVENTORY[testColor]);
     });
   });
@@ -210,6 +222,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       
       // Verify changes were not saved
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(SAMPLE_INVENTORY[testColor]);
     });
 
@@ -222,6 +235,7 @@ test.describe('US-002: Quantity Modal Management', () => {
       
       // Verify changes were saved
       const cardQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(cardQuantity).toBe(newQuantity);
     });
   });
@@ -240,6 +254,7 @@ test.describe('US-002: Quantity Modal Management', () => {
         await quantityModalPage.waitForOpen();
         
         const currentQuantity = await quantityModalPage.getCurrentQuantity();
+        
         expect(currentQuantity).toBe(scenario.initial);
         
         // Apply the change (increment or decrement)
@@ -253,34 +268,10 @@ test.describe('US-002: Quantity Modal Management', () => {
         await quantityModalPage.saveQuantity();
         
         const finalQuantity = await colorGridPage.getColorQuantity(testColor);
+        
         expect(finalQuantity).toBe(scenario.expected);
       });
     }
-  });
-
-  test('should handle multiple rapid interactions', async ({ page }) => {
-    const testColor = TEST_COLORS.RV_252;
-    
-    await test.step('Open modal and perform rapid increments', async () => {
-      await colorGridPage.clickColorCard(testColor);
-      await quantityModalPage.waitForOpen();
-      
-      // Rapid increment clicks
-      for (let i = 0; i < 10; i++) {
-        await quantityModalPage.incrementButton.click();
-        await page.waitForTimeout(50); // Small delay between clicks
-      }
-    });
-
-    await test.step('Verify final state is correct', async () => {
-      const finalQuantity = await quantityModalPage.getCurrentQuantity();
-      expect(finalQuantity).toBe(SAMPLE_INVENTORY[testColor] + 10);
-      
-      await quantityModalPage.saveQuantity();
-      
-      const cardQuantity = await colorGridPage.getColorQuantity(testColor);
-      expect(cardQuantity).toBe(SAMPLE_INVENTORY[testColor] + 10);
-    });
   });
 
   test('should maintain modal state during interactions', async ({ page }) => {

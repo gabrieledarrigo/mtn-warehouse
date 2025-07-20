@@ -51,8 +51,11 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
       const colorCard = colorGridPage.getColorCard(testColor);
       const boundingBox = await colorCard.boundingBox();
       
+      
       expect(boundingBox).toBeTruthy();
+      
       expect(boundingBox!.width).toBeGreaterThanOrEqual(44);
+      
       expect(boundingBox!.height).toBeGreaterThanOrEqual(44);
     });
 
@@ -64,15 +67,20 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
       
       // Modal should fill most of the mobile screen
       const modalBox = await quantityModalPage.modal.boundingBox();
+      
       expect(modalBox).toBeTruthy();
       
       // Modal buttons should be touch-friendly
       const incrementBox = await quantityModalPage.incrementButton.boundingBox();
       const decrementBox = await quantityModalPage.decrementButton.boundingBox();
       
+      
       expect(incrementBox!.width).toBeGreaterThanOrEqual(44);
+      
       expect(incrementBox!.height).toBeGreaterThanOrEqual(44);
+      
       expect(decrementBox!.width).toBeGreaterThanOrEqual(44);
+      
       expect(decrementBox!.height).toBeGreaterThanOrEqual(44);
       
       await quantityModalPage.cancelChanges();
@@ -103,6 +111,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
           gap: styles.gap,
         };
       });
+      
       
       expect(gridStyles.gridTemplateColumns).toBeTruthy();
     });
@@ -244,8 +253,11 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
         const firstCard = colorGridPage.colorCards.first();
         const cardBox = await firstCard.boundingBox();
         
+        
         expect(cardBox).toBeTruthy();
+        
         expect(cardBox!.width).toBeGreaterThan(0);
+        
         expect(cardBox!.height).toBeGreaterThan(0);
       }
     });
@@ -267,6 +279,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
       
       // Verify initial state
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(currentQuantity).toBe(initialQuantity);
       
       // Test increment on mobile
@@ -281,6 +294,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
       
       // Verify changes persisted
       const newQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(newQuantity).toBe(10);
     });
 
@@ -319,7 +333,9 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
         const codeBox = await colorCode.boundingBox();
         const quantityBox = await quantity.boundingBox();
         
+        
         expect(codeBox!.height).toBeGreaterThan(10); // Minimum readable size
+        
         expect(quantityBox!.height).toBeGreaterThan(10);
       });
     }
@@ -345,6 +361,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
       await waitForAppToLoad(page);
       
       const desktopQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(desktopQuantity).toBe(mobileQuantity);
     });
 

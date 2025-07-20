@@ -39,6 +39,8 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
     await test.step('Verify initial data is displayed', async () => {
       for (const [colorCode, expectedQuantity] of Object.entries(SAMPLE_INVENTORY)) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
+        
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
     });
@@ -50,12 +52,16 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       // Verify all data is still there
       for (const [colorCode, expectedQuantity] of Object.entries(SAMPLE_INVENTORY)) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
+        
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
     });
 
     await test.step('Verify localStorage contains correct data', async () => {
       const inventoryData = await getInventoryData(page);
+      
+      
       expect(inventoryData).toEqual(SAMPLE_INVENTORY);
     });
   });
@@ -78,6 +84,8 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
 
     await test.step('Verify change is immediately saved to localStorage', async () => {
       const inventoryData = await getInventoryData(page);
+      
+      
       expect(inventoryData[testColor]).toBe(newQuantity);
     });
 
@@ -86,6 +94,8 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       await waitForAppToLoad(page);
       
       const displayedQuantity = await colorGridPage.getColorQuantity(testColor);
+      
+      
       expect(displayedQuantity).toBe(newQuantity);
     });
   });
@@ -114,6 +124,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       const inventoryData = await getInventoryData(page);
       
       for (let i = 0; i < testColors.length; i++) {
+        
         expect(inventoryData[testColors[i]]).toBe(changes[i]);
       }
     });
@@ -124,6 +135,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       
       for (let i = 0; i < testColors.length; i++) {
         const displayedQuantity = await colorGridPage.getColorQuantity(testColors[i]);
+        
         expect(displayedQuantity).toBe(changes[i]);
       }
     });
@@ -138,6 +150,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
     await test.step('Verify initial data is displayed', async () => {
       for (const [colorCode, expectedQuantity] of Object.entries(FULL_INVENTORY)) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
     });
@@ -152,6 +165,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       // Verify data is still there in the new page
       for (const [colorCode, expectedQuantity] of Object.entries(FULL_INVENTORY)) {
         const actualQuantity = await newColorGridPage.getColorQuantity(colorCode);
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
       
@@ -174,6 +188,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       const entries = Object.entries(largeInventory).slice(0, 5);
       for (const [colorCode, expectedQuantity] of entries) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
     });
@@ -183,6 +198,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       await waitForAppToLoad(page);
       
       const savedData = await getInventoryData(page);
+      
       expect(Object.keys(savedData).length).toBeGreaterThan(0);
     });
   });
@@ -202,6 +218,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       // App should still load and show empty inventory
       const testColor = TEST_COLORS.RV_252;
       const quantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(quantity).toBe(0);
     });
 
@@ -216,6 +233,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       
       // Verify new data is saved correctly
       const inventoryData = await getInventoryData(page);
+      
       expect(inventoryData[testColor]).toBe(newQuantity);
     });
   });
@@ -232,6 +250,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       // Check several colors to ensure they all show 0
       for (const colorCode of Object.values(TEST_COLORS).slice(0, 3)) {
         const quantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(quantity).toBe(0);
       }
     });
@@ -247,6 +266,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       
       // Verify localStorage now contains data
       const inventoryData = await getInventoryData(page);
+      
       expect(inventoryData[testColor]).toBe(quantity);
     });
   });
@@ -261,11 +281,15 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
         return localStorage.getItem('montana-inventory');
       });
       
+      
       expect(rawData).toBeTruthy();
       
       const parsedData = JSON.parse(rawData || '{}');
+      
       expect(parsedData).toHaveProperty('items');
+      
       expect(parsedData).toHaveProperty('version');
+      
       expect(parsedData).toHaveProperty('lastUpdated');
     });
 
@@ -283,9 +307,13 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       });
       
       const parsedData = JSON.parse(rawData || '{}');
+      
       expect(parsedData).toHaveProperty('items');
+      
       expect(parsedData).toHaveProperty('version');
+      
       expect(parsedData).toHaveProperty('lastUpdated');
+      
       expect(parsedData.items[testColor]).toBe(SAMPLE_INVENTORY[testColor] + 2);
     });
   });
@@ -306,11 +334,13 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       // Check that all colors show 0 quantity
       for (const colorCode of Object.values(TEST_COLORS)) {
         const quantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(quantity).toBe(0);
       }
       
       // Verify localStorage is cleared or empty
       const inventoryData = await getInventoryData(page);
+      
       expect(Object.keys(inventoryData).length).toBe(0);
     });
 
@@ -320,6 +350,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       
       const testColor = TEST_COLORS.RV_252;
       const quantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(quantity).toBe(0);
     });
   });

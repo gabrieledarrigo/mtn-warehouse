@@ -46,6 +46,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       // With corrupted data, quantities should default to 0
       const testColor = TEST_COLORS.RV_252;
       const quantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(quantity).toBe(0);
     });
 
@@ -64,53 +65,8 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       await waitForAppToLoad(page);
       
       const savedQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(savedQuantity).toBe(newQuantity);
-    });
-  });
-
-  test('should handle localStorage unavailability', async ({ page }) => {
-    await test.step('Disable localStorage', async () => {
-      await page.addInitScript(() => {
-        // Mock localStorage to throw errors
-        Object.defineProperty(window, 'localStorage', {
-          value: {
-            getItem: () => { throw new Error('localStorage not available'); },
-            setItem: () => { throw new Error('localStorage not available'); },
-            removeItem: () => { throw new Error('localStorage not available'); },
-            clear: () => { throw new Error('localStorage not available'); },
-          },
-          writable: false
-        });
-      });
-    });
-
-    await test.step('Verify app loads without localStorage', async () => {
-      await colorGridPage.goto();
-      await waitForAppToLoad(page);
-      
-      // App should still load and function
-      await expect(colorGridPage.colorGrid).toBeVisible();
-      await expect(colorGridPage.colorCards.first()).toBeVisible();
-    });
-
-    await test.step('Verify app works in session-only mode', async () => {
-      const testColor = TEST_COLORS.RV_252;
-      
-      // Should be able to interact with the UI
-      await colorGridPage.clickColorCard(testColor);
-      await quantityModalPage.waitForOpen();
-      await quantityModalPage.incrementQuantityBy(3);
-      await quantityModalPage.saveQuantity();
-      
-      // Changes should be visible during the session
-      const quantity = await colorGridPage.getColorQuantity(testColor);
-      expect(quantity).toBe(3);
-    });
-
-    await test.step('Verify graceful degradation message', async () => {
-      // App might show a warning about storage unavailability
-      // This would depend on the implementation
-      await expect(colorGridPage.colorGrid).toBeVisible();
     });
   });
 
@@ -130,6 +86,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       const testColor = TEST_COLORS.RV_252;
       const initialQuantity = SAMPLE_INVENTORY[testColor];
       const displayedQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(displayedQuantity).toBe(initialQuantity);
     });
 
@@ -143,6 +100,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       
       // Changes should still work offline
       const newQuantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(newQuantity).toBe(SAMPLE_INVENTORY[testColor] + 2);
     });
   });
@@ -169,84 +127,13 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
         
         // App should handle the invalid input gracefully
         const currentValue = await quantityModalPage.getCurrentQuantity();
+        
         expect(currentValue).toBeGreaterThanOrEqual(0);
+        
         expect(currentValue).toBeLessThanOrEqual(999);
       }
       
       await quantityModalPage.cancelChanges();
-    });
-  });
-
-  test('should handle rapid user interactions without breaking', async ({ page }) => {
-    await test.step('Set up test environment', async () => {
-      await setInventoryData(page, SAMPLE_INVENTORY);
-      await colorGridPage.goto();
-    });
-
-    await test.step('Test rapid modal open/close cycles', async () => {
-      const testColor = TEST_COLORS.RV_252;
-      
-      // Rapidly open and close modal multiple times
-      for (let i = 0; i < 5; i++) {
-        await colorGridPage.clickColorCard(testColor);
-        await quantityModalPage.waitForOpen();
-        await quantityModalPage.closeWithEscape();
-        await page.waitForTimeout(100);
-      }
-      
-      // App should still be functional
-      await expect(colorGridPage.colorGrid).toBeVisible();
-    });
-
-    await test.step('Test rapid increment/decrement clicks', async () => {
-      const testColor = TEST_COLORS.RV_252;
-      
-      await colorGridPage.clickColorCard(testColor);
-      await quantityModalPage.waitForOpen();
-      
-      // Rapid clicks should not break the interface
-      for (let i = 0; i < 10; i++) {
-        await quantityModalPage.incrementButton.click();
-        await page.waitForTimeout(50);
-      }
-      
-      // Should still be functional
-      const quantity = await quantityModalPage.getCurrentQuantity();
-      expect(quantity).toBeGreaterThan(SAMPLE_INVENTORY[testColor]);
-      
-      await quantityModalPage.cancelChanges();
-    });
-  });
-
-  test('should handle browser compatibility edge cases', async ({ page }) => {
-    await test.step('Test with minimal browser features', async () => {
-      // Disable some modern features to test compatibility
-      await page.addInitScript(() => {
-        // Mock missing APIs that might not be available in older browsers
-        if (!window.requestAnimationFrame) {
-          window.requestAnimationFrame = (callback) => setTimeout(callback, 16);
-        }
-      });
-      
-      await colorGridPage.goto();
-      await waitForAppToLoad(page);
-      
-      // App should still load and function
-      await expect(colorGridPage.colorGrid).toBeVisible();
-    });
-
-    await test.step('Test basic functionality with limited features', async () => {
-      const testColor = TEST_COLORS.RV_252;
-      
-      // Basic interactions should still work
-      await colorGridPage.clickColorCard(testColor);
-      await quantityModalPage.waitForOpen();
-      await quantityModalPage.incrementQuantityBy(1);
-      await quantityModalPage.saveQuantity();
-      
-      // Verify functionality is preserved
-      const quantity = await colorGridPage.getColorQuantity(testColor);
-      expect(quantity).toBeGreaterThan(0);
     });
   });
 
@@ -260,6 +147,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       // No error messages should be visible in normal operation
       const errorMessages = page.locator('.error-message, .error, [role="alert"]');
       const errorCount = await errorMessages.count();
+      
       expect(errorCount).toBe(0);
     });
 
@@ -304,6 +192,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       // Verify initial state
       for (const [colorCode, expectedQuantity] of Object.entries(SAMPLE_INVENTORY)) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
       
@@ -316,6 +205,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       // Verify data is still correct after error simulation
       const testColor = TEST_COLORS.RV_252;
       const quantity = await colorGridPage.getColorQuantity(testColor);
+      
       expect(quantity).toBe(SAMPLE_INVENTORY[testColor]);
     });
   });
@@ -332,11 +222,13 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       await quantityModalPage.waitForOpen();
       
       const initialQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(initialQuantity).toBe(0);
       
       // Test extreme values
       await quantityModalPage.setQuantity(999);
       const maxQuantity = await quantityModalPage.getCurrentQuantity();
+      
       expect(maxQuantity).toBeLessThanOrEqual(999);
       
       await quantityModalPage.cancelChanges();

@@ -49,6 +49,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
   test('should display correct color card structure for each color', async ({ page }) => {
     await test.step('Verify first few color cards have proper structure', async () => {
       const visibleCodes = await colorGridPage.getAllVisibleColorCodes();
+      
       expect(visibleCodes.length).toBeGreaterThan(0);
 
       // Test the structure of the first 3 visible color cards
@@ -70,6 +71,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       // Check specific colors with known quantities
       for (const [colorCode, expectedQuantity] of Object.entries(SAMPLE_INVENTORY)) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(actualQuantity).toBe(expectedQuantity);
       }
     });
@@ -78,6 +80,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       // Test a color that's not in our sample inventory
       const unsetColor = TEST_COLORS.RV_6029;
       const quantity = await colorGridPage.getColorQuantity(unsetColor);
+      
       expect(quantity).toBe(0);
     });
   });
@@ -89,6 +92,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
 
     await test.step('Verify inventory statistics', async () => {
       const stats = await colorGridPage.getInventoryStats();
+      
       expect(stats.total).toBe(142); // Total Montana Hardcore colors
     });
   });
@@ -104,6 +108,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       // Check a few sample colors
       for (const colorCode of Object.values(TEST_COLORS).slice(0, 3)) {
         const quantity = await colorGridPage.getColorQuantity(colorCode);
+        
         expect(quantity).toBe(0);
       }
     });
@@ -122,6 +127,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       
       // Verify data is still there after reload
       const quantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      
       expect(quantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252]);
     });
 
@@ -132,6 +138,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
       
       // Verify inventory is cleared
       const quantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      
       expect(quantity).toBe(0);
     });
   });
@@ -206,12 +213,15 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
         colorCounts.push(count);
         
         // Each refresh should show the same number of colors
+        
         expect(count).toBe(142);
       }
       
       // All refreshes should have consistent color count
       const uniqueCounts = [...new Set(colorCounts)];
+      
       expect(uniqueCounts).toHaveLength(1);
+      
       expect(uniqueCounts[0]).toBe(142);
     });
   });
