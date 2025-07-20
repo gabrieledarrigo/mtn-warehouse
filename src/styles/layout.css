@@ -2,11 +2,16 @@
  * Main Application Layout Styles
  */
 
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+}
+
 .app-container {
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: var(--space-lg);
-  font-family: var(--font-family-base);
 }
 
 .app-header {
@@ -18,12 +23,6 @@
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
     margin: 0 0 var(--space-sm) 0;
-  }
-
-  .subtitle {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-base);
-    margin: 0 0 var(--space-xl) 0;
   }
 }
 

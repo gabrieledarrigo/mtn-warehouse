@@ -59,7 +59,6 @@ const renderApp = () => {
   const appTemplate = html`
     ${AppLayout({
       title: 'Montana Hardcore Inventory',
-      subtitle: 'Click on any color to update its quantity',
       totalColors: MONTANA_COLORS.length,
       inventory,
       onClearInventory: handleClearInventory,

@@ -14,7 +14,6 @@ import type { Color, InventoryItems } from '../types.js';
 export interface AppLayoutProps {
   // Header props
   title: string;
-  subtitle: string;
 
   // Stats props
   totalColors: number;
@@ -37,7 +36,6 @@ export interface AppLayoutProps {
 
 export const AppLayout = ({
   title,
-  subtitle,
   totalColors,
   inventory,
   onClearInventory,
@@ -53,7 +51,6 @@ export const AppLayout = ({
     <div class="app-container">
       ${AppHeader({
         title,
-        subtitle,
       })}
       ${InventoryStats({
         totalColors,
