@@ -24,7 +24,7 @@
 
 .color-card {
   background: var(--color-white);
-  border: 2px solid var(--color-gray);
+  border: 1px solid var(--color-gray);
   border-radius: 12px;
   padding: 0 0 12px;
   cursor: pointer;
@@ -92,8 +92,7 @@
   }
 
   &.out-of-stock {
-    border-color: var(--color-danger);
-    background: #fff5f5;
+    /* border-color: var(--color-danger); */
 
     .quantity {
       background: var(--color-danger);
@@ -102,7 +101,6 @@
 
   &.low-stock {
     border-color: var(--color-warning);
-    background: #fffef5;
 
     .quantity {
       background: var(--color-warning);

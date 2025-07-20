@@ -13,7 +13,9 @@ export interface InventoryItem {
   quantity: number;
 }
 
-// colorCode -> quantity
+/**
+ * They key for inventory items is the color code, and the value is the quantity.
+ */
 export type InventoryItems = Record<string, number>;
 
 /**

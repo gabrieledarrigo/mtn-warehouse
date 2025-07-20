@@ -31,17 +31,17 @@ const calculateStats = (
     },
     {
       label: 'In Stock',
-      value: inventoryValues.filter(qty => qty > 0).length,
+      value: inventoryValues.filter(quantity => quantity > 0).length,
       variant: 'success',
     },
     {
       label: 'Low Stock',
-      value: inventoryValues.filter(qty => qty === 1).length,
+      value: inventoryValues.filter(quantity => quantity === 1).length,
       variant: 'warning',
     },
     {
       label: 'Out of Stock',
-      value: inventoryValues.filter(qty => qty === 0).length,
+      value: inventoryValues.filter(quantity => quantity === 0).length,
       variant: 'danger',
     },
   ];
