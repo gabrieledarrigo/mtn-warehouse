@@ -74,6 +74,7 @@ export function QuantityModal({
   return html`
     <div
       class="modal overlay"
+      data-testid="quantity-modal"
       @click=${handleOverlayClick}
       @keydown=${handleKeydown}
       tabindex="-1"
@@ -82,10 +83,10 @@ export function QuantityModal({
         <div class="header">
           <div class="preview" style="background-color: ${color.hex}"></div>
           <div class="details">
-            <h3 class="title">${color.name}</h3>
-            <p class="code">${color.code}</p>
+            <h3 class="title" data-testid="modal-color-name">${color.name}</h3>
+            <p class="code" data-testid="modal-color-code">${color.code}</p>
           </div>
-          <button class="close" @click=${handleCancel} aria-label="Close">
+          <button class="close" @click=${handleCancel} aria-label="Close" data-testid="modal-close-btn">
             ×
           </button>
         </div>
@@ -97,6 +98,7 @@ export function QuantityModal({
             <div class="controls">
               <button
                 class="button decrease"
+                data-testid="decrement-btn"
                 @click=${handleDecrement}
                 ?disabled=${currentQuantity <= 0}
                 aria-label="Decrease quantity"
@@ -106,6 +108,7 @@ export function QuantityModal({
 
               <input
                 id="quantity-input"
+                data-testid="quantity-input"
                 type="number"
                 class="input"
                 .value=${currentQuantity.toString()}
@@ -117,6 +120,7 @@ export function QuantityModal({
 
               <button
                 class="button increase"
+                data-testid="increment-btn"
                 @click=${handleIncrement}
                 ?disabled=${currentQuantity >= 999}
                 aria-label="Increase quantity"
@@ -128,8 +132,8 @@ export function QuantityModal({
         </div>
 
         <div class="footer">
-          <button class="button cancel" @click=${handleCancel}>Cancel</button>
-          <button class="button save" @click=${handleSave}>Save</button>
+          <button class="button cancel" @click=${handleCancel} data-testid="modal-cancel-btn">Cancel</button>
+          <button class="button save" @click=${handleSave} data-testid="modal-save-btn">Save</button>
         </div>
       </div>
     </div>

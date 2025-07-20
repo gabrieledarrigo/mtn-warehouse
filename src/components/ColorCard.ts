@@ -58,17 +58,19 @@ export function ColorCard({
   return html`
     <div
       class="color-card ${getStatusClass()}"
+      data-testid="color-card"
+      data-color-code="${color.code}"
       @click=${handleClick}
       title="${color.name} (${color.code})"
     >
       <div class="preview" style="background-color: ${color.hex}"></div>
 
       <div class="info">
-        <div class="code">${color.code}</div>
-        <div class="name">${color.name}</div>
+        <div class="code" data-testid="color-code">${color.code}</div>
+        <div class="name" data-testid="color-name">${color.name}</div>
       </div>
 
-      <div class="quantity">${getQuantityDisplay()}</div>
+      <div class="quantity" data-testid="color-quantity">${getQuantityDisplay()}</div>
     </div>
   `;
 }
