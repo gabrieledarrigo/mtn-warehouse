@@ -20,7 +20,7 @@ export function ColorGrid({
   onColorClick,
 }: ColorGridProps): TemplateResult {
   return html`
-    <div class="color-grid">
+    <div class="color-grid" data-testid="color-grid">
       ${colors.map(color =>
         ColorCard({
           color,

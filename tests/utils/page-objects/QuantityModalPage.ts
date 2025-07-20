@@ -21,17 +21,17 @@ export class QuantityModalPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.modal = page.locator('.quantity-modal');
-    this.colorPreview = this.modal.locator('.color-preview');
-    this.colorCode = this.modal.locator('.color-code');
-    this.colorName = this.modal.locator('.color-name');
-    this.quantityInput = this.modal.locator('input[type="number"]');
-    this.incrementButton = this.modal.locator('button[data-action="increment"]');
-    this.decrementButton = this.modal.locator('button[data-action="decrement"]');
-    this.saveButton = this.modal.locator('button:has-text("Save")');
-    this.cancelButton = this.modal.locator('button:has-text("Cancel")');
-    this.closeButton = this.modal.locator('.close-button, button[aria-label="Close"]');
-    this.modalOverlay = page.locator('.modal-overlay');
+    this.modal = page.getByTestId('quantity-modal');
+    this.colorPreview = this.modal.locator('.preview');
+    this.colorCode = this.modal.getByTestId('modal-color-code');
+    this.colorName = this.modal.getByTestId('modal-color-name');
+    this.quantityInput = this.modal.getByTestId('quantity-input');
+    this.incrementButton = this.modal.getByTestId('increment-btn');
+    this.decrementButton = this.modal.getByTestId('decrement-btn');
+    this.saveButton = this.modal.getByTestId('modal-save-btn');
+    this.cancelButton = this.modal.getByTestId('modal-cancel-btn');
+    this.closeButton = this.modal.getByTestId('modal-close-btn');
+    this.modalOverlay = page.getByTestId('quantity-modal');
   }
 
   /**

@@ -100,7 +100,7 @@ Development of a web-based inventory management application for Montana Hardcore
 - Complete inventory management workflows
 - Modal-based quantity modification
 - LocalStorage persistence across sessions
-- Responsive behavior on multiple screen sizes
+- Responsive behavior on desktop and mobile (Chromium and Mobile Chrome only)
 - Error handling and recovery scenarios
 
 #### **Component Tests (Priority 2)**  

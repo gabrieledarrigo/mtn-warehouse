@@ -60,31 +60,10 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
-    
     // Mobile testing for responsive design (US-007)
     {
       name: 'Mobile Chrome',
       use: { ...devices['Pixel 7'] },
-    },
-    
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 14'] },
-    },
-    
-    // Tablet testing for medium screen sizes
-    {
-      name: 'Tablet',
-      use: { ...devices['iPad Pro'] },
     },
   ],
   

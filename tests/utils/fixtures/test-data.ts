@@ -185,27 +185,27 @@ export function generateTestInventory(pattern: 'empty' | 'full' | 'mixed' | 'low
       return {};
     
     case 'full':
-      return colors.reduce((inv, color) => {
-        inv[color] = Math.floor(Math.random() * 15) + 5; // 5-19 cans
-        return inv;
+      return colors.reduce((inventory, color) => {
+        inventory[color] = Math.floor(Math.random() * 15) + 5; // 5-19 cans
+        return inventory;
       }, {} as Record<string, number>);
     
     case 'mixed':
-      return colors.reduce((inv, color, index) => {
-        inv[color] = index % 3 === 0 ? 0 : Math.floor(Math.random() * 10) + 1;
-        return inv;
+      return colors.reduce((inventory, color, index) => {
+        inventory[color] = index % 3 === 0 ? 0 : Math.floor(Math.random() * 10) + 1;
+        return inventory;
       }, {} as Record<string, number>);
     
     case 'low-stock':
-      return colors.reduce((inv, color) => {
-        inv[color] = 1;
-        return inv;
+      return colors.reduce((inventory, color) => {
+        inventory[color] = 1;
+        return inventory;
       }, {} as Record<string, number>);
     
     case 'out-of-stock':
-      return colors.reduce((inv, color) => {
-        inv[color] = 0;
-        return inv;
+      return colors.reduce((inventory, color) => {
+        inventory[color] = 0;
+        return inventory;
       }, {} as Record<string, number>);
     
     default:

@@ -54,12 +54,12 @@ export const InventoryStats = ({
   const stats = calculateStats(totalColors, inventory);
 
   return html`
-    <div class="inventory-stats">
+    <div class="inventory-stats" data-testid="inventory-stats">
       ${stats.map(
         stat => html`
-          <div class="item">
-            <strong class="label">${stat.label}</strong>
-            <span class="value ${stat.variant}"> ${stat.value} </span>
+          <div class="item" data-testid="stat-item">
+            <strong class="label" data-testid="stat-label">${stat.label}</strong>
+            <span class="value ${stat.variant}" data-testid="stat-value"> ${stat.value} </span>
           </div>
         `
       )}

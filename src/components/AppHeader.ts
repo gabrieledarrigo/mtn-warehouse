@@ -11,8 +11,8 @@ export interface AppHeaderProps {
 
 export const AppHeader = ({ title }: AppHeaderProps) => {
   return html`
-    <header class="app-header">
-      <h1 class="title">${title}</h1>
+    <header class="app-header" data-testid="app-header">
+      <h1 class="title" data-testid="app-title">${title}</h1>
     </header>
   `;
 };
