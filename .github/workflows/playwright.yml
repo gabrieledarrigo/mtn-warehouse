@@ -1,0 +1,85 @@
+name: Playwright Tests
+
+on:
+  # Run on pull requests to main branch
+  pull_request:
+    branches: [main]
+  
+  # Run on pushes to main branch  
+  push:
+    branches: [main]
+  
+  # Allow manual workflow dispatch
+  workflow_dispatch:
+
+env:
+  # Force color output for better readability in CI logs
+  FORCE_COLOR: 1
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # Don't cancel other matrix jobs if one fails
+      matrix:
+        # Test on Node.js LTS versions
+        node-version: [18, 20]
+        # Primary OS with option for cross-OS testing
+        os: [ubuntu-latest]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - name: Install Playwright system dependencies
+        run: npx playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          CI: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-node${{ matrix.node-version }}-${{ matrix.os }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload test artifacts on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-test-results-node${{ matrix.node-version }}-${{ matrix.os }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
