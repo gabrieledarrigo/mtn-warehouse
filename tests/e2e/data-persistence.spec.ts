@@ -308,9 +308,7 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       const parsedData = JSON.parse(rawData || '{}');
 
       expect(parsedData).toHaveProperty('items');
-
       expect(parsedData).toHaveProperty('version');
-
       expect(parsedData).toHaveProperty('lastUpdated');
     });
 
@@ -330,11 +328,8 @@ test.describe('US-006: Data Persistence - LocalStorage', () => {
       const parsedData = JSON.parse(rawData || '{}');
 
       expect(parsedData).toHaveProperty('items');
-
       expect(parsedData).toHaveProperty('version');
-
       expect(parsedData).toHaveProperty('lastUpdated');
-
       expect(parsedData.items[testColor]).toBe(SAMPLE_INVENTORY[testColor] + 2);
     });
   });

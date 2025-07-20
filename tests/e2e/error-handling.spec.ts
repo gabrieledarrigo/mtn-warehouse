@@ -127,7 +127,6 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
         const currentValue = await quantityModalPage.getCurrentQuantity();
 
         expect(currentValue).toBeGreaterThanOrEqual(0);
-
         expect(currentValue).toBeLessThanOrEqual(999);
       }
 
