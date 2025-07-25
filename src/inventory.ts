@@ -7,41 +7,80 @@ const STORAGE_KEY = 'mtn-inventory';
 const VERSION = '1.0.0';
 
 /**
+ * Check if localStorage is available
+ */
+function isLocalStorageAvailable(): boolean {
+  try {
+    return typeof window !== 'undefined' && window.localStorage !== null;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Save inventory data to localStorage
  */
 export function saveInventory(data: Record<string, number>): void {
-  const inventoryData: InventoryData = {
-    items: data,
-    version: VERSION,
-    lastUpdated: new Date().toISOString(),
-  };
+  if (!isLocalStorageAvailable()) {
+    console.warn('localStorage is not available, cannot save data');
+    return;
+  }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(inventoryData));
+  try {
+    const inventoryData: InventoryData = {
+      items: data,
+      version: VERSION,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(inventoryData));
+  } catch (error) {
+    console.error('Failed to save inventory data:', error);
+  }
 }
 
 /**
  * Load inventory data from localStorage
  */
 export function loadInventory(): Record<string, number> {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
+  if (!isLocalStorageAvailable()) {
+    console.warn('localStorage is not available, using empty inventory');
     return {};
   }
 
-  const data: InventoryData = JSON.parse(stored);
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      return {};
+    }
 
-  // Version check
-  if (data.version !== VERSION) {
-    console.warn('Storage version mismatch, resetting data');
+    const data: InventoryData = JSON.parse(stored);
+
+    // Version check
+    if (data.version !== VERSION) {
+      console.warn('Storage version mismatch, resetting data');
+      return {};
+    }
+
+    return data.items || {};
+  } catch (error) {
+    console.error('Failed to load inventory data:', error);
     return {};
   }
-
-  return data.items || {};
 }
 
 /**
  * Clear all inventory data
  */
 export function clearInventory(): void {
-  localStorage.removeItem(STORAGE_KEY);
+  if (!isLocalStorageAvailable()) {
+    console.warn('localStorage is not available, cannot clear data');
+    return;
+  }
+
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.error('Failed to clear inventory data:', error);
+  }
 }

@@ -74,7 +74,6 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
 
     await test.step('Save changes and verify persistence', async () => {
       await quantityModalPage.saveChanges();
-      await quantityModalPage.waitForClose();
 
       const updatedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
       expect(updatedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 3);
@@ -86,7 +85,6 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       
       await quantityModalPage.incrementQuantityBy(5);
       await quantityModalPage.cancelChanges();
-      await quantityModalPage.waitForClose();
 
       const unchangedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_1001);
       expect(unchangedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_1001] || 0);
@@ -112,7 +110,6 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await quantityModalPage.waitForOpen();
       await quantityModalPage.incrementQuantityBy(2);
       await quantityModalPage.saveChanges();
-      await quantityModalPage.waitForClose();
 
       // Reload page and verify changes persisted
       await page.reload();
@@ -151,7 +148,6 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       
       await quantityModalPage.incrementQuantityBy(1);
       await quantityModalPage.saveChanges();
-      await quantityModalPage.waitForClose();
     });
 
     await test.step('Verify touch interactions work', async () => {
@@ -204,9 +200,10 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       // Try to set negative quantity - should prevent it
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
       if (currentQuantity === 0) {
-        await quantityModalPage.decrementQuantity();
+        // Verify the decrement button is disabled when quantity is 0
+        await expect(quantityModalPage.decrementButton).toBeDisabled();
         const finalQuantity = await quantityModalPage.getCurrentQuantity();
-        expect(finalQuantity).toBe(0); // Should not go below 0
+        expect(finalQuantity).toBe(0); // Should remain at 0
       }
       
       await quantityModalPage.cancelChanges();
@@ -232,9 +229,8 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       for (let i = 0; i < 3; i++) {
         await colorGridPage.clickColorCard(TEST_COLORS.RV_252);
         await quantityModalPage.waitForOpen();
-        await quantityModalPage.incrementQuantity();
+        await quantityModalPage.clickIncrement();
         await quantityModalPage.saveChanges();
-        await quantityModalPage.waitForClose();
       }
 
       // Final quantity should be original + 3
