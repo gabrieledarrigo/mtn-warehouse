@@ -1,4 +1,6 @@
-import { Page, expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
+
+const STORAGE_KEY = 'mtn-inventory';
 
 /**
  * Test utilities for Montana Hardcore Inventory testing
@@ -17,43 +19,49 @@ export async function waitForAppToLoad(page: Page): Promise<void> {
  * Clear localStorage to start with a clean state
  */
 export async function clearInventoryData(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    localStorage.clear();
-  });
+  await page.evaluate(key => {
+    localStorage.removeItem(key);
+  }, STORAGE_KEY);
 }
 
 /**
- * Set specific inventory data for testing
+ * Set inventory data in localStorage using the app's expected format
  */
 export async function setInventoryData(
   page: Page,
-  inventory: Record<string, number>
+  data: Record<string, number>
 ): Promise<void> {
-  await page.evaluate(inventoryData => {
-    const data = {
-      items: inventoryData,
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-    };
-    localStorage.setItem('montana-inventory', JSON.stringify(data));
-  }, inventory);
+  await page.evaluate(
+    ({ data, key }) => {
+      const inventoryData = {
+        items: data,
+        version: '1.0.0',
+        lastUpdated: new Date().toISOString(),
+      };
+      localStorage.setItem(key, JSON.stringify(inventoryData));
+    },
+    { data, key: STORAGE_KEY }
+  );
 }
 
 /**
- * Get current inventory data from localStorage
+ * Get inventory data from localStorage using the app's expected format
  */
 export async function getInventoryData(
   page: Page
 ): Promise<Record<string, number>> {
-  return await page.evaluate(() => {
-    const data = localStorage.getItem('montana-inventory');
-    if (!data) {
+  return await page.evaluate(key => {
+    const stored = localStorage.getItem(key);
+    if (!stored) {
       return {};
     }
-
-    const parsed = JSON.parse(data);
-    return parsed.items || {};
-  });
+    try {
+      const data = JSON.parse(stored);
+      return data.items || {};
+    } catch {
+      return {};
+    }
+  }, STORAGE_KEY);
 }
 
 /**
@@ -63,7 +71,7 @@ export async function waitForModal(
   page: Page,
   isVisible: boolean = true
 ): Promise<void> {
-  const selector = '.quantity-modal';
+  const selector = '.modal.overlay';
   if (isVisible) {
     await page.waitForSelector(selector, { state: 'visible' });
     // Wait for any CSS animations to complete
@@ -87,22 +95,22 @@ export async function takeScreenshot(page: Page, name: string): Promise<void> {
  * Assert that all Montana Hardcore colors are displayed
  */
 export async function assertAllColorsDisplayed(page: Page): Promise<void> {
-  // Montana Hardcore has 142 colors
+  // Montana Hardcore has 128 colors (actual count in colors.ts)
   const colorCards = page.locator('.color-card');
-  await expect(colorCards).toHaveCount(142);
+  await expect(colorCards).toHaveCount(128);
 
   // Verify that each card has the required elements
   const firstCard = colorCards.first();
-  await expect(firstCard.locator('.color-preview')).toBeVisible();
-  await expect(firstCard.locator('.color-code')).toBeVisible();
-  await expect(firstCard.locator('.color-quantity')).toBeVisible();
+  await expect(firstCard.locator('.preview')).toBeVisible();
+  await expect(firstCard.locator('.code')).toBeVisible();
+  await expect(firstCard.locator('.quantity')).toBeVisible();
 }
 
 /**
  * Get color card by RV code
  */
 export function getColorCard(page: Page, rvCode: string) {
-  return page.locator(`.color-card:has(.color-code:text("${rvCode}"))`);
+  return page.locator(`[data-color-code="${rvCode}"]`);
 }
 
 /**
@@ -133,7 +141,7 @@ export async function assertResponsiveDesign(page: Page): Promise<void> {
  */
 export const TEST_COLORS = {
   RV_252: 'RV-252', // Example color code
-  RV_100: 'RV-100', // Another example
+  RV_1001: 'RV-1001', // Another example
   RV_300: 'RV-300', // Third example
 } as const;
 

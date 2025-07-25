@@ -25,15 +25,16 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
     colorGridPage = new ColorGridPage(page);
     quantityModalPage = new QuantityModalPage(page);
 
-    // Start with sample inventory data
+    // Navigate first, then start with sample inventory data
+    await colorGridPage.goto();
     await clearInventoryData(page);
     await setInventoryData(page, SAMPLE_INVENTORY);
   });
 
   test('should display correctly on mobile devices', async ({ page }) => {
-    await test.step('Set mobile viewport and load app', async () => {
+    await test.step('Set mobile viewport and verify layout', async () => {
       await page.setViewportSize(VIEWPORT_SIZES.MOBILE);
-      await colorGridPage.goto();
+      // Page is already loaded from beforeEach
     });
 
     await test.step('Verify mobile layout adaptation', async () => {
@@ -185,9 +186,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
       await colorGridPage.assertResponsiveLayout();
 
       // Color previews should render clearly at high DPI
-      const colorPreview = colorGridPage.colorCards
-        .first()
-        .locator('.color-preview');
+      const colorPreview = colorGridPage.colorCards.first().locator('.preview');
       await expect(colorPreview).toBeVisible();
     });
 
@@ -298,7 +297,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
     });
 
     await test.step('Test mobile-specific modal interactions', async () => {
-      const testColor = TEST_COLORS.RV_3020;
+      const testColor = TEST_COLORS.RV_222;
 
       await colorGridPage.clickColorCard(testColor);
       await quantityModalPage.waitForOpen();
@@ -326,12 +325,11 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
         await colorGridPage.goto();
 
         // Check that text is readable and properly sized
-        const colorCode = colorGridPage.colorCards
+        const colorCode = colorGridPage.colorCards.first().locator('.code');
+        const quantity = page
+          .getByTestId('color-card')
           .first()
-          .locator('.color-code');
-        const quantity = colorGridPage.colorCards
-          .first()
-          .locator('.color-quantity');
+          .locator('.quantity');
 
         await expect(colorCode).toBeVisible();
         await expect(quantity).toBeVisible();
@@ -392,7 +390,7 @@ test.describe('US-007: Responsive Design - Mobile and Desktop', () => {
         await expect(colorGridPage.actionButtons).toBeVisible();
 
         // Modal functionality should work
-        const testColor = TEST_COLORS.RV_100;
+        const testColor = TEST_COLORS.RV_1001;
         await colorGridPage.clickColorCard(testColor);
         await quantityModalPage.waitForOpen();
         await quantityModalPage.cancelChanges();

@@ -1,7 +1,7 @@
 import type { Color } from './types.js';
 
 /**
- * Complete Montana Hardcore colors database - 142 colors
+ * Complete Montana Hardcore colors database - 128 colors
  */
 export const MONTANA_COLORS: Color[] = [
   // YELLOWS

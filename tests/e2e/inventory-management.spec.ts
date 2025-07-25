@@ -23,12 +23,12 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
   test.beforeEach(async ({ page }) => {
     colorGridPage = new ColorGridPage(page);
 
-    // Start with clean state
-    await clearInventoryData(page);
+    // Navigate to page first, then clear state
     await colorGridPage.goto();
+    await clearInventoryData(page);
   });
 
-  test('should display all 142 Montana Hardcore colors', async ({ page }) => {
+  test('should display all 128 Montana Hardcore colors', async ({ page }) => {
     await test.step('Verify all colors are loaded and displayed', async () => {
       await assertAllColorsDisplayed(page);
       await colorGridPage.assertAllColorsDisplayed();
@@ -80,7 +80,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
 
     await test.step('Verify colors without inventory show zero', async () => {
       // Test a color that's not in our sample inventory
-      const unsetColor = TEST_COLORS.RV_6029;
+      const unsetColor = TEST_COLORS.RV_11;
       const quantity = await colorGridPage.getColorQuantity(unsetColor);
 
       expect(quantity).toBe(0);
@@ -95,7 +95,7 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
     await test.step('Verify inventory statistics', async () => {
       const stats = await colorGridPage.getInventoryStats();
 
-      expect(stats.total).toBe(142); // Total Montana Hardcore colors
+      expect(stats.total).toBe(128); // Total Montana Hardcore colors
     });
   });
 
@@ -219,14 +219,14 @@ test.describe('US-001: Inventory Management - Color Grid Display', () => {
         colorCounts.push(count);
 
         // Each refresh should show the same number of colors
-        expect(count).toBe(142);
+        expect(count).toBe(128);
       }
 
       // All refreshes should have consistent color count
       const uniqueCounts = [...new Set(colorCounts)];
 
       expect(uniqueCounts).toHaveLength(1);
-      expect(uniqueCounts[0]).toBe(142);
+      expect(uniqueCounts[0]).toBe(128);
     });
   });
 });

@@ -25,10 +25,10 @@ test.describe('US-002: Quantity Modal Management', () => {
     colorGridPage = new ColorGridPage(page);
     quantityModalPage = new QuantityModalPage(page);
 
-    // Start with clean state and sample inventory
+    // Navigate first, then set up clean state and sample inventory
+    await colorGridPage.goto();
     await clearInventoryData(page);
     await setInventoryData(page, SAMPLE_INVENTORY);
-    await colorGridPage.goto();
   });
 
   test('should open quantity modal when clicking a color card', async ({
@@ -117,7 +117,7 @@ test.describe('US-002: Quantity Modal Management', () => {
   });
 
   test('should prevent quantity from going below zero', async ({ page }) => {
-    const testColor = TEST_COLORS.RV_100; // This has 0 quantity in sample data
+    const testColor = TEST_COLORS.RV_1001; // This has 0 quantity in sample data
 
     await test.step('Open modal for out-of-stock color', async () => {
       await colorGridPage.clickColorCard(testColor);

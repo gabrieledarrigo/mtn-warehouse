@@ -34,9 +34,7 @@ export class ColorGridPage {
    * Get a specific color card by RV code
    */
   getColorCard(rvCode: string): Locator {
-    return this.page.getByTestId('color-card').filter({
-      has: this.page.getByTestId('color-code').filter({ hasText: rvCode }),
-    });
+    return this.page.locator(`[data-color-code="${rvCode}"]`);
   }
 
   /**

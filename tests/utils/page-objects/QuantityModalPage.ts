@@ -158,7 +158,14 @@ export class QuantityModalPage {
    * Close the modal by clicking outside (on overlay)
    */
   async closeByClickingOutside(): Promise<void> {
-    await this.modalOverlay.click();
+    // Get viewport size and click at a position that's guaranteed to be on the overlay but not the content
+    const viewport = this.page.viewportSize() || { width: 1280, height: 720 };
+    await this.page.click('.modal.overlay', {
+      position: {
+        x: viewport.width / 4, // Click on the left side of the modal, away from the content
+        y: viewport.height / 4, // Click on the top side of the modal, away from the content
+      },
+    });
     await this.waitForClose();
   }
 
@@ -206,10 +213,10 @@ export class QuantityModalPage {
     // Set quantity to 0
     await this.setQuantity(0);
 
-    // Try to decrement
-    await this.clickDecrement();
+    // Verify the decrement button is disabled
+    await expect(this.decrementButton).toBeDisabled();
 
-    // Should remain at 0
+    // Quantity should remain at 0
     await expect(this.quantityInput).toHaveValue('0');
   }
 

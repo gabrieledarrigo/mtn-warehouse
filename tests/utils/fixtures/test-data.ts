@@ -8,26 +8,26 @@
  */
 export const TEST_COLORS = {
   // Common colors that should exist in the Montana Hardcore database
-  RV_252: 'RV-252', // Yellow
-  RV_100: 'RV-100', // Black
-  RV_9010: 'RV-9010', // White
-  RV_3020: 'RV-3020', // Red
-  RV_5015: 'RV-5015', // Blue
-  RV_6029: 'RV-6029', // Green
-  RV_4006: 'RV-4006', // Purple
-  RV_1013: 'RV-1013', // Orange
+  RV_252: 'RV-252', // Unicorn Yellow (unique)
+  RV_1001: 'RV-1001', // Beige (out of stock test)
+  RV_9010: 'RV-9010', // Concrete
+  RV_222: 'RV-222', // Beach Yellow (unique)
+  RV_239: 'RV-239', // Luxor Yellow (unique)
+  RV_11: 'RV-11', // Ganges Yellow (unique)
+  RV_206: 'RV-206', // Atacama Yellow (unique)
+  RV_1021: 'RV-1021', // Light Yellow
 } as const;
 
 /**
  * Sample inventory data for testing
  */
 export const SAMPLE_INVENTORY = {
-  [TEST_COLORS.RV_252]: 5, // Yellow - 5 cans
-  [TEST_COLORS.RV_100]: 0, // Black - out of stock
-  [TEST_COLORS.RV_9010]: 1, // White - low stock
-  [TEST_COLORS.RV_3020]: 10, // Red - well stocked
-  [TEST_COLORS.RV_5015]: 3, // Blue - medium stock
-  // RV_6029 and RV_4006 not set (default to 0)
+  [TEST_COLORS.RV_252]: 5, // Unicorn Yellow - 5 cans
+  [TEST_COLORS.RV_1001]: 0, // Beige - out of stock
+  [TEST_COLORS.RV_9010]: 1, // Concrete - low stock
+  [TEST_COLORS.RV_222]: 10, // Beach Yellow - well stocked
+  [TEST_COLORS.RV_239]: 3, // Luxor Yellow - medium stock
+  // RV_11 and RV_206 not set (default to 0)
 } as const;
 
 /**
@@ -40,13 +40,13 @@ export const EMPTY_INVENTORY = {} as const;
  */
 export const FULL_INVENTORY = {
   [TEST_COLORS.RV_252]: 15,
-  [TEST_COLORS.RV_100]: 8,
+  [TEST_COLORS.RV_1001]: 8,
   [TEST_COLORS.RV_9010]: 2,
-  [TEST_COLORS.RV_3020]: 12,
-  [TEST_COLORS.RV_5015]: 6,
-  [TEST_COLORS.RV_6029]: 4,
-  [TEST_COLORS.RV_4006]: 9,
-  [TEST_COLORS.RV_1013]: 1,
+  [TEST_COLORS.RV_222]: 12,
+  [TEST_COLORS.RV_239]: 6,
+  [TEST_COLORS.RV_11]: 4,
+  [TEST_COLORS.RV_206]: 9,
+  [TEST_COLORS.RV_1021]: 1,
 } as const;
 
 /**
@@ -54,9 +54,9 @@ export const FULL_INVENTORY = {
  */
 export const OUT_OF_STOCK_INVENTORY = {
   [TEST_COLORS.RV_252]: 0,
-  [TEST_COLORS.RV_100]: 0,
+  [TEST_COLORS.RV_1001]: 0,
   [TEST_COLORS.RV_9010]: 0,
-  [TEST_COLORS.RV_3020]: 0,
+  [TEST_COLORS.RV_222]: 0,
 } as const;
 
 /**
@@ -64,9 +64,9 @@ export const OUT_OF_STOCK_INVENTORY = {
  */
 export const LOW_STOCK_INVENTORY = {
   [TEST_COLORS.RV_252]: 1,
-  [TEST_COLORS.RV_100]: 1,
+  [TEST_COLORS.RV_1001]: 1,
   [TEST_COLORS.RV_9010]: 1,
-  [TEST_COLORS.RV_3020]: 1,
+  [TEST_COLORS.RV_222]: 1,
 } as const;
 
 /**
@@ -147,10 +147,10 @@ export const SELECTORS = {
   APP_CONTAINER: '#app',
   COLOR_GRID: '.color-grid',
   COLOR_CARD: '.color-card',
-  COLOR_PREVIEW: '.color-preview',
-  COLOR_CODE: '.color-code',
-  COLOR_NAME: '.color-name',
-  COLOR_QUANTITY: '.color-quantity',
+  COLOR_PREVIEW: '.preview',
+  COLOR_CODE: '.code',
+  COLOR_NAME: '.name',
+  COLOR_QUANTITY: '.quantity',
   QUANTITY_MODAL: '.quantity-modal',
   MODAL_OVERLAY: '.modal-overlay',
   LOADING_SPINNER: '.loading',
@@ -178,13 +178,13 @@ export function generateTestInventory(
 ): Record<string, number> {
   const colors = [
     TEST_COLORS.RV_252,
-    TEST_COLORS.RV_100,
+    TEST_COLORS.RV_1001,
     TEST_COLORS.RV_9010,
-    TEST_COLORS.RV_3020,
-    TEST_COLORS.RV_5015,
-    TEST_COLORS.RV_6029,
-    TEST_COLORS.RV_4006,
-    TEST_COLORS.RV_1013,
+    TEST_COLORS.RV_222,
+    TEST_COLORS.RV_239,
+    TEST_COLORS.RV_11,
+    TEST_COLORS.RV_206,
+    TEST_COLORS.RV_1021,
   ];
 
   switch (pattern) {

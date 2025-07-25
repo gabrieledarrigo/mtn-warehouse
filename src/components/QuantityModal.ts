@@ -75,18 +75,28 @@ export function QuantityModal({
     <div
       class="modal overlay"
       data-testid="quantity-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      tabindex="-1"
       @click=${handleOverlayClick}
       @keydown=${handleKeydown}
-      tabindex="-1"
     >
       <div class="content">
         <div class="header">
           <div class="preview" style="background-color: ${color.hex}"></div>
           <div class="details">
-            <h3 class="title" data-testid="modal-color-name">${color.name}</h3>
+            <h3 class="title" id="modal-title" data-testid="modal-color-name">
+              ${color.name}
+            </h3>
             <p class="code" data-testid="modal-color-code">${color.code}</p>
           </div>
-          <button class="close" @click=${handleCancel} aria-label="Close" data-testid="modal-close-btn">
+          <button
+            class="close"
+            @click=${handleCancel}
+            aria-label="Close"
+            data-testid="modal-close-btn"
+          >
             ×
           </button>
         </div>
@@ -114,6 +124,7 @@ export function QuantityModal({
                 .value=${currentQuantity.toString()}
                 min="0"
                 max="999"
+                aria-label="Quantity"
                 @input=${handleInputChange}
                 @focus=${(e: Event) => (e.target as HTMLInputElement).select()}
               />
@@ -132,8 +143,20 @@ export function QuantityModal({
         </div>
 
         <div class="footer">
-          <button class="button cancel" @click=${handleCancel} data-testid="modal-cancel-btn">Cancel</button>
-          <button class="button save" @click=${handleSave} data-testid="modal-save-btn">Save</button>
+          <button
+            class="button cancel"
+            @click=${handleCancel}
+            data-testid="modal-cancel-btn"
+          >
+            Cancel
+          </button>
+          <button
+            class="button save"
+            @click=${handleSave}
+            data-testid="modal-save-btn"
+          >
+            Save
+          </button>
         </div>
       </div>
     </div>
