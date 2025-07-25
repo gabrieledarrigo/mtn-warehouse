@@ -38,16 +38,16 @@ export default defineConfig({
   // Shared settings for all tests
   use: {
     // Base URL for tests
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3001',
 
     // Take screenshot on failure
     screenshot: 'only-on-failure',
 
     // Record video on failure
-    video: 'off',
+    video: 'retain-on-failure',
 
     // Collect trace on failure
-    trace: 'off',
+    trace: 'retain-on-failure',
 
     // Ignore HTTPS errors
     ignoreHTTPSErrors: true,
@@ -66,8 +66,7 @@ export default defineConfig({
       use: { 
         ...devices['Desktop Chrome'],
         // Use system browser if available
-        executablePath: '/usr/bin/chromium-browser',
-        args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-web-security'],
+        channel: 'chromium',
       },
     },
   ],
@@ -75,7 +74,7 @@ export default defineConfig({
   // Local dev server setup for Vite integration
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3001',
     reuseExistingServer: true, // Always reuse existing server for development
     timeout: 120 * 1000,
   },
