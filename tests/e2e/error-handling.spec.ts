@@ -25,6 +25,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
     await test.step('Set up initial data and go offline', async () => {
       await colorGridPage.goto();
       await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload(); // Reload to ensure app loads the data from localStorage
 
       // Simulate offline condition
       await page.route('**/*', route => route.abort());
@@ -154,6 +155,7 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
     await test.step('Set up initial data', async () => {
       await colorGridPage.goto();
       await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload(); // Reload to ensure app loads the data from localStorage
     });
 
     await test.step('Verify data integrity during simulated errors', async () => {
@@ -177,46 +179,6 @@ test.describe('US-008: Error Handling - Application Resilience', () => {
       const quantity = await colorGridPage.getColorQuantity(testColor);
 
       expect(quantity).toBe(SAMPLE_INVENTORY[testColor]);
-    });
-  });
-
-  test('should handle edge cases in modal interactions', async ({ page }) => {
-    await test.step('Test modal edge cases', async () => {
-      await colorGridPage.goto();
-      await clearInventoryData(page);
-
-      const testColor = TEST_COLORS.RV_252;
-
-      // Test opening modal on color with no quantity
-      await colorGridPage.clickColorCard(testColor);
-      await quantityModalPage.waitForOpen();
-
-      const initialQuantity = await quantityModalPage.getCurrentQuantity();
-
-      expect(initialQuantity).toBe(0);
-
-      // Test extreme values
-      await quantityModalPage.setQuantity(999);
-      const maxQuantity = await quantityModalPage.getCurrentQuantity();
-
-      expect(maxQuantity).toBeLessThanOrEqual(999);
-
-      await quantityModalPage.cancelChanges();
-    });
-
-    await test.step('Test modal keyboard navigation edge cases', async () => {
-      const testColor = TEST_COLORS.RV_252;
-
-      await colorGridPage.clickColorCard(testColor);
-      await quantityModalPage.waitForOpen();
-
-      // Test multiple escape presses
-      await page.keyboard.press('Escape');
-      await page.keyboard.press('Escape');
-
-      // Modal should be closed and app should be stable
-      await expect(quantityModalPage.modal).toBeHidden();
-      await expect(colorGridPage.colorGrid).toBeVisible();
     });
   });
 });

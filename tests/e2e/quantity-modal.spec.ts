@@ -29,6 +29,7 @@ test.describe('US-002: Quantity Modal Management', () => {
     await colorGridPage.goto();
     await clearInventoryData(page);
     await setInventoryData(page, SAMPLE_INVENTORY);
+    await page.reload(); // Reload to ensure app loads the data from localStorage
   });
 
   test('should open quantity modal when clicking a color card', async ({
