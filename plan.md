@@ -86,40 +86,41 @@ Development of a web-based inventory management application for Montana Hardcore
    - [x] Add browser compatibility checks
    - [ ] Write error handling and recovery tests
 
-## Testing Strategy
+## Testing Strategy - SIMPLIFIED
 
-### 🎯 **Primary Focus: E2E Testing with Playwright**
-- **Cross-browser testing** (Chromium, Firefox, WebKit)
-- **End-to-end user workflows** for complete feature validation
-- **TypeScript-first approach** with native type support
-- **Mobile device emulation** for responsive design testing
+### 🎯 **Minimal Testing Approach**
 
-### 📋 **Test Categories**
+- **Single consolidated test file**: `mtn-inventory.spec.ts`
+- **Essential functionality only**: Core inventory management workflows
+- **Playwright E2E**: Focus on critical user paths
+- **Desktop-first**: Chromium browser only (no mobile complexity)
 
-#### **E2E Tests (Priority 1)**
-- Complete inventory management workflows
-- Modal-based quantity modification
-- LocalStorage persistence across sessions
-- Responsive behavior on desktop and mobile (Chromium and Mobile Chrome only)
-- Error handling and recovery scenarios
+### 📋 **Consolidated Test Coverage**
 
-#### **Component Tests (Priority 2)**  
-- ColorGrid component rendering and interaction
-- QuantityModal component state management
-- StorageService data validation and recovery
-- Error handling and user feedback systems
+#### **Essential E2E Tests (Single File)**
 
-#### **Integration Tests (Priority 3)**
-- Component interaction patterns
-- Data flow between components and services
-- Browser compatibility scenarios
-- Performance under various data loads
+- **Color Grid Display**: Verify 128 Montana colors load correctly
+- **Quantity Modal**: Basic open/modify/save/cancel workflow
+- **Data Persistence**: LocalStorage save/reload functionality
+- **Basic Responsiveness**: One simple mobile viewport test
+- **Core Error Handling**: Basic fallback scenarios only
 
-### 🔧 **Testing Tools**
-- **Playwright**: Primary E2E testing framework
-- **TypeScript**: Native type support for test development
-- **Vite**: Integration with existing build system
-- **Browser Coverage**: Chrome, Firefox, Safari (WebKit)
+#### **Removed Complexity**
+
+- ❌ Detailed responsive design tests (412 lines)
+- ❌ Comprehensive error handling scenarios (184 lines)
+- ❌ Edge case testing across multiple files
+- ❌ Cross-browser testing (Firefox, Safari)
+- ❌ Mobile Chrome testing complexity
+- ❌ Screenshot generation and visual regression
+- ❌ Performance and load testing
+
+### 🔧 **Simplified Testing Tools**
+
+- **Playwright**: Single E2E test file only
+- **Chromium**: Primary browser target
+- **TypeScript**: Existing type support
+- **Target**: ~200-300 lines total (vs 1475 lines current)
 
 ---
 
@@ -151,13 +152,12 @@ Come appassionato di graffiti, voglio visualizzare tutti i 142 colori Montana Ha
 - [x] Implement responsive grid with mobile-first approach and typed breakpoint constants
 - [x] Add loading states and error handling with typed error classes for data initialization
 
-**Testing**: 🔲 PENDING
+**Testing**: 🎯 SIMPLIFIED
 
-- [ ] Write E2E tests to verify all 142 colors are displayed correctly
-- [ ] Test color grid responsive behavior across different screen sizes
-- [ ] Verify color card components show correct RV codes and quantities
-- [ ] Test color preview accuracy and visual consistency
-- [ ] Unit tests for ColorDatabase and ColorGrid components
+- [ ] Create single consolidated test file: `mtn-inventory.spec.ts`
+- [ ] Test basic color grid display (128 colors visible)
+- [ ] Test color card structure (RV codes, quantities, previews)
+- [ ] Remove complex responsive and visual regression tests
 
 ---
 
@@ -192,14 +192,12 @@ Come appassionato di graffiti, voglio poter aumentare o diminuire la quantità d
 - [x] Integrate with InventoryService using generic types for data persistence
 - [x] Add keyboard navigation support with typed event handlers (ESC to close, Enter to save)
 
-**Testing**: 🔲 PENDING
+**Testing**: 🎯 SIMPLIFIED
 
-- [ ] Write E2E tests for complete modal workflow (open, modify, save/cancel)
-- [ ] Test increment/decrement button functionality and validation
-- [ ] Verify quantity cannot go below zero (validation tests)
-- [ ] Test modal keyboard navigation (ESC to close, Enter to save)
-- [ ] Test modal overlay click-outside-to-close behavior
-- [ ] Unit tests for QuantityModal component and validation logic
+- [ ] Add to consolidated `mtn-inventory.spec.ts` file
+- [ ] Test basic modal workflow (open, increment, save, cancel)
+- [ ] Test quantity validation (no negative values)
+- [ ] Remove complex keyboard navigation and edge case tests
 
 ---
 
@@ -323,14 +321,12 @@ Come appassionato di graffiti, voglio che le mie modifiche all'inventario siano 
 - [x] Create data synchronization between multiple browser tabs using typed message interfaces
 - [x] Implement storage compression for large datasets with typed compression algorithms
 
-**Testing**: 🔲 PENDING
+**Testing**: 🎯 SIMPLIFIED
 
-- [ ] Write tests for LocalStorage persistence and data recovery
-- [ ] Test automatic save functionality on quantity changes
-- [ ] Verify data versioning and migration compatibility
-- [ ] Test backup/restore functionality with various data formats
-- [ ] Test storage quota handling and cleanup mechanisms
-- [ ] Unit tests for StorageService and data validation logic
+- [ ] Add to consolidated `mtn-inventory.spec.ts` file
+- [ ] Test basic save/reload functionality with LocalStorage
+- [ ] Test data persists across page reload
+- [ ] Remove complex versioning and migration tests
 
 ---
 
@@ -363,14 +359,11 @@ Come appassionato di graffiti, voglio poter usare l'applicazione sul mio smartph
 - [x] Optimize font sizes and contrast for mobile readability using typed typography scales
 - [x] Implement pull-to-refresh functionality for data synchronization with typed refresh handlers
 
-**Testing**: 🔲 PENDING
+**Testing**: 🎯 SIMPLIFIED
 
-- [ ] Write responsive design tests for multiple screen sizes and orientations
-- [ ] Test touch interaction and gesture functionality on mobile devices
-- [ ] Verify minimum touch target sizes (44px) across all interactive elements
-- [ ] Test modal behavior and usability on small screens
-- [ ] Cross-browser testing on mobile browsers (iOS Safari, Android Chrome)
-- [ ] Performance testing on lower-end mobile devices
+- [ ] Add one basic mobile viewport test to `mtn-inventory.spec.ts`
+- [ ] Test app loads correctly on mobile viewport
+- [ ] Remove detailed responsive design test suite (412 lines)
 
 ---
 
@@ -405,14 +398,11 @@ Come appassionato di graffiti, voglio che l'applicazione gestisca eventuali erro
 - [x] Create offline/online state detection and handling with typed connectivity status
 - [x] Implement graceful degradation for unsupported features using typed feature detection
 
-**Testing**: 🔲 PENDING
+**Testing**: 🎯 SIMPLIFIED
 
-- [ ] Write tests for error handling scenarios and recovery mechanisms
-- [ ] Test retry functionality for failed operations
-- [ ] Verify fallback storage mechanisms when LocalStorage is unavailable
-- [ ] Test browser compatibility detection and warning systems
-- [ ] Verify graceful degradation for unsupported browser features
-- [ ] Unit tests for ErrorHandler and error recovery logic
+- [ ] Add basic error handling test to `mtn-inventory.spec.ts`
+- [ ] Test app loads when LocalStorage is unavailable
+- [ ] Remove comprehensive error handling test suite (184 lines)
 
 ---
 
@@ -448,21 +438,34 @@ Come appassionato di graffiti, voglio che l'applicazione gestisca eventuali erro
 - ✅ Modern CSS with nesting (no BEM verbosity)
 - ✅ Vite 7.0.5 + ES2024 target (latest tools)
 
-### 🧪 **Testing Requirements**
+### 🧪 **Simplified Testing Requirements**
 
-**E2E Testing Priorities:**
-- Modal-based quantity management workflow
-- Color grid display and responsiveness
-- LocalStorage persistence and recovery
-- Error handling and fallback mechanisms
-- Cross-browser compatibility
+**Single E2E Test File**: `mtn-inventory.spec.ts`
 
-**Unit Testing Priorities:**
-- StorageService and data validation
-- ColorGrid and QuantityModal components
-- Error handling and recovery logic
-- Responsive design utilities
+- ✅ Color grid display (128 Montana colors)
+- ✅ Modal quantity management workflow
+- ✅ LocalStorage persistence
+- ✅ Basic mobile viewport test
+- ✅ Basic error handling
 
-### 🚀 **Next Phase: Testing Implementation**
+**Removed Complexity**:
 
-Before proceeding with **US-003 (Search)** and **US-004 (Filters)**, all completed user stories require comprehensive test coverage to ensure stability and prevent regressions during future development.
+- ❌ Detailed responsive design suite (responsive-design.spec.ts - 412 lines)
+- ❌ Comprehensive error handling suite (error-handling.spec.ts - 184 lines)
+- ❌ Edge case testing across multiple files
+- ❌ Cross-browser testing complexity
+- ❌ Mobile Chrome testing overhead
+
+### 🚀 **Next Phase: Simplified Testing Implementation**
+
+**PRIORITY**: Create single consolidated test file `mtn-inventory.spec.ts` with essential coverage:
+
+1. **Color Grid Tests** - Verify 128 colors display correctly
+2. **Modal Tests** - Basic quantity management workflow
+3. **Persistence Tests** - LocalStorage save/reload functionality
+4. **Mobile Test** - One basic responsive viewport test
+5. **Error Test** - Basic fallback when LocalStorage unavailable
+
+**GOAL**: Reduce from 1475 lines (5 files) to ~200-300 lines (1 file) while maintaining core functionality coverage.
+
+After completing simplified testing, proceed with **US-003 (Search)** and **US-004 (Filters)** development.
