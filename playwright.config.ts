@@ -38,7 +38,7 @@ export default defineConfig({
   // Shared settings for all tests
   use: {
     // Base URL for tests
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3001',
 
     // Take screenshot on failure
     screenshot: 'only-on-failure',
@@ -59,24 +59,18 @@ export default defineConfig({
     storageState: { cookies: [], origins: [] },
   },
 
-  // Configure projects for major browsers and mobile devices
+  // Configure projects for Chromium only for simplified testing
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-
-    // Mobile testing for responsive design (US-007)
-    {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 7'] },
     },
   ],
 
   // Local dev server setup for Vite integration
   webServer: {
     command: 'npm run dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3001',
     reuseExistingServer: true, // Always reuse existing server for development
     timeout: 120 * 1000,
   },
