@@ -43,11 +43,11 @@ export default defineConfig({
     // Take screenshot on failure
     screenshot: 'only-on-failure',
 
-    // Record video on failure
-    video: 'retain-on-failure',
+    // Disable video recording to avoid ffmpeg issues
+    video: 'off',
 
-    // Collect trace on failure
-    trace: 'retain-on-failure',
+    // Disable trace to avoid additional dependencies
+    trace: 'off',
 
     // Ignore HTTPS errors
     ignoreHTTPSErrors: true,
@@ -65,8 +65,8 @@ export default defineConfig({
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'],
-        // Use system browser if available
-        channel: 'chromium',
+        // Use system Google Chrome browser
+        channel: 'chrome',
       },
     },
   ],
