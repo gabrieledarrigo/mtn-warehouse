@@ -93,21 +93,6 @@ export async function takeScreenshot(page: Page, name: string): Promise<void> {
 }
 
 /**
- * Assert that all Montana Hardcore colors are displayed
- */
-export async function assertAllColorsDisplayed(page: Page): Promise<void> {
-  // Montana Hardcore has 128 colors (actual count in colors.ts)
-  const colorCards = page.getByTestId('color-card');
-  await expect(colorCards).toHaveCount(128);
-
-  // Verify that each card has the required elements
-  const firstCard = colorCards.first();
-  await expect(firstCard.locator('.preview')).toBeVisible();
-  await expect(firstCard.getByTestId('color-code')).toBeVisible();
-  await expect(firstCard.getByTestId('color-quantity')).toBeVisible();
-}
-
-/**
  * Get color card by RV code
  */
 export function getColorCard(page: Page, rvCode: string) {
@@ -136,22 +121,3 @@ export async function assertResponsiveDesign(page: Page): Promise<void> {
 
   await expect(page.getByTestId('color-grid')).toBeVisible();
 }
-
-/**
- * Test data constants
- */
-export const TEST_COLORS = {
-  RV_252: 'RV-252', // Example color code
-  RV_1001: 'RV-1001', // Another example
-  RV_300: 'RV-300', // Third example
-} as const;
-
-/**
- * Test timeout constants
- */
-export const TIMEOUTS = {
-  SHORT: 1000,
-  MEDIUM: 5000,
-  LONG: 10000,
-  ANIMATION: 300,
-} as const;

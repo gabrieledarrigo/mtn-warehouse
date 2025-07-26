@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { waitForModal } from '../test-helpers.js';
+import { waitForModal } from '../helpers.js';
 
 /**
  * Page Object Model for the Quantity Modal component
@@ -136,13 +136,6 @@ export class QuantityModalPage {
   async saveQuantity(): Promise<void> {
     await this.saveButton.click();
     await this.waitForClose();
-  }
-
-  /**
-   * Save changes and close the modal (alias for saveQuantity)
-   */
-  async saveChanges(): Promise<void> {
-    await this.saveQuantity();
   }
 
   /**

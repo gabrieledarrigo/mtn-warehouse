@@ -1,18 +1,17 @@
 import { test, expect } from '@playwright/test';
-import { ColorGridPage } from '../utils/page-objects/ColorGridPage.js';
-import { QuantityModalPage } from '../utils/page-objects/QuantityModalPage.js';
+import { ColorGridPage } from '../pages/ColorGridPage.js';
+import { QuantityModalPage } from '../pages/QuantityModalPage.js';
 import {
   clearInventoryData,
   setInventoryData,
   getInventoryData,
   waitForAppToLoad,
-  assertAllColorsDisplayed,
-} from '../utils/test-helpers.js';
+} from '../helpers.js';
 import {
   TEST_COLORS,
   SAMPLE_INVENTORY,
   VIEWPORT_SIZES,
-} from '../utils/fixtures/test-data.js';
+} from '../fixtures/data.js';
 
 /**
  * Consolidated E2E Tests for Montana Hardcore Inventory
@@ -33,7 +32,6 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
 
   test('should display all 128 Montana colors correctly', async ({ page }) => {
     await test.step('Verify all colors are loaded and displayed', async () => {
-      await assertAllColorsDisplayed(page);
       await colorGridPage.assertAllColorsDisplayed();
     });
 
@@ -73,7 +71,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     });
 
     await test.step('Save changes and verify persistence', async () => {
-      await quantityModalPage.saveChanges();
+      await quantityModalPage.saveQuantity();
 
       const updatedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
       expect(updatedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 3);
@@ -82,7 +80,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Test cancel functionality', async () => {
       await colorGridPage.clickColorCard(TEST_COLORS.RV_1001);
       await quantityModalPage.waitForOpen();
-      
+
       await quantityModalPage.incrementQuantityBy(5);
       await quantityModalPage.cancelChanges();
 
@@ -109,7 +107,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await colorGridPage.clickColorCard(testColor);
       await quantityModalPage.waitForOpen();
       await quantityModalPage.incrementQuantityBy(2);
-      await quantityModalPage.saveChanges();
+      await quantityModalPage.saveQuantity();
 
       // Reload page and verify changes persisted
       await page.reload();
@@ -140,14 +138,14 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const testColor = TEST_COLORS.RV_252;
       await colorGridPage.clickColorCard(testColor);
       await quantityModalPage.waitForOpen();
-      
+
       // Modal should be visible and functional on mobile
       await expect(quantityModalPage.modal).toBeVisible();
       await expect(quantityModalPage.incrementButton).toBeVisible();
       await expect(quantityModalPage.decrementButton).toBeVisible();
-      
+
       await quantityModalPage.incrementQuantityBy(1);
-      await quantityModalPage.saveChanges();
+      await quantityModalPage.saveQuantity();
     });
 
     await test.step('Verify touch interactions work', async () => {
@@ -168,26 +166,26 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       });
 
       await colorGridPage.goto();
-      
+
       // App should still load and display colors even without localStorage
       await expect(colorGridPage.colorGrid).toBeVisible();
-      await assertAllColorsDisplayed(page);
+      await colorGridPage.assertAllColorsDisplayed();
     });
 
     await test.step('Handle invalid data gracefully', async () => {
       // Reset localStorage to working state
       await page.reload();
-      
+
       // Set invalid data in localStorage
       await page.evaluate(() => {
         localStorage.setItem('mtn-inventory', 'invalid-json-data');
       });
 
       await page.reload();
-      
+
       // App should handle invalid data and still work
       await expect(colorGridPage.colorGrid).toBeVisible();
-      
+
       // Should default to 0 quantities for all colors
       const testQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
       expect(testQuantity).toBe(0);
@@ -196,7 +194,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Verify modal handles edge cases', async () => {
       await colorGridPage.clickColorCard(TEST_COLORS.RV_252);
       await quantityModalPage.waitForOpen();
-      
+
       // Try to set negative quantity - should prevent it
       const currentQuantity = await quantityModalPage.getCurrentQuantity();
       if (currentQuantity === 0) {
@@ -205,7 +203,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         const finalQuantity = await quantityModalPage.getCurrentQuantity();
         expect(finalQuantity).toBe(0); // Should remain at 0
       }
-      
+
       await quantityModalPage.cancelChanges();
     });
   });
@@ -216,7 +214,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await colorGridPage.goto();
       await waitForAppToLoad(page);
       const loadTime = Date.now() - startTime;
-      
+
       // App should load within reasonable time (less than 5 seconds)
       expect(loadTime).toBeLessThan(5000);
     });
@@ -230,7 +228,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         await colorGridPage.clickColorCard(TEST_COLORS.RV_252);
         await quantityModalPage.waitForOpen();
         await quantityModalPage.clickIncrement();
-        await quantityModalPage.saveChanges();
+        await quantityModalPage.saveQuantity();
       }
 
       // Final quantity should be original + 3
@@ -241,10 +239,10 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Verify data integrity after stress test', async () => {
       // Reload page and verify all data is still correct
       await page.reload();
-      
+
       const storedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
       expect(storedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 3);
-      
+
       // Verify localStorage is not corrupted
       const storedData = await getInventoryData(page);
       expect(typeof storedData).toBe('object');
