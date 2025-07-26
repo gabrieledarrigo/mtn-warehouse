@@ -28,15 +28,22 @@ export function loadInventory(): Record<string, number> {
     return {};
   }
 
-  const data: InventoryData = JSON.parse(stored);
+  try {
+    const data: InventoryData = JSON.parse(stored);
 
-  // Version check
-  if (data.version !== VERSION) {
-    console.warn('Storage version mismatch, resetting data');
+    // Version check
+    if (data.version !== VERSION) {
+      console.warn('Storage version mismatch, resetting data');
+      return {};
+    }
+
+    return data.items || {};
+  } catch (error) {
+    console.warn('Invalid inventory data found, resetting:', error);
+    // Clear corrupted data
+    localStorage.removeItem(STORAGE_KEY);
     return {};
   }
-
-  return data.items || {};
 }
 
 /**

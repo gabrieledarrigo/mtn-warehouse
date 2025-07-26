@@ -11,7 +11,8 @@ const STORAGE_KEY = 'mtn-inventory';
  */
 export async function waitForAppToLoad(page: Page): Promise<void> {
   await page.waitForSelector('#app', { state: 'visible' });
-  await page.waitForSelector('.color-grid .color-card', { state: 'visible' });
+  await page.waitForSelector('[data-testid="color-grid"]', { state: 'visible' });
+  await page.waitForSelector('[data-testid="color-card"]', { state: 'visible' });
   await page.waitForLoadState('networkidle');
 }
 
@@ -71,7 +72,7 @@ export async function waitForModal(
   page: Page,
   isVisible: boolean = true
 ): Promise<void> {
-  const selector = '.modal.overlay';
+  const selector = '[data-testid="quantity-modal"]';
   if (isVisible) {
     await page.waitForSelector(selector, { state: 'visible' });
     // Wait for any CSS animations to complete
@@ -92,21 +93,6 @@ export async function takeScreenshot(page: Page, name: string): Promise<void> {
 }
 
 /**
- * Assert that all Montana Hardcore colors are displayed
- */
-export async function assertAllColorsDisplayed(page: Page): Promise<void> {
-  // Montana Hardcore has 128 colors (actual count in colors.ts)
-  const colorCards = page.locator('.color-card');
-  await expect(colorCards).toHaveCount(128);
-
-  // Verify that each card has the required elements
-  const firstCard = colorCards.first();
-  await expect(firstCard.locator('.preview')).toBeVisible();
-  await expect(firstCard.locator('.code')).toBeVisible();
-  await expect(firstCard.locator('.quantity')).toBeVisible();
-}
-
-/**
  * Get color card by RV code
  */
 export function getColorCard(page: Page, rvCode: string) {
@@ -121,36 +107,17 @@ export async function assertResponsiveDesign(page: Page): Promise<void> {
   await page.setViewportSize({ width: 1200, height: 800 });
   await waitForAppToLoad(page);
 
-  await expect(page.locator('.color-grid')).toBeVisible();
+  await expect(page.getByTestId('color-grid')).toBeVisible();
 
   // Tablet view
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.waitForTimeout(500); // Wait for responsive layout
 
-  await expect(page.locator('.color-grid')).toBeVisible();
+  await expect(page.getByTestId('color-grid')).toBeVisible();
 
   // Mobile view
   await page.setViewportSize({ width: 375, height: 667 });
   await page.waitForTimeout(500);
 
-  await expect(page.locator('.color-grid')).toBeVisible();
+  await expect(page.getByTestId('color-grid')).toBeVisible();
 }
-
-/**
- * Test data constants
- */
-export const TEST_COLORS = {
-  RV_252: 'RV-252', // Example color code
-  RV_1001: 'RV-1001', // Another example
-  RV_300: 'RV-300', // Third example
-} as const;
-
-/**
- * Test timeout constants
- */
-export const TIMEOUTS = {
-  SHORT: 1000,
-  MEDIUM: 5000,
-  LONG: 10000,
-  ANIMATION: 300,
-} as const;

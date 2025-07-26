@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { waitForAppToLoad } from '../test-helpers.js';
+import { waitForAppToLoad } from '../helpers.js';
 
 /**
  * Page Object Model for the Color Grid component
@@ -62,6 +62,12 @@ export class ColorGridPage {
    */
   async assertAllColorsDisplayed(): Promise<void> {
     await expect(this.colorCards).toHaveCount(128);
+
+    // Verify that each card has the required elements
+    const firstCard = this.colorCards.first();
+    await expect(firstCard.locator('.preview')).toBeVisible();
+    await expect(firstCard.getByTestId('color-code')).toBeVisible();
+    await expect(firstCard.getByTestId('color-quantity')).toBeVisible();
   }
 
   /**

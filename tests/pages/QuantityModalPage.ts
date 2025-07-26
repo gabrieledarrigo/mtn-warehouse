@@ -1,5 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
-import { waitForModal } from '../test-helpers.js';
+import { waitForModal } from '../helpers.js';
 
 /**
  * Page Object Model for the Quantity Modal component
@@ -160,7 +160,7 @@ export class QuantityModalPage {
   async closeByClickingOutside(): Promise<void> {
     // Get viewport size and click at a position that's guaranteed to be on the overlay but not the content
     const viewport = this.page.viewportSize() || { width: 1280, height: 720 };
-    await this.page.click('.modal.overlay', {
+    await this.modalOverlay.click({
       position: {
         x: viewport.width / 4, // Click on the left side of the modal, away from the content
         y: viewport.height / 4, // Click on the top side of the modal, away from the content
