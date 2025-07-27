@@ -4,7 +4,13 @@
  */
 
 import { html, TemplateResult } from 'lit-html';
-import type { SearchProps } from '../types.js';
+
+export interface SearchProps {
+  value: string;
+  placeholder?: string;
+  onSearch: (searchTerm: string) => void;
+  onClear: () => void;
+}
 
 /**
  * SearchBar component with debounced input handling
@@ -15,26 +21,25 @@ export function SearchBar({
   onSearch,
   onClear,
 }: SearchProps): TemplateResult {
-  // Handle input with debouncing
+  let searchTimeout: number | undefined;
+
   const handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const searchTerm = target.value.trim();
-    
-    // Clear any existing timeout
-    if ((window as any).searchTimeout) {
-      clearTimeout((window as any).searchTimeout);
+
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
     }
-    
+
     // Debounce the search with 300ms delay
-    (window as any).searchTimeout = setTimeout(() => {
+    searchTimeout = window.setTimeout(() => {
       onSearch(searchTerm);
     }, 300);
   };
 
   const handleClear = () => {
-    // Clear any pending search timeout
-    if ((window as any).searchTimeout) {
-      clearTimeout((window as any).searchTimeout);
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
     }
     onClear();
   };

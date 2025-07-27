@@ -66,7 +66,9 @@ const handleSearch = (searchValue: string) => {
   searchTerm = searchValue;
   const searchResults = searchColors(MONTANA_COLORS, searchTerm);
   filteredColors = getColorsFromSearchResults(searchResults);
-  console.log(`Search: "${searchTerm}" - Found ${filteredColors.length} colors`);
+  console.log(
+    `Search: "${searchTerm}" - Found ${filteredColors.length} colors`
+  );
   renderApp();
 };
 
@@ -90,7 +92,6 @@ const renderApp = () => {
       modalOpen,
       onModalClose: handleModalClose,
       onQuantitySave: handleQuantitySave,
-      // Search props
       searchTerm,
       onSearch: handleSearch,
       onClearSearch: handleClearSearch,

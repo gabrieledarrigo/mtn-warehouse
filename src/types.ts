@@ -26,25 +26,3 @@ export interface InventoryData {
   version: string;
   lastUpdated: string;
 }
-
-/**
- * Search types
- */
-export interface SearchProps {
-  value: string;
-  placeholder?: string;
-  onSearch: (searchTerm: string) => void;
-  onClear: () => void;
-}
-
-export interface SearchResult {
-  color: Color;
-  matchType: 'code' | 'name';
-  matchIndex: number;
-}
-
-export interface SearchOptions {
-  caseSensitive?: boolean;
-  exactMatch?: boolean;
-  debounceMs?: number;
-}
