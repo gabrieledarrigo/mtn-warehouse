@@ -73,7 +73,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Save changes and verify persistence', async () => {
       await quantityModalPage.saveQuantity();
 
-      const updatedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const updatedQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(updatedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 3);
     });
 
@@ -84,8 +86,12 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await quantityModalPage.incrementQuantityBy(5);
       await quantityModalPage.cancelChanges();
 
-      const unchangedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_1001);
-      expect(unchangedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_1001] || 0);
+      const unchangedQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_1001
+      );
+      expect(unchangedQuantity).toBe(
+        SAMPLE_INVENTORY[TEST_COLORS.RV_1001] || 0
+      );
     });
   });
 
@@ -96,7 +102,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     });
 
     await test.step('Verify data persists after reload', async () => {
-      for (const [colorCode, expectedQuantity] of Object.entries(SAMPLE_INVENTORY)) {
+      for (const [colorCode, expectedQuantity] of Object.entries(
+        SAMPLE_INVENTORY
+      )) {
         const actualQuantity = await colorGridPage.getColorQuantity(colorCode);
         expect(actualQuantity).toBe(expectedQuantity);
       }
@@ -118,7 +126,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Verify localStorage data format', async () => {
       const storedData = await getInventoryData(page);
       expect(typeof storedData).toBe('object');
-      expect(storedData[TEST_COLORS.RV_252]).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 2);
+      expect(storedData[TEST_COLORS.RV_252]).toBe(
+        SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 2
+      );
     });
   });
 
@@ -150,7 +160,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
 
     await test.step('Verify touch interactions work', async () => {
       // Test that buttons are touch-friendly and functional
-      const updatedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const updatedQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(updatedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 1);
     });
   });
@@ -161,7 +173,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await page.evaluate(() => {
         Object.defineProperty(window, 'localStorage', {
           value: null,
-          writable: false
+          writable: false,
         });
       });
 
@@ -187,7 +199,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await expect(colorGridPage.colorGrid).toBeVisible();
 
       // Should default to 0 quantities for all colors
-      const testQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const testQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(testQuantity).toBe(0);
     });
 
@@ -232,7 +246,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       }
 
       // Final quantity should be original + 3
-      const finalQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const finalQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(finalQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 3);
     });
 
@@ -240,13 +256,162 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       // Reload page and verify all data is still correct
       await page.reload();
 
-      const storedQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const storedQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(storedQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 3);
 
       // Verify localStorage is not corrupted
       const storedData = await getInventoryData(page);
       expect(typeof storedData).toBe('object');
       expect(Object.keys(storedData).length).toBeGreaterThan(0);
+    });
+  });
+
+  test('should search colors by RV code and name', async ({ page }) => {
+    await test.step('Setup test data and navigate', async () => {
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
+    await test.step('Verify search bar is visible and accessible', async () => {
+      const searchInput = page.getByTestId('search-input');
+      await expect(searchInput).toBeVisible();
+      await expect(searchInput).toHaveAttribute(
+        'placeholder',
+        'Search by RV code or color name...'
+      );
+    });
+
+    await test.step('Search by specific RV code', async () => {
+      const searchInput = page.getByTestId('search-input');
+      await searchInput.fill('RV-252');
+
+      // Wait for search results to filter
+      await page.waitForTimeout(400);
+
+      // Should show only Unicorn Yellow
+      const colorCards = page.locator('[data-testid="color-grid"] > div');
+      await expect(colorCards).toHaveCount(1);
+
+      const firstCard = colorCards.first();
+      await expect(firstCard).toContainText('RV-252');
+      await expect(firstCard).toContainText('Unicorn Yellow');
+    });
+
+    await test.step('Search by color name case-insensitively', async () => {
+      const searchInput = page.getByTestId('search-input');
+      await searchInput.clear();
+      await searchInput.fill('yellow');
+
+      // Wait for search results to filter
+      await page.waitForTimeout(400);
+
+      // Should show multiple yellow colors
+      const colorCards = page.locator('[data-testid="color-grid"] > div');
+      const count = await colorCards.count();
+      expect(count).toBeGreaterThan(3); // Should find multiple yellow colors
+
+      // All visible cards should contain "yellow" in the name
+      const cardTexts = await colorCards.allTextContents();
+      for (const text of cardTexts) {
+        expect(text.toLowerCase()).toContain('yellow');
+      }
+    });
+
+    await test.step('Test search clear functionality', async () => {
+      const searchInput = page.getByTestId('search-input');
+      const clearButton = page.getByTestId('search-clear-button');
+
+      // Clear button should be visible when searching
+      await expect(clearButton).toBeVisible();
+
+      // Click clear button
+      await clearButton.click();
+
+      // Search input should be empty
+      await expect(searchInput).toHaveValue('');
+
+      // Should show all colors again
+      await colorGridPage.assertAllColorsDisplayed();
+    });
+
+    await test.step('Test uppercase search terms', async () => {
+      const searchInput = page.getByTestId('search-input');
+      await searchInput.fill('BLUE');
+
+      // Wait for search results
+      await page.waitForTimeout(400);
+
+      // Should find blue colors (case-insensitive)
+      const colorCards = page.locator('[data-testid="color-grid"] > div');
+      const count = await colorCards.count();
+      expect(count).toBeGreaterThan(3); // Should find multiple blue colors
+
+      // All visible cards should contain "blue" in the name
+      const cardTexts = await colorCards.allTextContents();
+      for (const text of cardTexts) {
+        expect(text.toLowerCase()).toContain('blue');
+      }
+    });
+  });
+
+  test('should integrate search with quantity modal workflow', async ({
+    page,
+  }) => {
+    await test.step('Setup and perform search', async () => {
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+
+      // Search for specific color
+      const searchInput = page.getByTestId('search-input');
+      await searchInput.fill('RV-252');
+      await page.waitForTimeout(400);
+    });
+
+    await test.step('Open modal from search results', async () => {
+      // Should have filtered to one result
+      const colorCards = page.locator('[data-testid="color-grid"] > div');
+      await expect(colorCards).toHaveCount(1);
+
+      // Click the filtered color card
+      await colorCards.first().click();
+      await quantityModalPage.waitForOpen();
+      await quantityModalPage.assertModalOpen(TEST_COLORS.RV_252);
+    });
+
+    await test.step('Modify quantity and verify persistence', async () => {
+      const initialQuantity = await quantityModalPage.getCurrentQuantity();
+      await quantityModalPage.incrementQuantityBy(2);
+      await quantityModalPage.saveQuantity();
+
+      // Clear search to show all colors
+      const clearButton = page.getByTestId('search-clear-button');
+      await clearButton.click();
+
+      // Verify quantity was updated in full grid
+      const updatedQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
+      expect(updatedQuantity).toBe(initialQuantity + 2);
+    });
+
+    await test.step('Search again to verify updated quantity in search results', async () => {
+      const searchInput = page.getByTestId('search-input');
+      await searchInput.fill('RV-252');
+      await page.waitForTimeout(400);
+
+      // Verify the quantity is displayed correctly in search results
+      const filteredCard = page
+        .locator('[data-testid="color-grid"] > div')
+        .first();
+      const displayedQuantity = await filteredCard
+        .locator('.quantity')
+        .textContent();
+      expect(parseInt(displayedQuantity || '0')).toBe(
+        SAMPLE_INVENTORY[TEST_COLORS.RV_252] + 2
+      );
     });
   });
 });
