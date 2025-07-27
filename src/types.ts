@@ -26,3 +26,24 @@ export interface InventoryData {
   version: string;
   lastUpdated: string;
 }
+
+/**
+ * Filter types for inventory filtering
+ */
+export enum FilterType {
+  ALL = 'tutti',
+  IN_STOCK = 'in_stock',
+  OUT_OF_STOCK = 'esauriti',
+  LOW_STOCK = 'scarsi',
+}
+
+export interface FilterOption {
+  type: FilterType;
+  label: string;
+  shortcut?: string;
+}
+
+export interface FilterState {
+  activeFilter: FilterType;
+  filteredCount: number;
+}

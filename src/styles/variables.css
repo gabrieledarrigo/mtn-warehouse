@@ -11,13 +11,33 @@
   --color-danger: #dc3545;
   --color-white: #ffffff;
   --color-gray: #e0e0e0;
+  
+  /* Primary colors with RGB values for alpha transparency */
+  --primary-color: #007bff;
+  --primary-color-rgb: 0, 123, 255;
+  --danger-color: #dc3545;
+  --danger-hover: #c82333;
+  --info-color: #17a2b8;
 
   /* Text colors */
   --color-text-primary: #333333;
   --color-text-secondary: #666666;
+  --text-secondary: #666666;
+  --text-muted: #999999;
 
   /* Background colors */
   --color-bg-secondary: #f8f9fa;
+  --background-primary: #ffffff;
+  --background-secondary: #f8f9fa;
+  --background-tertiary: #e9ecef;
+  --background-color: #ffffff;
+  
+  /* Border colors */
+  --border-color: #dee2e6;
+  
+  /* Hover states */
+  --color-hover: #f1f3f4;
+  --hover-background: #f1f3f4;
 
   /* Spacing scale */
   --space-xs: 4px;
@@ -29,6 +49,8 @@
   /* Border radius */
   --radius-sm: 4px;
   --radius-md: 8px;
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
 
   /* Typography */
   --font-family-base: Arial, sans-serif;

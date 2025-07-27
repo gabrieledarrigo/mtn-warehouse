@@ -8,9 +8,11 @@ import { AppHeader } from './AppHeader.js';
 import { InventoryStats } from './InventoryStats.js';
 import { ActionButtons } from './ActionButtons.js';
 import { SearchBar } from './SearchBar.js';
+import { FilterBar } from './FilterBar.js';
 import { ColorGrid } from './ColorGrid.js';
 import { QuantityModal } from './QuantityModal.js';
-import type { Color, InventoryItems } from '../types.js';
+import { FilterType } from '../types.js';
+import type { Color, InventoryItems, FilterState } from '../types.js';
 
 export interface AppLayoutProps {
   // Header props
@@ -28,6 +30,11 @@ export interface AppLayoutProps {
   searchTerm: string;
   onSearch: (searchTerm: string) => void;
   onClearSearch: () => void;
+
+  // Filter props
+  filterState: FilterState;
+  onFilterChange: (filterType: FilterType) => void;
+  onFilterReset: () => void;
 
   // Grid props
   colors: Color[];
@@ -49,6 +56,9 @@ export const AppLayout = ({
   searchTerm,
   onSearch,
   onClearSearch,
+  filterState,
+  onFilterChange,
+  onFilterReset,
   colors,
   onColorClick,
   selectedColor,
@@ -73,6 +83,11 @@ export const AppLayout = ({
         value: searchTerm,
         onSearch,
         onClear: onClearSearch,
+      })}
+      ${FilterBar({
+        filterState,
+        onFilterChange,
+        onReset: onFilterReset,
       })}
       ${ColorGrid({
         colors,
