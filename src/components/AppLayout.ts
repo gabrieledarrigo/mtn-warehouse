@@ -7,6 +7,7 @@ import { html } from 'lit-html';
 import { AppHeader } from './AppHeader.js';
 import { InventoryStats } from './InventoryStats.js';
 import { ActionButtons } from './ActionButtons.js';
+import { SearchBar } from './SearchBar.js';
 import { ColorGrid } from './ColorGrid.js';
 import { QuantityModal } from './QuantityModal.js';
 import type { Color, InventoryItems } from '../types.js';
@@ -22,6 +23,11 @@ export interface AppLayoutProps {
   // Action handlers
   onClearInventory: () => void;
   onReload: () => void;
+
+  // Search props
+  searchTerm: string;
+  onSearch: (searchTerm: string) => void;
+  onClearSearch: () => void;
 
   // Grid props
   colors: Color[];
@@ -40,6 +46,9 @@ export const AppLayout = ({
   inventory,
   onClearInventory,
   onReload,
+  searchTerm,
+  onSearch,
+  onClearSearch,
   colors,
   onColorClick,
   selectedColor,
@@ -59,6 +68,11 @@ export const AppLayout = ({
       ${ActionButtons({
         onClearInventory,
         onReload,
+      })}
+      ${SearchBar({
+        value: searchTerm,
+        onSearch,
+        onClear: onClearSearch,
       })}
       ${ColorGrid({
         colors,

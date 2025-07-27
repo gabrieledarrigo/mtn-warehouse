@@ -6,8 +6,10 @@ import './styles/variables.css';
 import './styles/layout.css';
 import './styles/colorGrid.css';
 import './styles/quantityModal.css';
+import './styles/searchBar.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
+import { searchColors, getColorsFromSearchResults } from './search.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './types.js';
@@ -18,6 +20,10 @@ console.log(`Loaded ${MONTANA_COLORS.length} colors`);
 // Load existing inventory or create empty
 let inventory = loadInventory();
 console.log('Loaded inventory:', inventory);
+
+// Search state
+let searchTerm = '';
+let filteredColors = MONTANA_COLORS;
 
 // Modal state
 let modalOpen = false;
@@ -55,6 +61,23 @@ const handleQuantitySave = (newQuantity: number) => {
   }
 };
 
+// Search handlers
+const handleSearch = (searchValue: string) => {
+  searchTerm = searchValue;
+  const searchResults = searchColors(MONTANA_COLORS, searchTerm);
+  filteredColors = getColorsFromSearchResults(searchResults);
+  console.log(
+    `Search: "${searchTerm}" - Found ${filteredColors.length} colors`
+  );
+  renderApp();
+};
+
+const handleClearSearch = () => {
+  searchTerm = '';
+  filteredColors = MONTANA_COLORS;
+  renderApp();
+};
+
 const renderApp = () => {
   const appTemplate = html`
     ${AppLayout({
@@ -63,12 +86,15 @@ const renderApp = () => {
       inventory,
       onClearInventory: handleClearInventory,
       onReload: handleReload,
-      colors: MONTANA_COLORS,
+      colors: filteredColors,
       onColorClick: handleColorClick,
       selectedColor,
       modalOpen,
       onModalClose: handleModalClose,
       onQuantitySave: handleQuantitySave,
+      searchTerm,
+      onSearch: handleSearch,
+      onClearSearch: handleClearSearch,
     })}
   `;
 
