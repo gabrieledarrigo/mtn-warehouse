@@ -8,11 +8,10 @@ import { AppHeader } from './AppHeader.js';
 import { InventoryStats } from './InventoryStats.js';
 import { ActionButtons } from './ActionButtons.js';
 import { SearchBar } from './SearchBar.js';
-import { FilterBar } from './FilterBar.js';
+import { FilterBar, FilterType, FilterState } from './FilterBar.js';
 import { ColorGrid } from './ColorGrid.js';
 import { QuantityModal } from './QuantityModal.js';
-import { FilterType } from '../types.js';
-import type { Color, InventoryItems, FilterState } from '../types.js';
+import type { Color, InventoryItems } from '../types.js';
 
 export interface AppLayoutProps {
   // Header props

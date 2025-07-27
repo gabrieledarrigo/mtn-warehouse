@@ -4,8 +4,28 @@
  */
 
 import { html, TemplateResult } from 'lit-html';
-import { FilterType } from '../types.js';
-import type { FilterOption, FilterState, InventoryItems, Color } from '../types.js';
+import type { InventoryItems, Color } from '../types.js';
+
+/**
+ * Filter types for inventory filtering
+ */
+export enum FilterType {
+  ALL = 'tutti',
+  IN_STOCK = 'in_stock',
+  OUT_OF_STOCK = 'esauriti',
+  LOW_STOCK = 'scarsi',
+}
+
+export interface FilterOption {
+  type: FilterType;
+  label: string;
+  shortcut?: string;
+}
+
+export interface FilterState {
+  activeFilter: FilterType;
+  filteredCount: number;
+}
 
 export interface FilterBarProps {
   filterState: FilterState;
@@ -77,9 +97,7 @@ export function FilterBar({
   };
 
   // Add global keyboard event listener
-  if (typeof window !== 'undefined') {
-    window.addEventListener('keydown', handleKeyDown);
-  }
+  window.addEventListener('keydown', handleKeyDown);
 
   return html`
     <div class="filter-bar" data-testid="filter-bar">

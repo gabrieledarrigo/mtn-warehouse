@@ -11,11 +11,10 @@ import './styles/filterBar.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { searchColors, getColorsFromSearchResults } from './search.js';
-import { filterColors } from './components/FilterBar.js';
+import { filterColors, FilterType, FilterState } from './components/FilterBar.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
-import { FilterType } from './types.js';
-import type { Color, FilterState } from './types.js';
+import type { Color } from './types.js';
 
 console.log('Montana Hardcore Inventory - Starting...');
 console.log(`Loaded ${MONTANA_COLORS.length} colors`);
