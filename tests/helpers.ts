@@ -11,8 +11,12 @@ const STORAGE_KEY = 'mtn-inventory';
  */
 export async function waitForAppToLoad(page: Page): Promise<void> {
   await page.waitForSelector('#app', { state: 'visible' });
-  await page.waitForSelector('[data-testid="color-grid"]', { state: 'visible' });
-  await page.waitForSelector('[data-testid="color-card"]', { state: 'visible' });
+  await page.waitForSelector('[data-testid="color-grid"]', {
+    state: 'visible',
+  });
+  await page.waitForSelector('[data-testid="color-card"]', {
+    state: 'visible',
+  });
   await page.waitForLoadState('networkidle');
 }
 

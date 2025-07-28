@@ -11,7 +11,11 @@ import './styles/filterBar.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { searchColors, getColorsFromSearchResults } from './search.js';
-import { filterColors, FilterType, FilterState } from './components/FilterBar.js';
+import {
+  filterColors,
+  FilterType,
+  FilterState,
+} from './components/FilterBar.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './types.js';
@@ -64,7 +68,7 @@ const handleQuantitySave = (newQuantity: number) => {
     inventory[selectedColor.code] = newQuantity;
     saveInventory(inventory);
     console.log(`Updated ${selectedColor.code} to quantity ${newQuantity}`);
-    
+
     // Update filtered colors as quantities may have changed the filter results
     updateFilteredColors();
   }
@@ -78,11 +82,11 @@ const updateFilteredColors = () => {
     const searchResults = searchColors(MONTANA_COLORS, searchTerm);
     colors = getColorsFromSearchResults(searchResults);
   }
-  
+
   // Then apply filter
   filteredColors = filterColors(colors, inventory, filterState.activeFilter);
   filterState.filteredCount = filteredColors.length;
-  
+
   console.log(
     `Filter: ${filterState.activeFilter}, Search: "${searchTerm}" - Found ${filteredColors.length} colors`
   );

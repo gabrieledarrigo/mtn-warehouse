@@ -82,13 +82,15 @@ export function FilterBar({
   const handleKeyDown = (event: KeyboardEvent) => {
     // Handle keyboard shortcuts for quick filter switching
     if (event.altKey) {
-      const option = FILTER_OPTIONS.find(opt => opt.shortcut === event.key.toLowerCase());
+      const option = FILTER_OPTIONS.find(
+        opt => opt.shortcut === event.key.toLowerCase()
+      );
       if (option) {
         event.preventDefault();
         onFilterChange(option.type);
       }
     }
-    
+
     // Reset with Escape key
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -104,40 +106,50 @@ export function FilterBar({
       <div class="filter-controls">
         <span class="filter-label">Filtra per:</span>
         <div class="filter-options">
-          ${FILTER_OPTIONS.map(option => html`
-            <label class="filter-option ${filterState.activeFilter === option.type ? 'active' : ''}">
-              <input
-                type="radio"
-                name="filter"
-                value="${option.type}"
-                .checked="${filterState.activeFilter === option.type}"
-                @change="${handleFilterChange}"
-                data-testid="filter-${option.type}"
-              />
-              <span class="filter-label-text">
-                ${option.label}
-                ${option.shortcut ? html`<kbd>Alt+${option.shortcut.toUpperCase()}</kbd>` : ''}
-              </span>
-            </label>
-          `)}
+          ${FILTER_OPTIONS.map(
+            option => html`
+              <label
+                class="filter-option ${filterState.activeFilter === option.type
+                  ? 'active'
+                  : ''}"
+              >
+                <input
+                  type="radio"
+                  name="filter"
+                  value="${option.type}"
+                  .checked="${filterState.activeFilter === option.type}"
+                  @change="${handleFilterChange}"
+                  data-testid="filter-${option.type}"
+                />
+                <span class="filter-label-text">
+                  ${option.label}
+                  ${option.shortcut
+                    ? html`<kbd>Alt+${option.shortcut.toUpperCase()}</kbd>`
+                    : ''}
+                </span>
+              </label>
+            `
+          )}
         </div>
       </div>
-      
+
       <div class="filter-info">
         <span class="filter-badge" data-testid="filter-count">
           ${filterState.filteredCount} colori
         </span>
-        ${filterState.activeFilter !== FilterType.ALL ? html`
-          <button
-            class="filter-reset-button"
-            data-testid="filter-reset"
-            @click="${onReset}"
-            aria-label="Reset filter"
-            title="Reset filter (Esc)"
-          >
-            ✕ Reset
-          </button>
-        ` : ''}
+        ${filterState.activeFilter !== FilterType.ALL
+          ? html`
+              <button
+                class="filter-reset-button"
+                data-testid="filter-reset"
+                @click="${onReset}"
+                aria-label="Reset filter"
+                title="Reset filter (Esc)"
+              >
+                ✕ Reset
+              </button>
+            `
+          : ''}
       </div>
     </div>
   `;

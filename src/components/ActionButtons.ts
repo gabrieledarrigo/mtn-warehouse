@@ -16,10 +16,20 @@ export const ActionButtons = ({
 }: ActionButtonsProps) => {
   return html`
     <div class="action-buttons" data-testid="action-buttons">
-      <button @click=${onClearInventory} class="btn danger" type="button" data-testid="clear-inventory-btn">
+      <button
+        @click=${onClearInventory}
+        class="btn danger"
+        type="button"
+        data-testid="clear-inventory-btn"
+      >
         Clear Inventory
       </button>
-      <button @click=${onReload} class="btn primary" type="button" data-testid="reload-btn">
+      <button
+        @click=${onReload}
+        class="btn primary"
+        type="button"
+        data-testid="reload-btn"
+      >
         Reload
       </button>
     </div>

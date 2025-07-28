@@ -70,7 +70,9 @@ export function ColorCard({
         <div class="name" data-testid="color-name">${color.name}</div>
       </div>
 
-      <div class="quantity" data-testid="color-quantity">${getQuantityDisplay()}</div>
+      <div class="quantity" data-testid="color-quantity">
+        ${getQuantityDisplay()}
+      </div>
     </div>
   `;
 }

@@ -58,8 +58,12 @@ export const InventoryStats = ({
       ${stats.map(
         stat => html`
           <div class="item" data-testid="stat-item">
-            <strong class="label" data-testid="stat-label">${stat.label}</strong>
-            <span class="value ${stat.variant}" data-testid="stat-value"> ${stat.value} </span>
+            <strong class="label" data-testid="stat-label"
+              >${stat.label}</strong
+            >
+            <span class="value ${stat.variant}" data-testid="stat-value">
+              ${stat.value}
+            </span>
           </div>
         `
       )}

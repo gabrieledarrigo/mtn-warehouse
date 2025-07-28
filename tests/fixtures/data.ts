@@ -30,7 +30,6 @@ export const SAMPLE_INVENTORY = {
   // RV_11 and RV_206 not set (default to 0)
 } as const;
 
-
 /**
  * Test viewport sizes for responsive testing
  */
