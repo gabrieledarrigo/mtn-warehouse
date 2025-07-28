@@ -26,3 +26,5 @@ export interface InventoryData {
   version: string;
   lastUpdated: string;
 }
+
+

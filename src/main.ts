@@ -7,9 +7,11 @@ import './styles/layout.css';
 import './styles/colorGrid.css';
 import './styles/quantityModal.css';
 import './styles/searchBar.css';
+import './styles/filterBar.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { searchColors, getColorsFromSearchResults } from './search.js';
+import { filterColors, FilterType, FilterState } from './components/FilterBar.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './types.js';
@@ -21,8 +23,12 @@ console.log(`Loaded ${MONTANA_COLORS.length} colors`);
 let inventory = loadInventory();
 console.log('Loaded inventory:', inventory);
 
-// Search state
+// Search and filter state
 let searchTerm = '';
+let filterState: FilterState = {
+  activeFilter: FilterType.ALL,
+  filteredCount: MONTANA_COLORS.length,
+};
 let filteredColors = MONTANA_COLORS;
 
 // Modal state
@@ -58,23 +64,51 @@ const handleQuantitySave = (newQuantity: number) => {
     inventory[selectedColor.code] = newQuantity;
     saveInventory(inventory);
     console.log(`Updated ${selectedColor.code} to quantity ${newQuantity}`);
+    
+    // Update filtered colors as quantities may have changed the filter results
+    updateFilteredColors();
   }
 };
 
-// Search handlers
+// Search and filter handlers
+const updateFilteredColors = () => {
+  // First apply search if there's a search term
+  let colors = MONTANA_COLORS;
+  if (searchTerm) {
+    const searchResults = searchColors(MONTANA_COLORS, searchTerm);
+    colors = getColorsFromSearchResults(searchResults);
+  }
+  
+  // Then apply filter
+  filteredColors = filterColors(colors, inventory, filterState.activeFilter);
+  filterState.filteredCount = filteredColors.length;
+  
+  console.log(
+    `Filter: ${filterState.activeFilter}, Search: "${searchTerm}" - Found ${filteredColors.length} colors`
+  );
+};
+
 const handleSearch = (searchValue: string) => {
   searchTerm = searchValue;
-  const searchResults = searchColors(MONTANA_COLORS, searchTerm);
-  filteredColors = getColorsFromSearchResults(searchResults);
-  console.log(
-    `Search: "${searchTerm}" - Found ${filteredColors.length} colors`
-  );
+  updateFilteredColors();
   renderApp();
 };
 
 const handleClearSearch = () => {
   searchTerm = '';
-  filteredColors = MONTANA_COLORS;
+  updateFilteredColors();
+  renderApp();
+};
+
+const handleFilterChange = (filterType: FilterType) => {
+  filterState.activeFilter = filterType;
+  updateFilteredColors();
+  renderApp();
+};
+
+const handleFilterReset = () => {
+  filterState.activeFilter = FilterType.ALL;
+  updateFilteredColors();
   renderApp();
 };
 
@@ -95,6 +129,9 @@ const renderApp = () => {
       searchTerm,
       onSearch: handleSearch,
       onClearSearch: handleClearSearch,
+      filterState,
+      onFilterChange: handleFilterChange,
+      onFilterReset: handleFilterReset,
     })}
   `;
 
