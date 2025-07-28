@@ -1,7 +1,3 @@
-/**
- * Main entry point for Montana Hardcore Inventory
- */
-
 import './styles/variables.css';
 import './styles/layout.css';
 import './styles/colorGrid.css';
@@ -25,7 +21,6 @@ console.log(`Loaded ${MONTANA_COLORS.length} colors`);
 
 // Load existing inventory or create empty
 let inventory = loadInventory();
-console.log('Loaded inventory:', inventory);
 
 // Search and filter state
 let searchTerm = '';
