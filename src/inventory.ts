@@ -1,8 +1,21 @@
-import type { InventoryData } from './types.js';
+import type { Color } from './colors.js';
+
+export interface InventoryItem {
+  color: Color;
+  quantity: number;
+}
 
 /**
- * Storage configuration
+ * They key for inventory items is the color code, and the value is the quantity.
  */
+export type InventoryItems = Record<string, number>;
+
+export interface InventoryData {
+  items: InventoryItems;
+  version: string;
+  lastUpdated: string;
+}
+
 const STORAGE_KEY = 'mtn-inventory';
 const VERSION = '1.0.0';
 

@@ -1,4 +1,8 @@
-import type { Color } from './types.js';
+export interface Color {
+  code: string;
+  name: string;
+  hex: string;
+}
 
 /**
  * Complete Montana Hardcore colors database - 128 colors

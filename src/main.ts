@@ -18,7 +18,7 @@ import {
 } from './components/FilterBar.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
-import type { Color } from './types.js';
+import type { Color } from './colors.js';
 
 console.log('Montana Hardcore Inventory - Starting...');
 console.log(`Loaded ${MONTANA_COLORS.length} colors`);

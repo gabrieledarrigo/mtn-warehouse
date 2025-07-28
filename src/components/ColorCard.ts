@@ -1,5 +1,5 @@
 import { html, TemplateResult } from 'lit-html';
-import type { Color } from '../types.js';
+import type { Color } from '../colors.js';
 
 /**
  * Stock status enum for color cards

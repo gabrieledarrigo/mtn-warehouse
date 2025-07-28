@@ -4,7 +4,8 @@
  */
 
 import { html, TemplateResult } from 'lit-html';
-import type { InventoryItems, Color } from '../types.js';
+import type { Color } from '../colors.js';
+import type { InventoryItems } from '../inventory.js';
 
 /**
  * Filter types for inventory filtering

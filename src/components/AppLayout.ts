@@ -11,7 +11,8 @@ import { SearchBar } from './SearchBar.js';
 import { FilterBar, FilterType, FilterState } from './FilterBar.js';
 import { ColorGrid } from './ColorGrid.js';
 import { QuantityModal } from './QuantityModal.js';
-import type { Color, InventoryItems } from '../types.js';
+import type { Color } from '../colors.js';
+import type { InventoryItems } from '../inventory.js';
 
 export interface AppLayoutProps {
   // Header props

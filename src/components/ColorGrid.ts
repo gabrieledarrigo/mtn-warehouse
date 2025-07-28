@@ -1,5 +1,5 @@
 import { html, TemplateResult } from 'lit-html';
-import type { Color } from '../types.js';
+import type { Color } from '../colors.js';
 import { ColorCard } from './ColorCard.js';
 
 /**
