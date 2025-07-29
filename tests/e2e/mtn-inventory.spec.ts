@@ -30,7 +30,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await clearInventoryData(page);
   });
 
-  test('should display all 128 Montana colors correctly', async ({ page }) => {
+  test('should display all 142 Montana colors correctly', async ({ page }) => {
     await test.step('Verify all colors are loaded and displayed', async () => {
       await colorGridPage.assertAllColorsDisplayed();
     });
@@ -80,17 +80,17 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     });
 
     await test.step('Test cancel functionality', async () => {
-      await colorGridPage.clickColorCard(TEST_COLORS.RV_1001);
+      await colorGridPage.clickColorCard(TEST_COLORS.RV_1013);
       await quantityModalPage.waitForOpen();
 
       await quantityModalPage.incrementQuantityBy(5);
       await quantityModalPage.cancelChanges();
 
       const unchangedQuantity = await colorGridPage.getColorQuantity(
-        TEST_COLORS.RV_1001
+        TEST_COLORS.RV_1013
       );
       expect(unchangedQuantity).toBe(
-        SAMPLE_INVENTORY[TEST_COLORS.RV_1001] || 0
+        SAMPLE_INVENTORY[TEST_COLORS.RV_1013] || 0
       );
     });
   });

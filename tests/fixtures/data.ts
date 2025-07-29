@@ -9,8 +9,8 @@
 export const TEST_COLORS = {
   // Common colors that should exist in the Montana Hardcore database
   RV_252: 'RV-252', // Unicorn Yellow (unique)
-  RV_1001: 'RV-1001', // Beige (out of stock test)
-  RV_9010: 'RV-9010', // Concrete
+  RV_1013: 'RV-1013', // Bone White (out of stock test)
+  RV_9010: 'RV-9010', // Divinity White
   RV_222: 'RV-222', // Beach Yellow (unique)
   RV_239: 'RV-239', // Luxor Yellow (unique)
   RV_11: 'RV-11', // Ganges Yellow (unique)
@@ -23,8 +23,8 @@ export const TEST_COLORS = {
  */
 export const SAMPLE_INVENTORY = {
   [TEST_COLORS.RV_252]: 5, // Unicorn Yellow - 5 cans
-  [TEST_COLORS.RV_1001]: 0, // Beige - out of stock
-  [TEST_COLORS.RV_9010]: 1, // Concrete - low stock
+  [TEST_COLORS.RV_1013]: 0, // Bone White - out of stock
+  [TEST_COLORS.RV_9010]: 1, // Divinity White - low stock
   [TEST_COLORS.RV_222]: 10, // Beach Yellow - well stocked
   [TEST_COLORS.RV_239]: 3, // Luxor Yellow - medium stock
   // RV_11 and RV_206 not set (default to 0)

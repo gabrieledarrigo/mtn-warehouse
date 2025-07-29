@@ -61,7 +61,7 @@ export class ColorGridPage {
    * Assert that all 142 colors are displayed
    */
   async assertAllColorsDisplayed(): Promise<void> {
-    await expect(this.colorCards).toHaveCount(128);
+    await expect(this.colorCards).toHaveCount(142);
 
     // Verify that each card has the required elements
     const firstCard = this.colorCards.first();
@@ -138,7 +138,7 @@ export class ColorGridPage {
     inStock: number;
     outOfStock: number;
   }> {
-    const total = 128; // Montana Hardcore total colors
+    const total = 142; // Montana Hardcore total colors
 
     // Parse the stats (this would depend on the actual implementation)
     // For now, return default values
