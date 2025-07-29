@@ -1,7 +1,3 @@
-/**
- * FilterBar Component Styles
- */
-
 .filter-bar {
   background: var(--color-bg-secondary);
   border-radius: var(--radius-md);
