@@ -67,12 +67,4 @@
     background-color: var(--color-bg-secondary);
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
   }
-
-  /* @media (max-width: 768px) {
-    .search-clear-button {
-      width: 1.8rem;
-      height: 1.8rem;
-      font-size: 1.1rem;
-    }
-  } */
 }

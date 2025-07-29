@@ -5,16 +5,28 @@
   margin-bottom: 1rem;
   border: 1px solid var(--color-gray);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+  flex-direction: column; /* Mobile first */
+  align-items: stretch;
+  gap: 0.75rem; /* Mobile first */
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
 
   .filter-controls {
     display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+    flex-direction: column; /* Mobile first */
+    align-items: stretch;
+    gap: 0.75rem; /* Mobile first */
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
   }
 
   .filter-label {
@@ -25,8 +37,17 @@
 
   .filter-options {
     display: flex;
+    flex-direction: column; /* Mobile first */
     gap: 0.5rem;
-    flex-wrap: wrap;
+    justify-content: center;
+
+    @media (min-width: 480px) {
+      flex-direction: row;
+    }
+
+    @media (min-width: 768px) {
+      justify-content: flex-start;
+    }
   }
 
   .filter-option {
@@ -38,6 +59,11 @@
     border: 1px solid var(--color-gray);
     background: var(--color-white);
     transition: all 0.2s ease;
+    justify-content: center; /* Mobile first */
+
+    @media (min-width: 480px) {
+      justify-content: flex-start;
+    }
     user-select: none;
 
     &:hover {
@@ -79,9 +105,22 @@
   }
 
   .filter-info {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    justify-content: center; /* Mobile first */
+
+    @media (min-width: 768px) {
+      justify-content: flex-end;
+    }
+
+    .count {
+      font-weight: 600;
+      color: var(--color-primary);
+    }
   }
 
   .filter-badge {
@@ -111,41 +150,6 @@
 
     &:active {
       transform: translateY(0);
-    }
-  }
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-
-    .filter-controls {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.75rem;
-    }
-
-    .filter-options {
-      justify-content: center;
-    }
-
-    .filter-info {
-      justify-content: center;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .filter-bar {
-    .filter-options {
-      flex-direction: column;
-    }
-
-    .filter-option {
-      justify-content: center;
     }
   }
 }
