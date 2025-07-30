@@ -6,7 +6,6 @@
 import { html } from 'lit-html';
 import { AppHeader } from './AppHeader.js';
 import { InventoryStats } from './InventoryStats.js';
-import { ActionButtons } from './ActionButtons.js';
 import { SearchBar } from './SearchBar.js';
 import { FilterBar, FilterType, FilterState } from './FilterBar.js';
 import { ColorGrid } from './ColorGrid.js';
@@ -68,13 +67,11 @@ export const AppLayout = ({
     <div class="app-container">
       ${AppHeader({
         title,
+        onClearInventory,
       })}
       ${InventoryStats({
         totalColors,
         inventory,
-      })}
-      ${ActionButtons({
-        onClearInventory,
       })}
       ${SearchBar({
         value: searchTerm,
