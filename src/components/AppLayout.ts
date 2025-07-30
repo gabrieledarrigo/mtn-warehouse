@@ -24,7 +24,6 @@ export interface AppLayoutProps {
 
   // Action handlers
   onClearInventory: () => void;
-  onReload: () => void;
 
   // Search props
   searchTerm: string;
@@ -52,7 +51,6 @@ export const AppLayout = ({
   totalColors,
   inventory,
   onClearInventory,
-  onReload,
   searchTerm,
   onSearch,
   onClearSearch,
@@ -77,7 +75,6 @@ export const AppLayout = ({
       })}
       ${ActionButtons({
         onClearInventory,
-        onReload,
       })}
       ${SearchBar({
         value: searchTerm,

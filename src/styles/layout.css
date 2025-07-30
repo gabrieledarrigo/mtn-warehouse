@@ -39,12 +39,16 @@
 
 .inventory-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(var(--grid-column-min), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: var(--space-md);
   margin: var(--space-lg) 0;
   padding: var(--space-md);
   background: var(--color-bg-secondary);
   border-radius: var(--radius-md);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 
   .item {
     text-align: center;

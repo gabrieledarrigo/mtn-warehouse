@@ -41,10 +41,6 @@ const handleClearInventory = () => {
   window.location.reload();
 };
 
-const handleReload = () => {
-  window.location.reload();
-};
-
 const handleColorClick = (color: Color) => {
   console.log('Color clicked:', color);
   selectedColor = color;
@@ -118,7 +114,6 @@ const renderApp = () => {
       totalColors: MONTANA_COLORS.length,
       inventory,
       onClearInventory: handleClearInventory,
-      onReload: handleReload,
       colors: filteredColors,
       onColorClick: handleColorClick,
       selectedColor,

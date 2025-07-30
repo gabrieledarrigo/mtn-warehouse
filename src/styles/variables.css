@@ -47,7 +47,6 @@
 
   /* Layout */
   --container-max-width: 1200px;
-  --grid-column-min: 200px;
 
   /* Transitions */
   --transition-fast: 150ms ease-in-out;
