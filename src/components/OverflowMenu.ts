@@ -9,7 +9,6 @@ export interface MenuOption {
   id: string;
   label: string;
   action: () => void;
-  destructive?: boolean;
 }
 
 export interface OverflowMenuProps {
@@ -18,7 +17,7 @@ export interface OverflowMenuProps {
 }
 
 // Global state for the overflow menu
-let globalMenuState = {
+let menuState = {
   isOpen: false,
   showConfirmation: false,
   confirmationMessage: '',
@@ -27,17 +26,17 @@ let globalMenuState = {
 
 let currentRenderFunction: (() => void) | null = null;
 
-const updateMenuState = (newState: Partial<typeof globalMenuState>) => {
-  globalMenuState = { ...globalMenuState, ...newState };
+const updateMenuState = (newState: Partial<typeof menuState>) => {
+  menuState = { ...menuState, ...newState };
   if (currentRenderFunction) {
     currentRenderFunction();
   }
 };
 
 const toggleMenu = () => {
-  updateMenuState({ isOpen: !globalMenuState.isOpen });
+  updateMenuState({ isOpen: !menuState.isOpen });
   
-  if (globalMenuState.isOpen) {
+  if (menuState.isOpen) {
     // Add event listeners when menu opens
     setTimeout(() => {
       document.addEventListener('click', handleOutsideClick);
@@ -61,21 +60,16 @@ const closeMenu = () => {
 };
 
 const handleOptionClick = (option: MenuOption) => {
-  if (option.destructive) {
-    updateMenuState({
-      showConfirmation: true,
-      confirmationMessage: `Are you sure you want to ${option.label.toLowerCase()}? This action cannot be undone.`,
-      confirmationAction: option.action,
-    });
-  } else {
-    option.action();
-    closeMenu();
-  }
+  updateMenuState({
+    showConfirmation: true,
+    confirmationMessage: `Are you sure you want to ${option.label.toLowerCase()}? This action cannot be undone.`,
+    confirmationAction: option.action,
+  });
 };
 
 const confirmAction = () => {
-  if (globalMenuState.confirmationAction) {
-    globalMenuState.confirmationAction();
+  if (menuState.confirmationAction) {
+    menuState.confirmationAction();
   }
   closeMenu();
 };
@@ -117,18 +111,18 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
         class="overflow-menu-trigger"
         type="button"
         aria-label="More options"
-        aria-expanded=${globalMenuState.isOpen}
+        aria-expanded=${menuState.isOpen}
         data-testid="overflow-menu-trigger"
       >
         ⋮
       </button>
       
-      ${globalMenuState.isOpen ? html`
+      ${menuState.isOpen ? html`
         <div class="overflow-menu-dropdown" data-testid="overflow-menu-dropdown">
           ${options.map(option => html`
             <button
               @click=${() => handleOptionClick(option)}
-              class="overflow-menu-option ${option.destructive ? 'destructive' : ''}"
+              class="overflow-menu-option"
               type="button"
               data-testid="overflow-menu-option-${option.id}"
             >
@@ -138,31 +132,26 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
         </div>
       ` : ''}
       
-      ${globalMenuState.showConfirmation ? html`
-        <div class="confirmation-overlay" data-testid="confirmation-overlay">
-          <div class="confirmation-dialog" data-testid="confirmation-dialog">
-            <h3>Confirm Action</h3>
-            <p>${globalMenuState.confirmationMessage}</p>
-            <div class="confirmation-actions">
-              <button 
-                @click=${cancelAction}
-                class="btn secondary"
-                type="button"
-                data-testid="confirmation-cancel"
-              >
-                Cancel
-              </button>
-              <button 
-                @click=${confirmAction}
-                class="btn danger"
-                type="button"
-                data-testid="confirmation-confirm"
-              >
-                Confirm
-              </button>
-            </div>
+      ${menuState.showConfirmation ? html`
+        <dialog open data-testid="confirmation-dialog">
+          <p>${menuState.confirmationMessage}</p>
+          <div class="confirmation-actions">
+            <button 
+              @click=${cancelAction}
+              type="button"
+              data-testid="confirmation-cancel"
+            >
+              Cancel
+            </button>
+            <button 
+              @click=${confirmAction}
+              type="button"
+              data-testid="confirmation-confirm"
+            >
+              Confirm
+            </button>
           </div>
-        </div>
+        </dialog>
       ` : ''}
     </div>
   `;

@@ -8,29 +8,24 @@ import { OverflowMenu, MenuOption } from './OverflowMenu.js';
 
 export interface AppHeaderProps {
   title: string;
-  onClearInventory?: () => void;
+  onClearInventory: () => void;
 }
 
 export const AppHeader = ({ title, onClearInventory }: AppHeaderProps) => {
-  const menuOptions: MenuOption[] = [];
-  
-  if (onClearInventory) {
-    menuOptions.push({
+  const menuOptions: MenuOption[] = [
+    {
       id: 'clear-inventory',
       label: 'Clear Inventory',
       action: onClearInventory,
-      destructive: true,
-    });
-  }
+    }
+  ];
 
   return html`
     <header class="app-header" data-testid="app-header">
       <h1 class="title" data-testid="app-title">${title}</h1>
-      ${menuOptions.length > 0 ? html`
-        <div class="app-header-actions">
-          ${OverflowMenu({ options: menuOptions })}
-        </div>
-      ` : ''}
+      <div class="app-header-actions">
+        ${OverflowMenu({ options: menuOptions })}
+      </div>
     </header>
   `;
 };
