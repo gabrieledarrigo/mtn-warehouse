@@ -357,6 +357,166 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     });
   });
 
+  test('should handle overflow menu operations correctly', async ({ page }) => {
+    await test.step('Setup and verify overflow menu is visible', async () => {
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+
+      // Verify overflow menu trigger is visible
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await expect(overflowTrigger).toBeVisible();
+      await expect(overflowTrigger).toHaveAttribute(
+        'aria-label',
+        'More options'
+      );
+    });
+
+    await test.step('Test overflow menu opens and shows Clear Inventory option', async () => {
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      // Verify dropdown appears
+      const dropdown = page.getByTestId('overflow-menu-dropdown');
+      await expect(dropdown).toBeVisible();
+
+      // Verify Clear Inventory option is present
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
+      await expect(clearOption).toBeVisible();
+      await expect(clearOption).toContainText('Clear Inventory');
+    });
+
+    await test.step('Test Clear Inventory shows confirmation dialog', async () => {
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
+      await clearOption.click();
+
+      // Verify confirmation dialog appears
+      const confirmationDialog = page.getByTestId('confirmation-dialog');
+      await expect(confirmationDialog).toBeVisible();
+
+      const confirmationText = page.getByTestId('confirmation-dialog');
+      await expect(confirmationText).toContainText(
+        'Are you sure you want to proceed?'
+      );
+      await expect(confirmationText).toContainText(
+        'This action cannot be undone.'
+      );
+
+      // Verify both buttons are present
+      const cancelButton = page.getByTestId('confirmation-cancel');
+      const confirmButton = page.getByTestId('confirmation-confirm');
+      await expect(cancelButton).toBeVisible();
+      await expect(confirmButton).toBeVisible();
+    });
+
+    await test.step('Test canceling confirmation dialog', async () => {
+      const cancelButton = page.getByTestId('confirmation-cancel');
+      await cancelButton.click();
+
+      // Confirmation dialog should be hidden
+      const confirmationDialog = page.getByTestId('confirmation-dialog');
+      await expect(confirmationDialog).not.toBeVisible();
+
+      // Overflow menu should be closed
+      const dropdown = page.getByTestId('overflow-menu-dropdown');
+      await expect(dropdown).not.toBeVisible();
+
+      // Verify inventory data is still intact
+      const testQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
+      expect(testQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252]);
+    });
+
+    await test.step('Test confirming clear inventory action', async () => {
+      // Open overflow menu again
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
+      await clearOption.click();
+
+      // Confirm the action
+      const confirmButton = page.getByTestId('confirmation-confirm');
+      await confirmButton.click();
+
+      // Wait for page reload (Clear Inventory triggers a reload)
+      await page.waitForLoadState('networkidle');
+
+      // Verify all quantities are reset to 0
+      const testQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
+      expect(testQuantity).toBe(0);
+    });
+  });
+
+  test('should test overflow menu on mobile viewport', async ({ page }) => {
+    await test.step('Set mobile viewport and setup data', async () => {
+      await page.setViewportSize(VIEWPORT_SIZES.MOBILE);
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
+    await test.step('Verify overflow menu is accessible on mobile', async () => {
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await expect(overflowTrigger).toBeVisible();
+
+      // Verify mobile touch target size (minimum 44px)
+      const boundingBox = await overflowTrigger.boundingBox();
+      expect(boundingBox?.width).toBeGreaterThanOrEqual(44);
+      expect(boundingBox?.height).toBeGreaterThanOrEqual(44);
+    });
+
+    await test.step('Test mobile overflow menu behavior', async () => {
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      // Verify dropdown appears (should be full-width on mobile)
+      const dropdown = page.getByTestId('overflow-menu-dropdown');
+      await expect(dropdown).toBeVisible();
+
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
+      await expect(clearOption).toBeVisible();
+
+      // Verify mobile touch targets for menu options
+      const optionBox = await clearOption.boundingBox();
+      expect(optionBox?.height).toBeGreaterThanOrEqual(44);
+    });
+
+    await test.step('Test mobile confirmation dialog', async () => {
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
+      await clearOption.click();
+
+      const confirmationDialog = page.getByTestId('confirmation-dialog');
+      await expect(confirmationDialog).toBeVisible();
+
+      // Test mobile-specific button layout
+      const cancelButton = page.getByTestId('confirmation-cancel');
+      const confirmButton = page.getByTestId('confirmation-confirm');
+
+      // Verify buttons have adequate touch targets
+      const cancelBox = await cancelButton.boundingBox();
+      const confirmBox = await confirmButton.boundingBox();
+      expect(cancelBox?.height).toBeGreaterThanOrEqual(44);
+      expect(confirmBox?.height).toBeGreaterThanOrEqual(44);
+
+      // Cancel to clean up
+      await cancelButton.click();
+    });
+  });
+
   test('should integrate search with quantity modal workflow', async ({
     page,
   }) => {

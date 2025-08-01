@@ -4,6 +4,7 @@ import './styles/colorGrid.css';
 import './styles/quantityModal.css';
 import './styles/searchBar.css';
 import './styles/filterBar.css';
+import './styles/overflowMenu.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { searchColors, getColorsFromSearchResults } from './search.js';
@@ -134,6 +135,9 @@ const renderApp = () => {
     render(appTemplate, app);
   }
 };
+
+// Listen for overflow menu state changes
+window.addEventListener('overflow-menu-state-change', renderApp);
 
 // Initial render
 renderApp();

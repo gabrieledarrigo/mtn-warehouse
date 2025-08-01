@@ -1,0 +1,197 @@
+/* Overflow Menu Styles */
+
+.overflow-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+.overflow-menu-trigger {
+  background: none;
+  border: none;
+  font-size: var(--font-size-xl);
+  line-height: 1;
+  cursor: pointer;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
+  min-width: 44px; /* Mobile touch target */
+  min-height: 44px; /* Mobile touch target */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: var(--color-bg-secondary);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &[aria-expanded='true'] {
+    background: var(--color-bg-secondary);
+  }
+}
+
+.overflow-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  min-width: 200px;
+  animation: dropdownSlideIn var(--transition-fast) ease-out;
+  transform-origin: top right;
+
+  @media (max-width: 767px) {
+    /* Full width on mobile */
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    animation: slideUpIn var(--transition-normal) ease-out;
+    transform-origin: bottom;
+  }
+}
+
+.overflow-menu-option {
+  display: block;
+  width: 100%;
+  padding: var(--space-md);
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  transition: background-color var(--transition-fast);
+  min-height: 44px; /* Mobile touch target */
+
+  &:hover {
+    background: var(--color-bg-secondary);
+  }
+
+  &:active {
+    background: var(--color-bg-tertiary);
+  }
+
+  &:first-child {
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+
+    @media (max-width: 767px) {
+      border-radius: 0;
+    }
+  }
+
+  &:only-child {
+    border-radius: var(--radius-md);
+
+    @media (max-width: 767px) {
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+  }
+}
+
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 300px;
+  max-width: 90vw;
+  transform: translate(-50%, -50%);
+  z-index: 9;
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-md);
+  width: auto;
+  height: auto;
+  margin: auto; /* This centers the dialog */
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .confirmation-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+
+  .confirmation-actions {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: var(--space-md);
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    width: 100%;
+
+    .btn {
+      width: 50%;
+    }
+
+    @media (max-width: 767px) {
+      flex-direction: column-reverse;
+
+      .btn {
+        width: 100%;
+        min-height: 44px; /* Mobile touch target */
+      }
+    }
+  }
+}
+
+/* Header Layout Updates */
+.app-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-header-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  @media (max-width: 767px) {
+    position: relative;
+    margin-left: auto;
+  }
+}
+
+/* Animations */
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

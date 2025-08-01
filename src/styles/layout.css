@@ -18,6 +18,10 @@
 .app-header {
   text-align: center;
   margin-bottom: var(--space-xl);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .title {
     color: var(--color-text-primary);
@@ -79,19 +83,6 @@
   }
 }
 
-.action-buttons {
-  display: flex;
-  flex-direction: column; /* Mobile first */
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  margin: var(--space-lg) 0;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
-}
-
 .btn {
   padding: var(--space-sm) var(--space-md);
   border: 1px solid;
@@ -118,6 +109,15 @@
     &:hover {
       background: var(--color-danger);
       color: var(--color-white);
+    }
+  }
+
+  &.cancel {
+    background: var(--color-gray-dark);
+    color: var(--color-white);
+
+    &:hover {
+      background: var(--color-gray-darker);
     }
   }
 
