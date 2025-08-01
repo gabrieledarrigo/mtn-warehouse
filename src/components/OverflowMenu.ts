@@ -2,7 +2,6 @@
  * OverflowMenu Component
  * Provides three-dots menu for administrative actions
  */
-
 import { html } from 'lit-html';
 
 export interface MenuOption {
@@ -16,21 +15,15 @@ export interface OverflowMenuProps {
   onClose?: () => void;
 }
 
-// Global state for the overflow menu
 let menuState = {
   isOpen: false,
-  showConfirmation: false,
-  confirmationMessage: '',
   confirmationAction: null as (() => void) | null,
 };
 
-let currentRenderFunction: (() => void) | null = null;
-
 const updateMenuState = (newState: Partial<typeof menuState>) => {
   menuState = { ...menuState, ...newState };
-  if (currentRenderFunction) {
-    currentRenderFunction();
-  }
+
+  window.dispatchEvent(new CustomEvent('overflow-menu-state-change'));
 };
 
 const toggleMenu = () => {
@@ -38,10 +31,8 @@ const toggleMenu = () => {
 
   if (menuState.isOpen) {
     // Add event listeners when menu opens
-    setTimeout(() => {
-      document.addEventListener('click', handleOutsideClick);
-      document.addEventListener('keydown', handleEscapeKey);
-    }, 0);
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('keydown', handleEscapeKey);
   } else {
     // Remove event listeners when menu closes
     document.removeEventListener('click', handleOutsideClick);
@@ -52,19 +43,10 @@ const toggleMenu = () => {
 const closeMenu = () => {
   updateMenuState({
     isOpen: false,
-    showConfirmation: false,
     confirmationAction: null,
   });
   document.removeEventListener('click', handleOutsideClick);
   document.removeEventListener('keydown', handleEscapeKey);
-};
-
-const handleOptionClick = (option: MenuOption) => {
-  updateMenuState({
-    showConfirmation: true,
-    confirmationMessage: `Are you sure you want to ${option.label.toLowerCase()}? This action cannot be undone.`,
-    confirmationAction: option.action,
-  });
 };
 
 const confirmAction = () => {
@@ -72,13 +54,52 @@ const confirmAction = () => {
     menuState.confirmationAction();
   }
   closeMenu();
+  closeDialog();
 };
 
 const cancelAction = () => {
   updateMenuState({
-    showConfirmation: false,
     confirmationAction: null,
   });
+  closeDialog();
+};
+
+const openDialog = () => {
+  const dialog = document.querySelector(
+    '.confirmation-dialog'
+  ) as HTMLDialogElement;
+
+  if (dialog) {
+    dialog.showModal();
+
+    // Handle backdrop click to close
+    dialog.addEventListener(
+      'click',
+      event => {
+        if (event.target === dialog) {
+          cancelAction();
+        }
+      },
+      { once: true }
+    );
+  }
+};
+
+const closeDialog = () => {
+  const dialog = document.querySelector(
+    '.confirmation-dialog'
+  ) as HTMLDialogElement;
+
+  if (dialog) {
+    dialog.close();
+  }
+};
+
+const handleOptionClick = (option: MenuOption) => {
+  updateMenuState({
+    confirmationAction: option.action,
+  });
+  openDialog();
 };
 
 const handleOutsideClick = (event: Event) => {
@@ -95,15 +116,6 @@ const handleEscapeKey = (event: KeyboardEvent) => {
 };
 
 export const OverflowMenu = ({ options }: OverflowMenuProps) => {
-  // Set up the render function for state updates
-  const appElement = document.getElementById('app');
-  if (appElement && !currentRenderFunction) {
-    currentRenderFunction = () => {
-      // Trigger a re-render of the entire app when menu state changes
-      window.dispatchEvent(new CustomEvent('overflow-menu-state-change'));
-    };
-  }
-
   return html`
     <div class="overflow-menu-container" data-testid="overflow-menu">
       <button
@@ -138,29 +150,31 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
             </div>
           `
         : ''}
-      ${menuState.showConfirmation
-        ? html`
-            <dialog open data-testid="confirmation-dialog">
-              <p>${menuState.confirmationMessage}</p>
-              <div class="confirmation-actions">
-                <button
-                  @click=${cancelAction}
-                  type="button"
-                  data-testid="confirmation-cancel"
-                >
-                  Cancel
-                </button>
-                <button
-                  @click=${confirmAction}
-                  type="button"
-                  data-testid="confirmation-confirm"
-                >
-                  Confirm
-                </button>
-              </div>
-            </dialog>
-          `
-        : ''}
+
+      <dialog class="confirmation-dialog" data-testid="confirmation-dialog">
+        <div class="confirmation-dialog-content">
+          <h2>Are you sure you want to proceed?</h2>
+          <p>This action cannot be undone.</p>
+          <footer class="confirmation-actions">
+            <button
+              @click=${cancelAction}
+              type="button"
+              class="btn cancel"
+              data-testid="confirmation-cancel"
+            >
+              Cancel
+            </button>
+            <button
+              @click=${confirmAction}
+              type="button"
+              class="btn danger"
+              data-testid="confirmation-confirm"
+            >
+              Confirm
+            </button>
+          </footer>
+        </div>
+      </dialog>
     </div>
   `;
 };

@@ -112,6 +112,15 @@
     }
   }
 
+  &.cancel {
+    background: var(--color-gray-dark);
+    color: var(--color-white);
+
+    &:hover {
+      background: var(--color-gray-darker);
+    }
+  }
+
   &.primary {
     border-color: var(--color-primary);
     color: var(--color-primary);
