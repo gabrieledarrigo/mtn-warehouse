@@ -62,6 +62,7 @@ const cancelAction = () => {
     confirmationAction: null,
   });
   closeDialog();
+  closeMenu(); // Also close the overflow menu when canceling
 };
 
 const openDialog = () => {

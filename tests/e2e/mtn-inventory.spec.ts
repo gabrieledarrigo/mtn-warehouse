@@ -400,10 +400,10 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
 
       const confirmationText = page.getByTestId('confirmation-dialog');
       await expect(confirmationText).toContainText(
-        'Are you sure you want to clear inventory?'
+        'Are you sure you want to proceed?'
       );
       await expect(confirmationText).toContainText(
-        'This action cannot be undone'
+        'This action cannot be undone.'
       );
 
       // Verify both buttons are present
