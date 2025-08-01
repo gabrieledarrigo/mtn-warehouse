@@ -35,7 +35,7 @@ const updateMenuState = (newState: Partial<typeof menuState>) => {
 
 const toggleMenu = () => {
   updateMenuState({ isOpen: !menuState.isOpen });
-  
+
   if (menuState.isOpen) {
     // Add event listeners when menu opens
     setTimeout(() => {
@@ -50,10 +50,10 @@ const toggleMenu = () => {
 };
 
 const closeMenu = () => {
-  updateMenuState({ 
-    isOpen: false, 
-    showConfirmation: false, 
-    confirmationAction: null 
+  updateMenuState({
+    isOpen: false,
+    showConfirmation: false,
+    confirmationAction: null,
   });
   document.removeEventListener('click', handleOutsideClick);
   document.removeEventListener('keydown', handleEscapeKey);
@@ -75,9 +75,9 @@ const confirmAction = () => {
 };
 
 const cancelAction = () => {
-  updateMenuState({ 
-    showConfirmation: false, 
-    confirmationAction: null 
+  updateMenuState({
+    showConfirmation: false,
+    confirmationAction: null,
   });
 };
 
@@ -106,7 +106,7 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
 
   return html`
     <div class="overflow-menu-container" data-testid="overflow-menu">
-      <button 
+      <button
         @click=${toggleMenu}
         class="overflow-menu-trigger"
         type="button"
@@ -116,43 +116,51 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
       >
         ⋮
       </button>
-      
-      ${menuState.isOpen ? html`
-        <div class="overflow-menu-dropdown" data-testid="overflow-menu-dropdown">
-          ${options.map(option => html`
-            <button
-              @click=${() => handleOptionClick(option)}
-              class="overflow-menu-option"
-              type="button"
-              data-testid="overflow-menu-option-${option.id}"
+
+      ${menuState.isOpen
+        ? html`
+            <div
+              class="overflow-menu-dropdown"
+              data-testid="overflow-menu-dropdown"
             >
-              ${option.label}
-            </button>
-          `)}
-        </div>
-      ` : ''}
-      
-      ${menuState.showConfirmation ? html`
-        <dialog open data-testid="confirmation-dialog">
-          <p>${menuState.confirmationMessage}</p>
-          <div class="confirmation-actions">
-            <button 
-              @click=${cancelAction}
-              type="button"
-              data-testid="confirmation-cancel"
-            >
-              Cancel
-            </button>
-            <button 
-              @click=${confirmAction}
-              type="button"
-              data-testid="confirmation-confirm"
-            >
-              Confirm
-            </button>
-          </div>
-        </dialog>
-      ` : ''}
+              ${options.map(
+                option => html`
+                  <button
+                    @click=${() => handleOptionClick(option)}
+                    class="overflow-menu-option"
+                    type="button"
+                    data-testid="overflow-menu-option-${option.id}"
+                  >
+                    ${option.label}
+                  </button>
+                `
+              )}
+            </div>
+          `
+        : ''}
+      ${menuState.showConfirmation
+        ? html`
+            <dialog open data-testid="confirmation-dialog">
+              <p>${menuState.confirmationMessage}</p>
+              <div class="confirmation-actions">
+                <button
+                  @click=${cancelAction}
+                  type="button"
+                  data-testid="confirmation-cancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  @click=${confirmAction}
+                  type="button"
+                  data-testid="confirmation-confirm"
+                >
+                  Confirm
+                </button>
+              </div>
+            </dialog>
+          `
+        : ''}
     </div>
   `;
 };

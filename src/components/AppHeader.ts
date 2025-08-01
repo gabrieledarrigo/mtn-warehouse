@@ -17,7 +17,7 @@ export const AppHeader = ({ title, onClearInventory }: AppHeaderProps) => {
       id: 'clear-inventory',
       label: 'Clear Inventory',
       action: onClearInventory,
-    }
+    },
   ];
 
   return html`

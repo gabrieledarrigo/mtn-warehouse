@@ -366,7 +366,10 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       // Verify overflow menu trigger is visible
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await expect(overflowTrigger).toBeVisible();
-      await expect(overflowTrigger).toHaveAttribute('aria-label', 'More options');
+      await expect(overflowTrigger).toHaveAttribute(
+        'aria-label',
+        'More options'
+      );
     });
 
     await test.step('Test overflow menu opens and shows Clear Inventory option', async () => {
@@ -378,22 +381,30 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await expect(dropdown).toBeVisible();
 
       // Verify Clear Inventory option is present
-      const clearOption = page.getByTestId('overflow-menu-option-clear-inventory');
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
       await expect(clearOption).toBeVisible();
       await expect(clearOption).toContainText('Clear Inventory');
     });
 
     await test.step('Test Clear Inventory shows confirmation dialog', async () => {
-      const clearOption = page.getByTestId('overflow-menu-option-clear-inventory');
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
       await clearOption.click();
 
       // Verify confirmation dialog appears
       const confirmationDialog = page.getByTestId('confirmation-dialog');
       await expect(confirmationDialog).toBeVisible();
-      
+
       const confirmationText = page.getByTestId('confirmation-dialog');
-      await expect(confirmationText).toContainText('Are you sure you want to clear inventory?');
-      await expect(confirmationText).toContainText('This action cannot be undone');
+      await expect(confirmationText).toContainText(
+        'Are you sure you want to clear inventory?'
+      );
+      await expect(confirmationText).toContainText(
+        'This action cannot be undone'
+      );
 
       // Verify both buttons are present
       const cancelButton = page.getByTestId('confirmation-cancel');
@@ -415,7 +426,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await expect(dropdown).not.toBeVisible();
 
       // Verify inventory data is still intact
-      const testQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const testQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(testQuantity).toBe(SAMPLE_INVENTORY[TEST_COLORS.RV_252]);
     });
 
@@ -424,7 +437,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await overflowTrigger.click();
 
-      const clearOption = page.getByTestId('overflow-menu-option-clear-inventory');
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
       await clearOption.click();
 
       // Confirm the action
@@ -435,7 +450,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await page.waitForLoadState('networkidle');
 
       // Verify all quantities are reset to 0
-      const testQuantity = await colorGridPage.getColorQuantity(TEST_COLORS.RV_252);
+      const testQuantity = await colorGridPage.getColorQuantity(
+        TEST_COLORS.RV_252
+      );
       expect(testQuantity).toBe(0);
     });
   });
@@ -451,7 +468,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Verify overflow menu is accessible on mobile', async () => {
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await expect(overflowTrigger).toBeVisible();
-      
+
       // Verify mobile touch target size (minimum 44px)
       const boundingBox = await overflowTrigger.boundingBox();
       expect(boundingBox?.width).toBeGreaterThanOrEqual(44);
@@ -466,16 +483,20 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const dropdown = page.getByTestId('overflow-menu-dropdown');
       await expect(dropdown).toBeVisible();
 
-      const clearOption = page.getByTestId('overflow-menu-option-clear-inventory');
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
       await expect(clearOption).toBeVisible();
-      
+
       // Verify mobile touch targets for menu options
       const optionBox = await clearOption.boundingBox();
       expect(optionBox?.height).toBeGreaterThanOrEqual(44);
     });
 
     await test.step('Test mobile confirmation dialog', async () => {
-      const clearOption = page.getByTestId('overflow-menu-option-clear-inventory');
+      const clearOption = page.getByTestId(
+        'overflow-menu-option-clear-inventory'
+      );
       await clearOption.click();
 
       const confirmationDialog = page.getByTestId('confirmation-dialog');
@@ -484,7 +505,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       // Test mobile-specific button layout
       const cancelButton = page.getByTestId('confirmation-cancel');
       const confirmButton = page.getByTestId('confirmation-confirm');
-      
+
       // Verify buttons have adequate touch targets
       const cancelBox = await cancelButton.boundingBox();
       const confirmBox = await confirmButton.boundingBox();

@@ -30,7 +30,7 @@
     transform: scale(0.95);
   }
 
-  &[aria-expanded="true"] {
+  &[aria-expanded='true'] {
     background: var(--color-bg-secondary);
   }
 }
@@ -82,14 +82,6 @@
     background: var(--color-bg-tertiary);
   }
 
-  &.destructive {
-    color: var(--color-danger);
-
-    &:hover {
-      background: var(--color-danger-light);
-    }
-  }
-
   &:first-child {
     border-radius: var(--radius-md) var(--radius-md) 0 0;
   }
@@ -111,45 +103,6 @@
   }
 }
 
-/* Confirmation Dialog Styles */
-.confirmation-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  animation: fadeIn var(--transition-fast) ease-out;
-  padding: var(--space-md);
-}
-
-.confirmation-dialog {
-  background: var(--color-white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  max-width: 400px;
-  width: 100%;
-  box-shadow: var(--shadow-xl);
-  animation: scaleIn var(--transition-normal) ease-out;
-
-  h3 {
-    margin: 0 0 var(--space-md) 0;
-    color: var(--color-text-primary);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
-  }
-
-  p {
-    margin: 0 0 var(--space-xl) 0;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
-  }
-}
-
 .confirmation-actions {
   display: flex;
   gap: var(--space-md);
@@ -157,7 +110,7 @@
 
   @media (max-width: 767px) {
     flex-direction: column-reverse;
-    
+
     .btn {
       width: 100%;
       min-height: 44px; /* Mobile touch target */
@@ -204,36 +157,5 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Additional button styles for confirmation dialog */
-.btn.secondary {
-  border-color: var(--color-border);
-  color: var(--color-text-secondary);
-
-  &:hover {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-text-secondary);
   }
 }
