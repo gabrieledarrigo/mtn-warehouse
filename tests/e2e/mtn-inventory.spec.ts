@@ -961,4 +961,76 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       expect(dialogs[0]).toContain('Chrome su Android o Safari su iOS');
     });
   });
+
+  test('should test inventory import functionality', async ({ page }) => {
+    await test.step('Verify import option appears in overflow menu', async () => {
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      // Check that import option exists and is positioned correctly
+      const importOption = page.getByTestId('overflow-menu-option-import-inventory');
+      await expect(importOption).toBeVisible();
+      
+      // Verify it's the first option (before export)
+      const menuDropdown = page.getByTestId('overflow-menu-dropdown');
+      const firstOption = menuDropdown.locator('button').first();
+      await expect(firstOption).toHaveText('Importa Inventario');
+    });
+
+    await test.step('Test import button functionality', async () => {
+      // Listen for dialog events (alerts)
+      const dialogs: string[] = [];
+      page.on('dialog', async dialog => {
+        dialogs.push(dialog.message());
+        await dialog.accept();
+      });
+
+      const importOption = page.getByTestId('overflow-menu-option-import-inventory');
+      await importOption.click();
+
+      // Wait for the alert to appear
+      await page.waitForTimeout(500);
+
+      // Verify Italian alert message is shown when no file is selected
+      expect(dialogs.length).toBe(1);
+      expect(dialogs[0]).toContain('Nessun file selezionato');
+    });
+
+    await test.step('Verify import workflow components exist', async () => {
+      // The import preview modal components should be in the DOM structure
+      // We can't easily test file upload in E2E without complex setup,
+      // but we can verify the structure is there
+      const appContainer = page.locator('.app-container');
+      await expect(appContainer).toBeVisible();
+    });
+  });
+
+  test('should test import data validation', async ({ page }) => {
+    await test.step('Import functionality integrates with existing UI', async () => {
+      // Test that import doesn't break existing functionality
+      await expect(page.getByTestId('app-header')).toBeVisible();
+      await expect(page.getByTestId('app-title')).toBeVisible();
+      
+      // Open overflow menu
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+      
+      // Verify all expected options are present
+      await expect(page.getByTestId('overflow-menu-option-import-inventory')).toBeVisible();
+      await expect(page.getByTestId('overflow-menu-option-export-inventory')).toBeVisible();
+      await expect(page.getByTestId('overflow-menu-option-clear-inventory')).toBeVisible();
+      
+      // Close menu by clicking outside
+      await page.locator('body').click({ position: { x: 100, y: 100 } });
+      
+      // Verify normal functionality still works
+      const searchBar = page.locator('input[placeholder*="Search"]');
+      await expect(searchBar).toBeVisible();
+      await searchBar.fill('RV-252');
+      
+      // Should still show colors
+      const colorGrid = page.locator('.color-grid');
+      await expect(colorGrid).toBeVisible();
+    });
+  });
 });

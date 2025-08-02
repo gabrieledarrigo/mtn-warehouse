@@ -5,6 +5,7 @@ import './styles/quantityModal.css';
 import './styles/searchBar.css';
 import './styles/filterBar.css';
 import './styles/overflowMenu.css';
+import './styles/importModal.css';
 import { MONTANA_COLORS } from './colors.js';
 import { loadInventory, saveInventory, clearInventory } from './inventory.js';
 import { searchColors, getColorsFromSearchResults } from './search.js';
@@ -14,8 +15,15 @@ import {
   FilterState,
 } from './components/FilterBar.js';
 import { exportInventory } from './data-export.js';
+import { 
+  importInventory, 
+  MergeStrategy, 
+  generateImportPreview,
+  type ImportPreview 
+} from './data-import.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
+import { ImportPreviewModal } from './components/ImportPreviewModal.js';
 import type { Color } from './colors.js';
 
 console.log('Montana Hardcore Inventory - Starting...');
@@ -35,6 +43,12 @@ let filteredColors = MONTANA_COLORS;
 // Modal state
 let modalOpen = false;
 let selectedColor: Color | null = null;
+
+// Import modal state
+let importModalOpen = false;
+let importPreview: ImportPreview | null = null;
+let importStrategy: MergeStrategy = MergeStrategy.MERGE;
+let pendingImportData: any = null;
 
 // Event handlers
 const handleClearInventory = () => {
@@ -56,6 +70,83 @@ const handleExportInventory = async () => {
         'Sorry, there was an error exporting your inventory. Please try again.'
       );
     });
+};
+
+const handleImportInventory = async () => {
+  console.log('Starting inventory import...');
+  
+  try {
+    // First just pick and parse the file to show preview
+    const { pickFile, parseImportFile, generateImportPreview } = await import('./data-import.js');
+    
+    const file = await pickFile();
+    if (!file) {
+      alert('Nessun file selezionato');
+      return;
+    }
+    
+    const importData = await parseImportFile(file);
+    const preview = generateImportPreview(inventory, importData, importStrategy);
+    
+    // Store the import data for later use
+    pendingImportData = importData;
+    importPreview = preview;
+    importModalOpen = true;
+    renderApp();
+    
+  } catch (error) {
+    console.error('Import error:', error);
+    alert(error instanceof Error ? error.message : 'Errore durante l\'importazione del file');
+  }
+};
+
+const handleImportConfirm = async (strategy: MergeStrategy) => {
+  console.log('Confirming import with strategy:', strategy);
+  
+  try {
+    const { applyImport, createBackup } = await import('./data-import.js');
+    const importData = pendingImportData;
+    
+    if (!importData) {
+      alert('Errore: dati di importazione non trovati');
+      return;
+    }
+    
+    // Create backup before applying changes
+    const backupKey = createBackup(inventory);
+    console.log('Backup created:', backupKey);
+    
+    // Apply the import
+    const newInventory = applyImport(inventory, importData, strategy);
+    
+    // Update the global inventory and save
+    Object.assign(inventory, newInventory);
+    saveInventory(inventory);
+    
+    // Update filtered colors to reflect changes
+    updateFilteredColors();
+    
+    // Clean up
+    importModalOpen = false;
+    importPreview = null;
+    pendingImportData = null;
+    
+    // Show success message
+    alert('Importazione completata con successo!');
+    console.log('Import completed successfully');
+    
+    renderApp();
+    
+  } catch (error) {
+    console.error('Error during import confirmation:', error);
+    alert('Errore durante l\'applicazione dell\'importazione');
+  }
+};
+
+const handleImportCancel = () => {
+  importModalOpen = false;
+  importPreview = null;
+  renderApp();
 };
 
 const handleColorClick = (color: Color) => {
@@ -132,6 +223,7 @@ const renderApp = () => {
       inventory,
       onClearInventory: handleClearInventory,
       onExportInventory: handleExportInventory,
+      onImportInventory: handleImportInventory,
       colors: filteredColors,
       onColorClick: handleColorClick,
       selectedColor,
@@ -145,6 +237,15 @@ const renderApp = () => {
       onFilterChange: handleFilterChange,
       onFilterReset: handleFilterReset,
     })}
+    ${importModalOpen && importPreview ? html`
+      ${ImportPreviewModal({
+        preview: importPreview,
+        strategy: importStrategy,
+        onConfirm: handleImportConfirm,
+        onCancel: handleImportCancel,
+        isOpen: importModalOpen,
+      })}
+    ` : ''}
   `;
 
   const app = document.getElementById('app');
@@ -155,6 +256,17 @@ const renderApp = () => {
 
 // Listen for overflow menu state changes
 window.addEventListener('overflow-menu-state-change', renderApp);
+
+// Listen for import strategy changes
+window.addEventListener('import-strategy-change', async (event: any) => {
+  importStrategy = event.detail.strategy;
+  if (importPreview && pendingImportData) {
+    // Regenerate preview with new strategy
+    const { generateImportPreview } = await import('./data-import.js');
+    importPreview = generateImportPreview(inventory, pendingImportData, importStrategy);
+    renderApp();
+  }
+});
 
 // Initial render
 renderApp();

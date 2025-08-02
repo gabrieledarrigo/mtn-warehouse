@@ -24,6 +24,7 @@ export interface AppLayoutProps {
   // Action handlers
   onClearInventory: () => void;
   onExportInventory: () => void;
+  onImportInventory: () => void;
 
   // Search props
   searchTerm: string;
@@ -52,6 +53,7 @@ export const AppLayout = ({
   inventory,
   onClearInventory,
   onExportInventory,
+  onImportInventory,
   searchTerm,
   onSearch,
   onClearSearch,
@@ -71,6 +73,7 @@ export const AppLayout = ({
         title,
         onClearInventory,
         onExportInventory,
+        onImportInventory,
       })}
       ${InventoryStats({
         totalColors,
