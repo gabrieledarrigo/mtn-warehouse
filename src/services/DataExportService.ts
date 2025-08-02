@@ -17,9 +17,7 @@ export interface ExportData {
   };
 }
 
-export interface ExportOptions {
-  filename?: string;
-}
+export interface ExportOptions {}
 
 export interface ShareTarget {
   title: string;
@@ -60,11 +58,7 @@ export function generateExportData(
 /**
  * Generate filename with timestamp
  */
-export function generateFilename(options: ExportOptions = {}): string {
-  if (options.filename) {
-    return options.filename;
-  }
-
+export function generateFilename(): string {
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
   const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
@@ -132,7 +126,7 @@ export async function exportInventory(
   }
 
   const exportData = generateExportData(inventory, options);
-  const filename = generateFilename(options);
+  const filename = generateFilename();
   const blob = createExportBlob(exportData);
 
   // Try to share files if supported
