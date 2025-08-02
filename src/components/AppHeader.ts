@@ -2,7 +2,6 @@
  * AppHeader Component
  * Renders the application header with title and overflow menu
  */
-
 import { html } from 'lit-html';
 import { OverflowMenu, MenuOption } from './OverflowMenu.js';
 
@@ -27,6 +26,13 @@ export const AppHeader = ({
       id: 'clear-inventory',
       label: 'Clear Inventory',
       action: onClearInventory,
+      confirmation: {
+        title: "Svuotare l'inventario?",
+        message:
+          'Questa azione rimuoverà tutte le quantità dei colori. Non può essere annullata.',
+        confirmText: 'Svuota',
+        cancelText: 'Annulla',
+      },
     },
   ];
 

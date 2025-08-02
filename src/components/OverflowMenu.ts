@@ -8,6 +8,12 @@ export interface MenuOption {
   id: string;
   label: string;
   action: () => void;
+  confirmation?: {
+    title: string;
+    message: string;
+    confirmText?: string;
+    cancelText?: string;
+  };
 }
 
 export interface OverflowMenuProps {
@@ -15,9 +21,16 @@ export interface OverflowMenuProps {
   onClose?: () => void;
 }
 
-let menuState = {
+interface MenuState {
+  isOpen: boolean;
+  confirmationAction: (() => void) | null;
+  currentConfirmation: MenuOption['confirmation'] | null;
+}
+
+let menuState: MenuState = {
   isOpen: false,
-  confirmationAction: null as (() => void) | null,
+  confirmationAction: null,
+  currentConfirmation: null,
 };
 
 const updateMenuState = (newState: Partial<typeof menuState>) => {
@@ -44,6 +57,7 @@ const closeMenu = () => {
   updateMenuState({
     isOpen: false,
     confirmationAction: null,
+    currentConfirmation: null,
   });
   document.removeEventListener('click', handleOutsideClick);
   document.removeEventListener('keydown', handleEscapeKey);
@@ -60,6 +74,7 @@ const confirmAction = () => {
 const cancelAction = () => {
   updateMenuState({
     confirmationAction: null,
+    currentConfirmation: null,
   });
   closeDialog();
   closeMenu(); // Also close the overflow menu when canceling
@@ -97,10 +112,16 @@ const closeDialog = () => {
 };
 
 const handleOptionClick = (option: MenuOption) => {
-  updateMenuState({
-    confirmationAction: option.action,
-  });
-  openDialog();
+  if (option.confirmation) {
+    updateMenuState({
+      confirmationAction: option.action,
+      currentConfirmation: option.confirmation,
+    });
+    openDialog();
+  } else {
+    option.action();
+    closeMenu();
+  }
 };
 
 const handleOutsideClick = (event: Event) => {
@@ -154,8 +175,14 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
 
       <dialog class="confirmation-dialog" data-testid="confirmation-dialog">
         <div class="confirmation-dialog-content">
-          <h2>Are you sure you want to proceed?</h2>
-          <p>This action cannot be undone.</p>
+          <h2>
+            ${menuState.currentConfirmation?.title ||
+            'Sei sicuro di voler continuare?'}
+          </h2>
+          <p>
+            ${menuState.currentConfirmation?.message ||
+            'Questa azione non può essere annullata.'}
+          </p>
           <footer class="confirmation-actions">
             <button
               @click=${cancelAction}
@@ -163,7 +190,7 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
               class="btn cancel"
               data-testid="confirmation-cancel"
             >
-              Cancel
+              ${menuState.currentConfirmation?.cancelText || 'Annulla'}
             </button>
             <button
               @click=${confirmAction}
@@ -171,7 +198,7 @@ export const OverflowMenu = ({ options }: OverflowMenuProps) => {
               class="btn danger"
               data-testid="confirmation-confirm"
             >
-              Confirm
+              ${menuState.currentConfirmation?.confirmText || 'Conferma'}
             </button>
           </footer>
         </div>
