@@ -3,11 +3,10 @@
  * Handles inventory data export and sharing functionality
  */
 
-import type { InventoryItems } from '../inventory.js';
+import type { InventoryItems } from './inventory.js';
 
 export interface ExportData {
   version: string;
-  timestamp: string;
   exportedAt: string;
   inventory: InventoryItems;
   metadata: {
@@ -16,8 +15,6 @@ export interface ExportData {
     totalQuantity: number;
   };
 }
-
-export interface ExportOptions {}
 
 export interface ShareTarget {
   title: string;
@@ -29,11 +26,8 @@ export interface ShareTarget {
 /**
  * Generate export data with timestamp and metadata
  */
-export function generateExportData(
-  inventory: InventoryItems,
-  options: ExportOptions = {}
-): ExportData {
-  const timestamp = new Date().toISOString();
+export function generateExportData(inventory: InventoryItems): ExportData {
+  const exportedAt = new Date().toISOString();
   const colorsWithStock = Object.values(inventory).filter(
     quantity => quantity > 0
   ).length;
@@ -44,8 +38,7 @@ export function generateExportData(
 
   return {
     version: '1.0.0',
-    timestamp,
-    exportedAt: timestamp,
+    exportedAt,
     inventory,
     metadata: {
       totalColors: Object.keys(inventory).length,
@@ -63,7 +56,7 @@ export function generateFilename(): string {
   const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
   const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
 
-  return `mtn-inventory-${dateStr}-${timeStr}.json`;
+  return `mtn-inventory-${dateStr}-${timeStr}.txt`;
 }
 
 /**
@@ -72,7 +65,7 @@ export function generateFilename(): string {
 export function createExportBlob(data: ExportData): Blob {
   const jsonString = JSON.stringify(data, null, 2);
 
-  return new Blob([jsonString], { type: 'application/json' });
+  return new Blob([jsonString], { type: 'text/plain' });
 }
 
 /**
@@ -114,8 +107,7 @@ export async function shareData(shareTarget: ShareTarget): Promise<void> {
  * Main export function that uses Web Share API
  */
 export async function exportInventory(
-  inventory: InventoryItems,
-  options: ExportOptions = {}
+  inventory: InventoryItems
 ): Promise<void> {
   // Check if Web Share API is supported
   if (!isWebShareSupported()) {
@@ -125,13 +117,13 @@ export async function exportInventory(
     return;
   }
 
-  const exportData = generateExportData(inventory, options);
+  const exportData = generateExportData(inventory);
   const filename = generateFilename();
   const blob = createExportBlob(exportData);
 
   // Try to share files if supported
   if (canShareFiles()) {
-    const file = new File([blob], filename, { type: 'application/json' });
+    const file = new File([blob], filename, { type: 'text/plain' });
 
     // Check if we can share this file
     if (navigator.canShare && navigator.canShare({ files: [file] })) {

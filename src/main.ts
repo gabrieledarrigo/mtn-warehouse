@@ -13,7 +13,7 @@ import {
   FilterType,
   FilterState,
 } from './components/FilterBar.js';
-import { exportInventory } from './services/DataExportService.js';
+import { exportInventory } from './data-export.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './colors.js';
