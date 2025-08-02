@@ -9,18 +9,25 @@ export interface AppHeaderProps {
   title: string;
   onClearInventory: () => void;
   onExportInventory: () => void;
+  onImportInventory: () => void;
 }
 
 export const AppHeader = ({
   title,
   onClearInventory,
   onExportInventory,
+  onImportInventory,
 }: AppHeaderProps) => {
   const menuOptions: MenuOption[] = [
     {
       id: 'export-inventory',
       label: 'Esporta Inventario',
       action: onExportInventory,
+    },
+    {
+      id: 'import-inventory',
+      label: 'Importa Inventario',
+      action: onImportInventory,
     },
     {
       id: 'clear-inventory',
