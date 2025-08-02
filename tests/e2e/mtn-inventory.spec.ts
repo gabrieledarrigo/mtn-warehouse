@@ -582,6 +582,25 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await waitForAppToLoad(page);
     });
 
+    await test.step('Mock Web Share API for testing', async () => {
+      // Mock the Web Share API since it's not available in test environments
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, 'share', {
+          value: async () => {
+            // Mock successful share
+            return Promise.resolve();
+          },
+          writable: true,
+        });
+        Object.defineProperty(navigator, 'canShare', {
+          value: () => true,
+          writable: true,
+        });
+      });
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
     await test.step('Verify export option appears in overflow menu', async () => {
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await overflowTrigger.click();
@@ -600,7 +619,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const exportOption = page.getByTestId(
         'overflow-menu-option-export-inventory'
       );
-      
+
       // Mock console.log to capture export logs
       const logs: string[] = [];
       page.on('console', msg => {
@@ -611,7 +630,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
 
       // Click export option and confirm
       await exportOption.click();
-      
+
       const confirmButton = page.getByTestId('confirmation-confirm');
       await confirmButton.click();
 
@@ -625,17 +644,17 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       // The previous export should have triggered a download
       // In this test environment, we can't easily test actual file downloads
       // but we've verified the export function is called successfully
-      
+
       // We can test that the export function doesn't throw errors
       const result = await page.evaluate(async () => {
         // Get the inventory data from localStorage
         const stored = localStorage.getItem('mtn-inventory');
         if (!stored) return { success: false, error: 'No inventory data' };
-        
+
         try {
           const data = JSON.parse(stored);
           const inventory = data.items || {};
-          
+
           // Mock the DataExportService to test JSON generation
           const exportData = {
             version: '1.0.0',
@@ -644,23 +663,31 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
             inventory,
             metadata: {
               totalColors: Object.keys(inventory).length,
-              colorsWithStock: Object.values(inventory).filter((qty: any) => qty > 0).length,
-              totalQuantity: Object.values(inventory).reduce((sum: number, qty: any) => sum + qty, 0),
+              colorsWithStock: Object.values(inventory).filter(
+                (qty: any) => qty > 0
+              ).length,
+              totalQuantity: Object.values(inventory).reduce(
+                (sum: number, qty: any) => sum + qty,
+                0
+              ),
             },
           };
-          
+
           // Verify JSON can be serialized
           const jsonString = JSON.stringify(exportData, null, 2);
           const parsed = JSON.parse(jsonString);
-          
-          return { 
-            success: true, 
+
+          return {
+            success: true,
             data: parsed,
             hasInventory: Object.keys(inventory).length > 0,
-            totalQuantity: parsed.metadata.totalQuantity
+            totalQuantity: parsed.metadata.totalQuantity,
           };
         } catch (error) {
-          return { success: false, error: error instanceof Error ? error.message : String(error) };
+          return {
+            success: false,
+            error: error instanceof Error ? error.message : String(error),
+          };
         }
       });
 
@@ -678,6 +705,25 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
     await test.step('Set mobile viewport and setup data', async () => {
       await page.setViewportSize(VIEWPORT_SIZES.MOBILE);
       await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
+    await test.step('Mock Web Share API for mobile testing', async () => {
+      // Mock the Web Share API since it's not available in test environments
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, 'share', {
+          value: async () => {
+            // Mock successful share
+            return Promise.resolve();
+          },
+          writable: true,
+        });
+        Object.defineProperty(navigator, 'canShare', {
+          value: () => true,
+          writable: true,
+        });
+      });
       await page.reload();
       await waitForAppToLoad(page);
     });
@@ -710,7 +756,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const exportOption = page.getByTestId(
         'overflow-menu-option-export-inventory'
       );
-      
+
       // Track console logs
       const logs: string[] = [];
       page.on('console', msg => {
@@ -720,7 +766,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       });
 
       await exportOption.click();
-      
+
       // Confirm the export action
       const confirmButton = page.getByTestId('confirmation-confirm');
       await confirmButton.click();
@@ -739,6 +785,25 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await waitForAppToLoad(page);
     });
 
+    await test.step('Mock Web Share API for empty inventory testing', async () => {
+      // Mock the Web Share API since it's not available in test environments
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, 'share', {
+          value: async () => {
+            // Mock successful share
+            return Promise.resolve();
+          },
+          writable: true,
+        });
+        Object.defineProperty(navigator, 'canShare', {
+          value: () => true,
+          writable: true,
+        });
+      });
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
     await test.step('Test export with empty inventory', async () => {
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await overflowTrigger.click();
@@ -747,7 +812,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         'overflow-menu-option-export-inventory'
       );
       await exportOption.click();
-      
+
       const confirmButton = page.getByTestId('confirmation-confirm');
       await confirmButton.click();
 
@@ -755,7 +820,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const result = await page.evaluate(() => {
         const stored = localStorage.getItem('mtn-inventory');
         const inventory = stored ? JSON.parse(stored).items || {} : {};
-        
+
         const exportData = {
           version: '1.0.0',
           timestamp: new Date().toISOString(),
@@ -763,11 +828,16 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
           inventory,
           metadata: {
             totalColors: Object.keys(inventory).length,
-            colorsWithStock: Object.values(inventory).filter((qty: any) => qty > 0).length,
-            totalQuantity: Object.values(inventory).reduce((sum: number, qty: any) => sum + qty, 0),
+            colorsWithStock: Object.values(inventory).filter(
+              (qty: any) => qty > 0
+            ).length,
+            totalQuantity: Object.values(inventory).reduce(
+              (sum: number, qty: any) => sum + qty,
+              0
+            ),
           },
         };
-        
+
         return exportData.metadata;
       });
 
@@ -794,7 +864,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const result = await page.evaluate(() => {
         const stored = localStorage.getItem('mtn-inventory');
         const inventory = stored ? JSON.parse(stored).items || {} : {};
-        
+
         const exportData = {
           version: '1.0.0',
           timestamp: new Date().toISOString(),
@@ -802,18 +872,23 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
           inventory,
           metadata: {
             totalColors: Object.keys(inventory).length,
-            colorsWithStock: Object.values(inventory).filter((qty: any) => qty > 0).length,
-            totalQuantity: Object.values(inventory).reduce((sum: number, qty: any) => sum + qty, 0),
+            colorsWithStock: Object.values(inventory).filter(
+              (qty: any) => qty > 0
+            ).length,
+            totalQuantity: Object.values(inventory).reduce(
+              (sum: number, qty: any) => sum + qty,
+              0
+            ),
           },
         };
-        
+
         return {
           hasRequiredFields: Boolean(
             exportData.version &&
-            exportData.timestamp &&
-            exportData.exportedAt &&
-            exportData.inventory &&
-            exportData.metadata
+              exportData.timestamp &&
+              exportData.exportedAt &&
+              exportData.inventory &&
+              exportData.metadata
           ),
           metadata: exportData.metadata,
           inventoryKeys: Object.keys(exportData.inventory),
@@ -826,9 +901,64 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       expect(result.metadata.totalColors).toBe(4);
       expect(result.metadata.colorsWithStock).toBe(3); // RV-222 has 0 quantity
       expect(result.metadata.totalQuantity).toBe(16); // 5+0+10+1
-      expect(result.inventoryKeys).toEqual(['RV-252', 'RV-222', 'RV-7', 'RV-20']);
+      expect(result.inventoryKeys).toEqual([
+        'RV-252',
+        'RV-222',
+        'RV-7',
+        'RV-20',
+      ]);
       expect(result.versionFormat).toBe(true);
       expect(result.timestampFormat).toBe(true);
+    });
+  });
+
+  test('should show Italian alert when Web Share API is not supported', async ({
+    page,
+  }) => {
+    await test.step('Setup inventory data and navigate', async () => {
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
+    await test.step('Mock unsupported Web Share API', async () => {
+      // Remove Web Share API support to test fallback alert
+      await page.addInitScript(() => {
+        delete (navigator as any).share;
+        delete (navigator as any).canShare;
+      });
+      await page.reload();
+      await waitForAppToLoad(page);
+    });
+
+    await test.step('Test alert is shown when export is attempted', async () => {
+      // Listen for dialog events (alerts)
+      const dialogs: string[] = [];
+      page.on('dialog', async dialog => {
+        dialogs.push(dialog.message());
+        await dialog.accept();
+      });
+
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      const exportOption = page.getByTestId(
+        'overflow-menu-option-export-inventory'
+      );
+      await exportOption.click();
+
+      const confirmButton = page.getByTestId('confirmation-confirm');
+      await confirmButton.click();
+
+      // Wait for the alert to appear
+      await page.waitForTimeout(500);
+
+      // Verify Italian alert message is shown
+      expect(dialogs.length).toBe(1);
+      expect(dialogs[0]).toContain(
+        'Questa funzionalità richiede un dispositivo che supporta la condivisione nativa'
+      );
+      expect(dialogs[0]).toContain('Chrome su Android o Safari su iOS');
     });
   });
 });

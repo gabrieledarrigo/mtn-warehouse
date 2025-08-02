@@ -18,7 +18,6 @@ export interface ExportData {
 }
 
 export interface ExportOptions {
-  includeMetadata?: boolean;
   filename?: string;
 }
 
@@ -37,8 +36,13 @@ export function generateExportData(
   options: ExportOptions = {}
 ): ExportData {
   const timestamp = new Date().toISOString();
-  const colorsWithStock = Object.values(inventory).filter(qty => qty > 0).length;
-  const totalQuantity = Object.values(inventory).reduce((sum, qty) => sum + qty, 0);
+  const colorsWithStock = Object.values(inventory).filter(
+    quantity => quantity > 0
+  ).length;
+  const totalQuantity = Object.values(inventory).reduce(
+    (sum, quantity) => sum + quantity,
+    0
+  );
 
   return {
     version: '1.0.0',
@@ -64,7 +68,7 @@ export function generateFilename(options: ExportOptions = {}): string {
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
   const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
-  
+
   return `mtn-inventory-${dateStr}-${timeStr}.json`;
 }
 
@@ -73,6 +77,7 @@ export function generateFilename(options: ExportOptions = {}): string {
  */
 export function createExportBlob(data: ExportData): Blob {
   const jsonString = JSON.stringify(data, null, 2);
+
   return new Blob([jsonString], { type: 'application/json' });
 }
 
@@ -87,7 +92,11 @@ export function isWebShareSupported(): boolean {
  * Check if we can share files via Web Share API
  */
 export function canShareFiles(): boolean {
-  return isWebShareSupported() && 'canShare' in navigator && typeof navigator.canShare === 'function';
+  return (
+    isWebShareSupported() &&
+    'canShare' in navigator &&
+    typeof navigator.canShare === 'function'
+  );
 }
 
 /**
@@ -98,84 +107,57 @@ export async function shareData(shareTarget: ShareTarget): Promise<void> {
     throw new Error('Web Share API not supported');
   }
 
-  try {
-    await navigator.share(shareTarget);
-  } catch (error) {
+  await navigator.share(shareTarget).catch(error => {
     if (error instanceof Error && error.name === 'AbortError') {
       // User cancelled the share - not an error
       return;
     }
     throw error;
-  }
+  });
 }
 
 /**
- * Fallback download for browsers that don't support Web Share API
- */
-export function downloadFile(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.style.display = 'none';
-  
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  
-  // Clean up the URL object
-  URL.revokeObjectURL(url);
-}
-
-/**
- * Main export function that handles both Web Share API and fallback
+ * Main export function that uses Web Share API
  */
 export async function exportInventory(
   inventory: InventoryItems,
   options: ExportOptions = {}
 ): Promise<void> {
+  // Check if Web Share API is supported
+  if (!isWebShareSupported()) {
+    alert(
+      'Questa funzionalità richiede un dispositivo che supporta la condivisione nativa. Utilizza Chrome su Android o Safari su iOS.'
+    );
+    return;
+  }
+
   const exportData = generateExportData(inventory, options);
   const filename = generateFilename(options);
   const blob = createExportBlob(exportData);
 
-  // Try Web Share API first if supported
+  // Try to share files if supported
   if (canShareFiles()) {
-    try {
-      const file = new File([blob], filename, { type: 'application/json' });
-      
-      // Check if we can share this file
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await shareData({
-          title: 'Montana Hardcore Inventory Export',
-          text: `Inventory export from ${new Date().toLocaleDateString()}`,
-          files: [file],
-        });
-        return;
-      }
-    } catch (error) {
-      console.warn('File sharing failed, falling back to download:', error);
-    }
-  }
+    const file = new File([blob], filename, { type: 'application/json' });
 
-  // Try basic Web Share API without files
-  if (isWebShareSupported()) {
-    try {
-      // Create a data URL for sharing
-      const dataUrl = URL.createObjectURL(blob);
+    // Check if we can share this file
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await shareData({
         title: 'Montana Hardcore Inventory Export',
-        text: `Inventory export from ${new Date().toLocaleDateString()}. Download link:`,
-        url: dataUrl,
+        text: `Inventory export from ${new Date().toLocaleDateString()}`,
+        files: [file],
       });
-      
-      // Clean up after a delay
-      setTimeout(() => URL.revokeObjectURL(dataUrl), 5000);
       return;
-    } catch (error) {
-      console.warn('Web Share API failed, falling back to download:', error);
     }
   }
 
-  // Fallback to direct download
-  downloadFile(blob, filename);
+  // Fallback to basic Web Share API without files
+  const dataUrl = URL.createObjectURL(blob);
+  await shareData({
+    title: 'Montana Hardcore Inventory Export',
+    text: `Inventory export from ${new Date().toLocaleDateString()}. Download link:`,
+    url: dataUrl,
+  });
+
+  // Clean up after a delay
+  setTimeout(() => URL.revokeObjectURL(dataUrl), 5000);
 }

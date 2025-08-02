@@ -12,7 +12,11 @@ export interface AppHeaderProps {
   onExportInventory: () => void;
 }
 
-export const AppHeader = ({ title, onClearInventory, onExportInventory }: AppHeaderProps) => {
+export const AppHeader = ({
+  title,
+  onClearInventory,
+  onExportInventory,
+}: AppHeaderProps) => {
   const menuOptions: MenuOption[] = [
     {
       id: 'export-inventory',

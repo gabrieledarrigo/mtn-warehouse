@@ -44,15 +44,18 @@ const handleClearInventory = () => {
 };
 
 const handleExportInventory = async () => {
-  try {
-    console.log('Exporting inventory...');
-    await exportInventory(inventory);
-    console.log('Inventory exported successfully');
-  } catch (error) {
-    console.error('Failed to export inventory:', error);
-    // Show user-friendly error message
-    alert('Sorry, there was an error exporting your inventory. Please try again.');
-  }
+  console.log('Exporting inventory...');
+  await exportInventory(inventory)
+    .then(() => {
+      console.log('Inventory exported successfully');
+    })
+    .catch(error => {
+      console.error('Failed to export inventory:', error);
+      // Show user-friendly error message
+      alert(
+        'Sorry, there was an error exporting your inventory. Please try again.'
+      );
+    });
 };
 
 const handleColorClick = (color: Color) => {
