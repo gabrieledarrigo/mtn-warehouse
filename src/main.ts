@@ -14,7 +14,7 @@ import {
   FilterState,
 } from './components/FilterBar.js';
 import { exportInventory } from './data-export.js';
-import { importInventory, applyImport, MergeStrategy } from './data-import.js';
+import { importInventory, applyImport } from './data-import.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './colors.js';
@@ -61,19 +61,13 @@ const handleExportInventory = async () => {
 
 const handleImportInventory = async () => {
   console.log('Importing inventory...');
-  
+
   try {
     // Step 1: Get import data and preview
-    const result = await importInventory(inventory, {
-      mergeStrategy: MergeStrategy.REPLACE,
-      validateSchema: true,
-      createBackup: false,
-    });
+    const result = await importInventory(inventory);
 
-    if (!result.success) {
-      if (result.error) {
-        alert(`Errore durante l'importazione: ${result.error}`);
-      }
+    if (result.error) {
+      alert(`Errore durante l'importazione: ${result.error}`);
       return;
     }
 
@@ -88,7 +82,6 @@ const handleImportInventory = async () => {
 Anteprima importazione:
 • ${preview.newColors.length} nuovi colori
 • ${preview.updatedColors.length} colori aggiornati  
-• ${preview.unchangedColors.length} colori invariati
 • Totale modifiche: ${preview.totalChanges}
 
 Fonte: ${preview.metadata.importSource}
@@ -103,20 +96,19 @@ Vuoi procedere con l'importazione?
     }
 
     // Step 3: Apply import
-    const newInventory = applyImport(importData, inventory, MergeStrategy.REPLACE);
-    
+    const newInventory = applyImport(importData, inventory);
+
     // Step 4: Save the new inventory
     saveInventory(newInventory);
-    
+
     console.log('Import completed successfully');
     alert('Importazione completata con successo!');
-    
+
     // Reload the page to refresh the inventory
     window.location.reload();
-    
   } catch (error) {
     console.error('Failed to import inventory:', error);
-    alert('Errore durante l\'importazione. Verifica che il file sia valido.');
+    alert("Errore durante l'importazione. Verifica che il file sia valido.");
   }
 };
 
