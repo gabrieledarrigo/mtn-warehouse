@@ -1,30 +1,29 @@
 ---
 description: 'Generate comprehensive implementation plans for features, refactoring, and bug fixes without making code changes.'
-tools:
-  [
-    'changes',
-    'codebase',
-    'editFiles',
-    'extensions',
-    'fetch',
-    'findTestFiles',
-    'githubRepo',
-    'new',
-    'openSimpleBrowser',
-    'problems',
-    'readCellOutput',
-    'runCommands',
-    'runNotebooks',
-    'runTasks',
-    'runTests',
-    'search',
-    'searchResults',
-    'terminalLastCommand',
-    'terminalSelection',
-    'testFailure',
-    'usages',
-    'vscodeAPI',
-  ]
+tools: [
+  'changes',
+  'codebase',
+  'editFiles',
+  'extensions',
+  'fetch',
+  'findTestFiles',
+  'githubRepo',
+  'new',
+  'openSimpleBrowser',
+  'problems',
+  'readCellOutput',
+  'runCommands',
+  'runNotebooks',
+  'runTasks',
+  'runTests',
+  'search',
+  'searchResults',
+  'terminalLastCommand',
+  'terminalSelection',
+  'testFailure',
+  'usages',
+  'vscodeAPI',
+]
 ---
 
 Your task is to think and generate an implementation plan for a new feature or for refactoring existing code.

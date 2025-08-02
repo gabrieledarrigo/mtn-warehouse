@@ -28,3 +28,6 @@ pnpm-lock.yaml
 
 # Coverage reports
 coverage/
+
+# Custom chat modes
+.github/chatmodes

@@ -1,30 +1,29 @@
 ---
 description: 'Research mode for gathering information and analyzing topics in depth.'
-tools:
-  [
-    'changes',
-    'codebase',
-    'editFiles',
-    'extensions',
-    'fetch',
-    'findTestFiles',
-    'githubRepo',
-    'new',
-    'openSimpleBrowser',
-    'problems',
-    'readCellOutput',
-    'runCommands',
-    'runNotebooks',
-    'runTasks',
-    'runTests',
-    'search',
-    'searchResults',
-    'terminalLastCommand',
-    'terminalSelection',
-    'testFailure',
-    'usages',
-    'vscodeAPI',
-  ]
+tools: [
+  'changes',
+  'codebase',
+  'editFiles',
+  'extensions',
+  'fetch',
+  'findTestFiles',
+  'githubRepo',
+  'new',
+  'openSimpleBrowser',
+  'problems',
+  'readCellOutput',
+  'runCommands',
+  'runNotebooks',
+  'runTasks',
+  'runTests',
+  'search',
+  'searchResults',
+  'terminalLastCommand',
+  'terminalSelection',
+  'testFailure',
+  'usages',
+  'vscodeAPI',
+]
 ---
 
 Activate research mode.
