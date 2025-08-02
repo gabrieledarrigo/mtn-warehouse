@@ -13,6 +13,7 @@ import {
   FilterType,
   FilterState,
 } from './components/FilterBar.js';
+import { exportInventory } from './services/DataExportService.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './colors.js';
@@ -40,6 +41,18 @@ const handleClearInventory = () => {
   clearInventory();
   console.log('Inventory cleared');
   window.location.reload();
+};
+
+const handleExportInventory = async () => {
+  try {
+    console.log('Exporting inventory...');
+    await exportInventory(inventory);
+    console.log('Inventory exported successfully');
+  } catch (error) {
+    console.error('Failed to export inventory:', error);
+    // Show user-friendly error message
+    alert('Sorry, there was an error exporting your inventory. Please try again.');
+  }
 };
 
 const handleColorClick = (color: Color) => {
@@ -115,6 +128,7 @@ const renderApp = () => {
       totalColors: MONTANA_COLORS.length,
       inventory,
       onClearInventory: handleClearInventory,
+      onExportInventory: handleExportInventory,
       colors: filteredColors,
       onColorClick: handleColorClick,
       selectedColor,

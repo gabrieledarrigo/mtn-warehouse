@@ -9,10 +9,16 @@ import { OverflowMenu, MenuOption } from './OverflowMenu.js';
 export interface AppHeaderProps {
   title: string;
   onClearInventory: () => void;
+  onExportInventory: () => void;
 }
 
-export const AppHeader = ({ title, onClearInventory }: AppHeaderProps) => {
+export const AppHeader = ({ title, onClearInventory, onExportInventory }: AppHeaderProps) => {
   const menuOptions: MenuOption[] = [
+    {
+      id: 'export-inventory',
+      label: 'Esporta Inventario',
+      action: onExportInventory,
+    },
     {
       id: 'clear-inventory',
       label: 'Clear Inventory',
