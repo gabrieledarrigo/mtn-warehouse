@@ -56,7 +56,6 @@ const handleExportInventory = async () => {
     })
     .catch(error => {
       console.error('Failed to export inventory:', error);
-      // Show user-friendly error message
       alert(
         'Sorry, there was an error exporting your inventory. Please try again.'
       );
