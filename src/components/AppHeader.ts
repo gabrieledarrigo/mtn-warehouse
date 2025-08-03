@@ -9,12 +9,14 @@ export interface AppHeaderProps {
   title: string;
   onClearInventory: () => void;
   onExportInventory: () => void;
+  onImportInventory: () => void;
 }
 
 export const AppHeader = ({
   title,
   onClearInventory,
   onExportInventory,
+  onImportInventory,
 }: AppHeaderProps) => {
   const menuOptions: MenuOption[] = [
     {
@@ -23,8 +25,13 @@ export const AppHeader = ({
       action: onExportInventory,
     },
     {
+      id: 'import-inventory',
+      label: 'Importa Inventario',
+      action: onImportInventory,
+    },
+    {
       id: 'clear-inventory',
-      label: 'Clear Inventory',
+      label: 'Svuota Inventario',
       action: onClearInventory,
       confirmation: {
         title: "Svuotare l'inventario?",

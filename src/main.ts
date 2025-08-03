@@ -14,6 +14,7 @@ import {
   FilterState,
 } from './components/FilterBar.js';
 import { exportInventory } from './data-export.js';
+import { importInventory, applyImport } from './data-import.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './colors.js';
@@ -56,6 +57,46 @@ const handleExportInventory = async () => {
         'Sorry, there was an error exporting your inventory. Please try again.'
       );
     });
+};
+
+const handleImportInventory = async () => {
+  console.log('Importing inventory...');
+
+  try {
+    const result = await importInventory(inventory);
+    const { preview, importData } = result;
+    
+    const message = `
+Anteprima importazione:
+• ${preview.newColors.length} nuovi colori
+• ${preview.updatedColors.length} colori aggiornati  
+• Totale modifiche: ${preview.totalChanges}
+
+Fonte: ${preview.metadata.importSource}
+
+Vuoi procedere con l'importazione?
+    `.trim();
+
+    const confirmed = confirm(message);
+    if (!confirmed) {
+      console.log('Import cancelled by user');
+      return;
+    }
+
+    const newInventory = applyImport(importData, inventory);
+
+    // Step 4: Save the new inventory
+    saveInventory(newInventory);
+
+    console.log('Import completed successfully');
+    alert('Importazione completata con successo!');
+
+    // Reload the page to refresh the inventory
+    window.location.reload();
+  } catch (error) {
+    console.error('Failed to import inventory:', error);
+    alert(`Errore durante l'importazione: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
+  }
 };
 
 const handleColorClick = (color: Color) => {
@@ -132,6 +173,7 @@ const renderApp = () => {
       inventory,
       onClearInventory: handleClearInventory,
       onExportInventory: handleExportInventory,
+      onImportInventory: handleImportInventory,
       colors: filteredColors,
       onColorClick: handleColorClick,
       selectedColor,

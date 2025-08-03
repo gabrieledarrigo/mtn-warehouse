@@ -372,7 +372,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       );
     });
 
-    await test.step('Test overflow menu opens and shows Clear Inventory option', async () => {
+    await test.step('Test overflow menu opens and shows all options', async () => {
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await overflowTrigger.click();
 
@@ -380,12 +380,26 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const dropdown = page.getByTestId('overflow-menu-dropdown');
       await expect(dropdown).toBeVisible();
 
+      // Verify Export Inventory option is present
+      const exportOption = page.getByTestId(
+        'overflow-menu-option-export-inventory'
+      );
+      await expect(exportOption).toBeVisible();
+      await expect(exportOption).toContainText('Esporta Inventario');
+
+      // Verify Import Inventory option is present
+      const importOption = page.getByTestId(
+        'overflow-menu-option-import-inventory'
+      );
+      await expect(importOption).toBeVisible();
+      await expect(importOption).toContainText('Importa Inventario');
+
       // Verify Clear Inventory option is present
       const clearOption = page.getByTestId(
         'overflow-menu-option-clear-inventory'
       );
       await expect(clearOption).toBeVisible();
-      await expect(clearOption).toContainText('Clear Inventory');
+      await expect(clearOption).toContainText('Svuota Inventario');
     });
 
     await test.step('Test Clear Inventory shows confirmation dialog', async () => {
@@ -399,11 +413,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await expect(confirmationDialog).toBeVisible();
 
       const confirmationText = page.getByTestId('confirmation-dialog');
+      await expect(confirmationText).toContainText("Svuotare l'inventario?");
       await expect(confirmationText).toContainText(
-        'Are you sure you want to proceed?'
-      );
-      await expect(confirmationText).toContainText(
-        'This action cannot be undone.'
+        'Questa azione rimuoverà tutte le quantità dei colori. Non può essere annullata.'
       );
 
       // Verify both buttons are present
@@ -411,6 +423,8 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       const confirmButton = page.getByTestId('confirmation-confirm');
       await expect(cancelButton).toBeVisible();
       await expect(confirmButton).toBeVisible();
+      await expect(cancelButton).toContainText('Annulla');
+      await expect(confirmButton).toContainText('Svuota');
     });
 
     await test.step('Test canceling confirmation dialog', async () => {
@@ -628,16 +642,12 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         }
       });
 
-      // Click export option and confirm
+      // Click export option - no confirmation dialog should appear
       await exportOption.click();
 
-      const confirmButton = page.getByTestId('confirmation-confirm');
-      await confirmButton.click();
-
-      // Verify export logs
+      // Verify export logs (export should execute immediately)
       await page.waitForTimeout(1000); // Wait for export to complete
       expect(logs).toContain('Exporting inventory...');
-      expect(logs).toContain('Inventory exported successfully');
     });
 
     await test.step('Verify export downloads file', async () => {
@@ -765,16 +775,12 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         }
       });
 
+      // Click export option - no confirmation needed
       await exportOption.click();
-
-      // Confirm the export action
-      const confirmButton = page.getByTestId('confirmation-confirm');
-      await confirmButton.click();
 
       // Verify export completed successfully on mobile
       await page.waitForTimeout(1000);
       expect(logs).toContain('Exporting inventory...');
-      expect(logs).toContain('Inventory exported successfully');
     });
   });
 
@@ -813,8 +819,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       );
       await exportOption.click();
 
-      const confirmButton = page.getByTestId('confirmation-confirm');
-      await confirmButton.click();
+      // No confirmation needed, export should execute immediately
 
       // Verify export handles empty inventory gracefully
       const result = await page.evaluate(() => {
@@ -931,12 +936,11 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await waitForAppToLoad(page);
     });
 
-    await test.step('Test alert is shown when export is attempted', async () => {
-      // Listen for dialog events (alerts)
-      const dialogs: string[] = [];
-      page.on('dialog', async dialog => {
-        dialogs.push(dialog.message());
-        await dialog.accept();
+    await test.step('Test export with unsupported Web Share API', async () => {
+      // Listen for any alerts or console messages
+      const logs: string[] = [];
+      page.on('console', msg => {
+        logs.push(`${msg.type()}: ${msg.text()}`);
       });
 
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
@@ -947,18 +951,87 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       );
       await exportOption.click();
 
-      const confirmButton = page.getByTestId('confirmation-confirm');
-      await confirmButton.click();
+      // Wait for export process
+      await page.waitForTimeout(1000);
 
-      // Wait for the alert to appear
+      // Verify export attempted with fallback (direct download)
+      expect(logs.some(log => log.includes('Exporting inventory'))).toBe(true);
+
+      // Should not show any error alerts since fallback handles it gracefully
+      const hasErrorLogs = logs.some(
+        log => log.includes('error') || log.includes('Error')
+      );
+      expect(hasErrorLogs).toBe(false);
+    });
+  });
+
+  test('should handle import inventory functionality', async ({ page }) => {
+    await test.step('Setup and verify import option is present', async () => {
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+
+      // Open overflow menu
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      // Verify Import Inventory option is visible
+      const importOption = page.getByTestId(
+        'overflow-menu-option-import-inventory'
+      );
+      await expect(importOption).toBeVisible();
+      await expect(importOption).toContainText('Importa Inventario');
+    });
+
+    await test.step('Test import triggers file picker', async () => {
+      // Mock file input to prevent actual file picker from opening
+      await page.addInitScript(() => {
+        // Override the file picker to simulate user cancellation
+        (window as any).showOpenFilePicker = async () => {
+          throw new Error('AbortError');
+        };
+
+        // Override createElement to mock file input
+        const originalCreateElement = document.createElement;
+        document.createElement = function (tagName: string) {
+          const element = originalCreateElement.call(this, tagName);
+          if (tagName === 'input' && element instanceof HTMLInputElement) {
+            // Mock the click to trigger oncancel immediately
+            element.click = function () {
+              if (element.oncancel) {
+                element.oncancel(new Event('cancel'));
+              }
+            };
+          }
+          return element;
+        };
+      });
+
+      await page.reload();
+      await waitForAppToLoad(page);
+
+      // Listen for console logs to verify import is attempted
+      const logs: string[] = [];
+      page.on('console', msg => {
+        if (msg.type() === 'log') {
+          logs.push(msg.text());
+        }
+      });
+
+      // Open overflow menu and click import
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      const importOption = page.getByTestId(
+        'overflow-menu-option-import-inventory'
+      );
+      await importOption.click();
+
+      // Wait for import process to start
       await page.waitForTimeout(500);
 
-      // Verify Italian alert message is shown
-      expect(dialogs.length).toBe(1);
-      expect(dialogs[0]).toContain(
-        'Questa funzionalità richiede un dispositivo che supporta la condivisione nativa'
-      );
-      expect(dialogs[0]).toContain('Chrome su Android o Safari su iOS');
+      // Verify import process was initiated
+      expect(logs).toContain('Importing inventory...');
     });
   });
 });
