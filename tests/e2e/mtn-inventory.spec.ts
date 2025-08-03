@@ -413,11 +413,9 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       await expect(confirmationDialog).toBeVisible();
 
       const confirmationText = page.getByTestId('confirmation-dialog');
+      await expect(confirmationText).toContainText("Svuotare l'inventario?");
       await expect(confirmationText).toContainText(
-        'Are you sure you want to proceed?'
-      );
-      await expect(confirmationText).toContainText(
-        'This action cannot be undone.'
+        'Questa azione rimuoverà tutte le quantità dei colori. Non può essere annullata.'
       );
 
       // Verify both buttons are present
@@ -1001,14 +999,14 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         (window as any).showOpenFilePicker = async () => {
           throw new Error('AbortError');
         };
-        
+
         // Override createElement to mock file input
         const originalCreateElement = document.createElement;
-        document.createElement = function(tagName: string) {
+        document.createElement = function (tagName: string) {
           const element = originalCreateElement.call(this, tagName);
           if (tagName === 'input' && element instanceof HTMLInputElement) {
             // Mock the click to trigger oncancel immediately
-            element.click = function() {
+            element.click = function () {
               if (element.oncancel) {
                 element.oncancel(new Event('cancel'));
               }
@@ -1017,7 +1015,7 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
           return element;
         };
       });
-      
+
       await page.reload();
       await waitForAppToLoad(page);
 
