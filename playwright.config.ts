@@ -43,11 +43,11 @@ export default defineConfig({
     // Take screenshot on failure
     screenshot: 'only-on-failure',
 
-    // Record video on failure
-    video: 'retain-on-failure',
+    // Disable video recording to avoid ffmpeg dependency
+    video: 'off',
 
-    // Collect trace on failure
-    trace: 'retain-on-failure',
+    // Disable trace recording to avoid ffmpeg dependency
+    trace: 'off',
 
     // Ignore HTTPS errors
     ignoreHTTPSErrors: true,
@@ -66,7 +66,10 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         // Use system Google Chrome browser
-        channel: 'chrome',
+        executablePath: '/usr/bin/google-chrome',
+        launchOptions: {
+          args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        },
       },
     },
   ],

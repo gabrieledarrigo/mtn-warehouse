@@ -372,13 +372,27 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
       );
     });
 
-    await test.step('Test overflow menu opens and shows Clear Inventory option', async () => {
+    await test.step('Test overflow menu opens and shows all options', async () => {
       const overflowTrigger = page.getByTestId('overflow-menu-trigger');
       await overflowTrigger.click();
 
       // Verify dropdown appears
       const dropdown = page.getByTestId('overflow-menu-dropdown');
       await expect(dropdown).toBeVisible();
+
+      // Verify Export Inventory option is present
+      const exportOption = page.getByTestId(
+        'overflow-menu-option-export-inventory'
+      );
+      await expect(exportOption).toBeVisible();
+      await expect(exportOption).toContainText('Esporta Inventario');
+
+      // Verify Import Inventory option is present
+      const importOption = page.getByTestId(
+        'overflow-menu-option-import-inventory'
+      );
+      await expect(importOption).toBeVisible();
+      await expect(importOption).toContainText('Importa Inventario');
 
       // Verify Clear Inventory option is present
       const clearOption = page.getByTestId(
@@ -959,6 +973,76 @@ test.describe('Montana Hardcore Inventory - Essential Features', () => {
         'Questa funzionalità richiede un dispositivo che supporta la condivisione nativa'
       );
       expect(dialogs[0]).toContain('Chrome su Android o Safari su iOS');
+    });
+  });
+
+  test('should handle import inventory functionality', async ({ page }) => {
+    await test.step('Setup and verify import option is present', async () => {
+      await setInventoryData(page, SAMPLE_INVENTORY);
+      await page.reload();
+      await waitForAppToLoad(page);
+
+      // Open overflow menu
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      // Verify Import Inventory option is visible
+      const importOption = page.getByTestId(
+        'overflow-menu-option-import-inventory'
+      );
+      await expect(importOption).toBeVisible();
+      await expect(importOption).toContainText('Importa Inventario');
+    });
+
+    await test.step('Test import triggers file picker', async () => {
+      // Mock file input to prevent actual file picker from opening
+      await page.addInitScript(() => {
+        // Override the file picker to simulate user cancellation
+        (window as any).showOpenFilePicker = async () => {
+          throw new Error('AbortError');
+        };
+        
+        // Override createElement to mock file input
+        const originalCreateElement = document.createElement;
+        document.createElement = function(tagName: string) {
+          const element = originalCreateElement.call(this, tagName);
+          if (tagName === 'input' && element instanceof HTMLInputElement) {
+            // Mock the click to trigger oncancel immediately
+            element.click = function() {
+              if (element.oncancel) {
+                element.oncancel(new Event('cancel'));
+              }
+            };
+          }
+          return element;
+        };
+      });
+      
+      await page.reload();
+      await waitForAppToLoad(page);
+
+      // Listen for console logs to verify import is attempted
+      const logs: string[] = [];
+      page.on('console', msg => {
+        if (msg.type() === 'log') {
+          logs.push(msg.text());
+        }
+      });
+
+      // Open overflow menu and click import
+      const overflowTrigger = page.getByTestId('overflow-menu-trigger');
+      await overflowTrigger.click();
+
+      const importOption = page.getByTestId(
+        'overflow-menu-option-import-inventory'
+      );
+      await importOption.click();
+
+      // Wait for import process to start
+      await page.waitForTimeout(500);
+
+      // Verify import process was initiated
+      expect(logs).toContain('Importing inventory...');
     });
   });
 });
