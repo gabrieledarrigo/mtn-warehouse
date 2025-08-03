@@ -6,7 +6,7 @@
 import type { InventoryItems } from './inventory.js';
 import type { ExportData } from './data-export.js';
 
-export type ImportData = ExportData
+export type ImportData = ExportData;
 
 export interface ImportPreview {
   newColors: {
@@ -83,7 +83,6 @@ export function openFilePicker(): Promise<File | null> {
     };
 
     input.oncancel = () => resolve(null);
-
     input.click();
   });
 }
@@ -96,7 +95,6 @@ export async function parseImportFile(file: File): Promise<ImportData> {
     throw new Error('Nessun file selezionato');
   }
 
-  // Check file size (max 10MB for safety)
   if (file.size > MAX_FILE_SIZE) {
     throw new Error('File troppo grande. Dimensione massima: 10MB');
   }
@@ -109,7 +107,6 @@ export async function parseImportFile(file: File): Promise<ImportData> {
 
   const data = JSON.parse(content);
 
-  // Validate the data structure
   if (!validateImportData(data)) {
     throw new Error(
       'Formato file non valido. Seleziona un file di esportazione Montana Inventory.'
@@ -211,7 +208,6 @@ export function applyImport(
 ): InventoryItems {
   const newInventory = { ...currentInventory };
 
-  // Replace with imported data
   for (const [code, importQuantity] of Object.entries(importData.inventory)) {
     newInventory[code] = importQuantity;
   }
