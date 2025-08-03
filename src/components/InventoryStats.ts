@@ -4,7 +4,7 @@
  */
 
 import { html } from 'lit-html';
-import type { InventoryItems } from '../inventory.js';
+import type { InventoryItems } from '../lib/inventory.js';
 
 export interface InventoryStatsProps {
   totalColors: number;

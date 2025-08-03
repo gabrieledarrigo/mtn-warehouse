@@ -6,15 +6,19 @@ import './styles/searchBar.css';
 import './styles/filterBar.css';
 import './styles/overflowMenu.css';
 import { MONTANA_COLORS } from './colors.js';
-import { loadInventory, saveInventory, clearInventory } from './inventory.js';
-import { searchColors, getColorsFromSearchResults } from './search.js';
+import {
+  loadInventory,
+  saveInventory,
+  clearInventory,
+} from './lib/inventory.js';
+import { searchColors, getColorsFromSearchResults } from './lib/search.js';
 import {
   filterColors,
   FilterType,
   FilterState,
 } from './components/FilterBar.js';
-import { exportInventory } from './data-export.js';
-import { importInventory, applyImport } from './data-import.js';
+import { exportInventory } from './lib/data-export.js';
+import { importInventory, applyImport } from './lib/data-import.js';
 import { html, render } from 'lit-html';
 import { AppLayout } from './components/AppLayout.js';
 import type { Color } from './colors.js';
@@ -65,7 +69,7 @@ const handleImportInventory = async () => {
   try {
     const result = await importInventory(inventory);
     const { preview, importData } = result;
-    
+
     const message = `
 Anteprima importazione:
 • ${preview.newColors.length} nuovi colori
@@ -79,7 +83,6 @@ Vuoi procedere con l'importazione?
 
     const confirmed = confirm(message);
     if (!confirmed) {
-      console.log('Import cancelled by user');
       return;
     }
 
@@ -87,15 +90,15 @@ Vuoi procedere con l'importazione?
 
     // Step 4: Save the new inventory
     saveInventory(newInventory);
-
-    console.log('Import completed successfully');
     alert('Importazione completata con successo!');
 
     // Reload the page to refresh the inventory
     window.location.reload();
   } catch (error) {
     console.error('Failed to import inventory:', error);
-    alert(`Errore durante l'importazione: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
+    alert(
+      `Errore durante l'importazione: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`
+    );
   }
 };
 
