@@ -31,7 +31,7 @@ export const AppHeader = ({
     },
     {
       id: 'clear-inventory',
-      label: 'Clear Inventory',
+      label: 'Svuota Inventario',
       action: onClearInventory,
       confirmation: {
         title: "Svuotare l'inventario?",
