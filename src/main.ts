@@ -63,21 +63,9 @@ const handleImportInventory = async () => {
   console.log('Importing inventory...');
 
   try {
-    // Step 1: Get import data and preview
     const result = await importInventory(inventory);
-
-    if (result.error) {
-      alert(`Errore durante l'importazione: ${result.error}`);
-      return;
-    }
-
-    if (!result.preview || !result.importData) {
-      alert('Errore: dati di importazione non disponibili');
-      return;
-    }
-
-    // Step 2: Show preview and confirm
     const { preview, importData } = result;
+    
     const message = `
 Anteprima importazione:
 • ${preview.newColors.length} nuovi colori
@@ -95,7 +83,6 @@ Vuoi procedere con l'importazione?
       return;
     }
 
-    // Step 3: Apply import
     const newInventory = applyImport(importData, inventory);
 
     // Step 4: Save the new inventory
@@ -108,7 +95,7 @@ Vuoi procedere con l'importazione?
     window.location.reload();
   } catch (error) {
     console.error('Failed to import inventory:', error);
-    alert("Errore durante l'importazione. Verifica che il file sia valido.");
+    alert(`Errore durante l'importazione: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
   }
 };
 

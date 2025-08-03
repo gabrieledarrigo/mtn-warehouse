@@ -6,20 +6,18 @@
 import type { InventoryItems } from './inventory.js';
 import type { ExportData } from './data-export.js';
 
-export interface ImportData extends ExportData {
-  // Import data has the same structure as export data
-}
+export type ImportData = ExportData
 
 export interface ImportPreview {
-  newColors: Array<{
+  newColors: {
     code: string;
     quantity: number;
-  }>;
-  updatedColors: Array<{
+  }[];
+  updatedColors: {
     code: string;
     currentQuantity: number;
     newQuantity: number;
-  }>;
+  }[];
   totalChanges: number;
   metadata: {
     importedAt: string;
@@ -29,11 +27,14 @@ export interface ImportPreview {
 }
 
 export interface ImportResult {
-  success: boolean;
-  message: string;
-  preview?: ImportPreview;
-  error?: string;
+  preview: ImportPreview;
+  importData: ImportData;
 }
+
+/**
+ * Maximum allowed file size for import (10MB)
+ */
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 /**
  * Check if File System Access API is supported
@@ -51,7 +52,6 @@ export function openFilePicker(): Promise<File | null> {
       .showOpenFilePicker({
         types: [
           {
-            description: 'Montana Inventory Files',
             accept: {
               'application/json': ['.json', '.txt'],
               'text/plain': ['.json', '.txt'],
@@ -69,23 +69,23 @@ export function openFilePicker(): Promise<File | null> {
         }
         throw error;
       });
-  } else {
-    // Fallback to traditional file input
-    return new Promise(resolve => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '.json,.txt,application/json,text/plain';
-
-      input.onchange = event => {
-        const file = (event.target as HTMLInputElement).files?.[0];
-        resolve(file || null);
-      };
-
-      input.oncancel = () => resolve(null);
-
-      input.click();
-    });
   }
+
+  // Fallback to traditional file input
+  return new Promise(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.txt,application/json,text/plain';
+
+    input.onchange = event => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      resolve(file || null);
+    };
+
+    input.oncancel = () => resolve(null);
+
+    input.click();
+  });
 }
 
 /**
@@ -97,7 +97,7 @@ export async function parseImportFile(file: File): Promise<ImportData> {
   }
 
   // Check file size (max 10MB for safety)
-  if (file.size > 10 * 1024 * 1024) {
+  if (file.size > MAX_FILE_SIZE) {
     throw new Error('File troppo grande. Dimensione massima: 10MB');
   }
 
@@ -224,34 +224,17 @@ export function applyImport(
  */
 export async function importInventory(
   currentInventory: InventoryItems
-): Promise<ImportResult & { importData?: ImportData }> {
-  try {
-    // Open file picker
-    const file = await openFilePicker();
-    if (!file) {
-      return {
-        success: false,
-        message: 'Importazione annullata',
-      };
-    }
-
-    // Parse and validate file
-    const importData = await parseImportFile(file);
-
-    // Generate preview
-    const preview = generateImportPreview(importData, currentInventory);
-
-    return {
-      success: true,
-      message: 'File caricato con successo',
-      preview,
-      importData, // Include the actual import data
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: "Errore durante l'importazione",
-      error: error instanceof Error ? error.message : 'Errore sconosciuto',
-    };
+): Promise<ImportResult> {
+  const file = await openFilePicker();
+  if (!file) {
+    throw new Error('Importazione annullata');
   }
+
+  const importData = await parseImportFile(file);
+  const preview = generateImportPreview(importData, currentInventory);
+
+  return {
+    preview,
+    importData,
+  };
 }
