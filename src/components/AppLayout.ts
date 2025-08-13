@@ -103,6 +103,14 @@ export const AppLayout = ({
             onSave: onQuantitySave,
           })
         : ''}
+      <footer class="app-footer">
+        <p>
+          Built with ❤️ and 🤖 by
+          <a href="https://github.com/gabrieledarrigo" title="Gabriele D'Arrigo"
+            >Gabriele D'Arrigo</a
+          >
+        </p>
+      </footer>
     </div>
   `;
 };

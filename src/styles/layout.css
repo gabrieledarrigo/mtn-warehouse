@@ -41,6 +41,14 @@
   }
 }
 
+.app-footer {
+  text-align: center;
+
+  p {
+    margin: var(--space-md) 0;
+  }
+}
+
 .inventory-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
